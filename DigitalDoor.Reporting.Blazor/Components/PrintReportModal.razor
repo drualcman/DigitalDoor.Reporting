@@ -1,0 +1,27 @@
+﻿@using DigitalDoor.Reporting.Blazor.Models
+@using DigitalDoor.Reporting.Entities.ViewModels
+@layout PrintLayout
+@if(IsShowing && Report is not null)
+{
+    <div class="modal">
+        <div class="modal-background" @onclick="Close"></div>
+        <div class="modal-content">
+            <div class="box">
+                <ReportView ReportModel=Report />                
+            </div>
+        </div>
+        <button type="button" class="modal-close" @onclick="Close" aria-label="close"></button>
+    </div>
+}
+
+@code {
+    [Parameter] public ReportViewModel Report { get; set; }
+    [Parameter] public bool IsShowing { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    async void Close()
+    {
+        IsShowing = false;
+        await OnClose.InvokeAsync();
+    }
+}

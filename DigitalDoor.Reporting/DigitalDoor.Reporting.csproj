@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AppDesignerFolder>ValueObjects</AppDesignerFolder>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DigitalDoor.Reporting.Entities\DigitalDoor.Reporting.Entities.csproj" />
+    <ProjectReference Include="..\DigitalDoor.Reporting.Helpers\DigitalDoor.Reporting.Helpers.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,53 @@
+﻿@media print {
+    body, html, section, header, footer, aside {visibility: hidden;}
+    /*@page {
+        width: 210mm;
+        height: 198mm;
+    }*/
+    .dd-report-container {
+        position: static;
+        top: 0;
+        left: 0;
+        margin: 0;
+        padding: 0;
+        background-color: yellow;
+        visibility: visible;
+        width: 100%;
+        z-index: 1;
+    }
+        .dd-report-container .report-container {
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+            visibility: visible;
+            z-index: 2;            
+        }
+            .dd-report-container .report-container .report-background {
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                visibility: visible;
+                z-index: 3;
+            }
+                .dd-report-container .report-container .report-background > div:first-child {
+                    height: 100%;
+                    width: 100%;
+                    margin: 0;
+                    padding: 0;
+                    visibility: visible;
+                    z-index: 4;
+                }
+                .dd-report-container .report-container .report-background .print-container {
+                    position: relative;
+                    height: 100%;
+                    width: 100%;
+                    margin: 0;
+                    padding: 0;
+                    visibility: visible;
+                    z-index: 5;
+                }   
+}

@@ -1,0 +1,5 @@
+﻿@media screen {
+    .print-container > div {
+        margin-bottom: 20rem;
+    }
+}

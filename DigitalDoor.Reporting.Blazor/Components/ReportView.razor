@@ -1,0 +1,19 @@
+﻿<div class="dd-report-container">
+    <div class="report-container" >
+        <div class="report-background" id="@WrapperId">
+            @if (ShowPreview)
+            {
+                <div class="print-container">
+                    @Content
+                </div>
+            }
+            else
+            {
+                <div class="print-container" style="  width:0; height: 0; overflow: hidden">
+                    @Content
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
