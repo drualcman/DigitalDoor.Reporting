@@ -4,9 +4,32 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <PackageLicenseFile>License.txt</PackageLicenseFile>
+	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
+	  <Company>DIGITAL DOOR Pty Ltd</Company>
+	  <Description>Tools for windows platforms only.</Description>
+	  <Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
+	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageTags>reporting;</PackageTags>
+	  <PackageReleaseNotes>First release version RC 1</PackageReleaseNotes>
+	  <Version>0.7.21</Version>
   </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\License.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
 	</ItemGroup>
 </Project>

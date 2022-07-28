@@ -4,6 +4,18 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <PackageLicenseFile>License.txt</PackageLicenseFile>
+	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
+	  <Company>DIGITAL DOOR Pty Ltd</Company>
+	  <Description>Extension to simplify the Presenter Injection when use Digital Reporting.</Description>
+	  <Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
+	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <PackageTags>reporting;</PackageTags>
+	  <PackageReleaseNotes>First release version RC 1</PackageReleaseNotes>
+	  <Version>0.7.21</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,5 +25,16 @@
   <ItemGroup>
     <ProjectReference Include="..\DigitalDoor.Reporting\DigitalDoor.Reporting.csproj" />
   </ItemGroup>
+	
+	<ItemGroup>
+		<None Include="..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\License.txt">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+	</ItemGroup>
 
 </Project>
