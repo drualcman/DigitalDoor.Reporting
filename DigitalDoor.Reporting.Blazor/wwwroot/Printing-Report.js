@@ -8,6 +8,17 @@ export const PrintReports = {
             print.rel = 'stylesheet';
             print.href = './_content/DigitalDoor.Reporting.Blazor/style.css';
             document.getElementsByTagName('head')[0].appendChild(print);
+            window.addEventListener('beforeunload', function (e) {
+                //remove css used
+                try {
+                    const myContainer = document.getElementById('pdf-styles');
+                    if (myContainer == null) {
+                        myContainer.remove();
+                    }
+                } catch (e) {
+                    console.info(e);
+                }
+            });
         }
     },
     AddPdfJavascriptsToPage: () => {
@@ -27,79 +38,22 @@ export const PrintReports = {
             html2canvas.id = "pdf-javascripts-html2canvas";
             document.getElementsByTagName('head')[0].appendChild(html2canvas);
         }
+        window.addEventListener('beforeunload', function (e) {
+            //remove javascripts used
+            try {
+                let jspdf = document.getElementById('pdf-javascripts-jspdf');
+                if (jspdf == null) {
+                    jspdf.remove();
+                }
+                let html2canvas = document.getElementById('pdf-javascripts-html2canvas');
+                if (html2canvas == null) {
+                    html2canvas.remove();
+                }
+            } catch (e) {
+                console.info(e);
+            }
+        });
     },
-    RemoveCssToPage: () => {
-        const myContainer = document.getElementById('pdf-styles');
-        if (myContainer == null) {
-            myContainer.remove();
-        }
-    },
-    RemovePdfJavascriptsToPage: () => {
-        let jspdf = document.getElementById('pdf-javascripts-jspdf')
-        if (jspdf == null) {
-            jspdf.remove();
-        }
-        let html2canvas = document.getElementById('pdf-javascripts-html2canvas')
-        if (html2canvas == null) {
-            html2canvas.remove();
-        }
-    },
-
-    Pop: function (pagina, width, height, top, left, id, fullscreen, scrollbars, resizable, toolbar, status) {
-        try {
-            if (width === 0) width = 450;
-            if (height === 0) height = 500;
-            if (isNaN(id)) id = '_blank';
-            if (isNaN(fullscreen)) fullscreen = false;
-            if (isNaN(scrollbars)) scrollbars = false;
-            if (isNaN(resizable)) resizable = true;
-            if (isNaN(toolbar)) toolbar = false;
-            if (isNaN(status)) status = false;
-
-            console.log(width);
-            console.log(height);
-            var opciones = 'location=no, directories=no';
-            if (fullscreen === false) {
-                opciones += ', width = ' + width + ', height=' + height + ', top=' + top + ', left=' + left;
-
-            }
-            else {
-                opciones += ', fullscreen=yes';
-            }
-            if (scrollbars === true) {
-                opciones = ', scrollbars = yes';
-            }
-            else {
-                opciones = ', scrollbars = no';
-            }
-            if (resizable === true) {
-                opciones = ', resizable = yes';
-            }
-            else {
-                opciones = ', resizable = no';
-            }
-            if (toolbar === true) {
-                opciones = ', toolbar = yes';
-            }
-            else {
-                opciones = ', toolbar = no';
-            }
-            if (status === true) {
-                opciones = ', status = yes';
-            }
-            else {
-                opciones = ', status = no';
-            }
-            newWebWindow = window.open(pagina, id, opciones);
-            if (resizable === true)
-                newWebWindow.resizeBy(width, height);
-        } catch (e) {
-            console.log(e);
-            return e;
-        }
-
-    },
-
     CreatePdf: (wrapperId, fileName, returnBytes, orientation, size) => {
         var response = {
             Result: true,
@@ -163,8 +117,6 @@ export const PrintReports = {
                     reader.readAsDataURL(blob);
                     response.Result = true;
                     response.Message = "Printed!";
-                    console.log(1, response);
-
                     reader.onloadend = function () {
                         var base64data = reader.result;
                         response.Base64String = base64data;
@@ -182,5 +134,5 @@ export const PrintReports = {
             });
         }
         return getCanvasContent.then((pages) => createPdf(pages).catch((error) => error)).catch((error) => error);
-    },
+    }
 }

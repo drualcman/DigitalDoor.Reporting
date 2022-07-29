@@ -356,7 +356,6 @@ public partial class ReportView : IDisposable
         {
             try
             {
-                await JSModule.InvokeVoidAsync("PrintReports.RemoveCssToPage");
                 await JSModule.DisposeAsync();
             }
             catch(Exception ex)

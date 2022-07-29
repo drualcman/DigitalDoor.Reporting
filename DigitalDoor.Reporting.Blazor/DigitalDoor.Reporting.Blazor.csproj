@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Update nuget to use the nuget from Digital Door Reporting Entities RC 1</PackageReleaseNotes>
-    <Version>0.7.22</Version>
+    <PackageReleaseNotes>Update how to remove the references from css and javascript when leave the page RC 1</PackageReleaseNotes>
+    <Version>0.7.23</Version>
   </PropertyGroup>
 
 	<ItemGroup>
