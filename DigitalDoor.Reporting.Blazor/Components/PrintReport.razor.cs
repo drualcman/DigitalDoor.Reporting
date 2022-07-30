@@ -4,7 +4,6 @@ using DigitalDoor.Reporting.Entities.ValueObjects;
 using DigitalDoor.Reporting.Entities.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using System.Reflection;
 
 namespace DigitalDoor.Reporting.Blazor.Components
 {
@@ -42,7 +41,7 @@ namespace DigitalDoor.Reporting.Blazor.Components
                 if(ReportModel is not null)
                 {
                     JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-                    await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
+                    await JSModule.InvokeVoidAsync("PrintReports.AddJavascriptsToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
                 }
             }
         }
