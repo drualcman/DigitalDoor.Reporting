@@ -18,7 +18,6 @@ public partial class ReportView : IDisposable
 
 
     RenderFragment Content;
-    bool Loading;
 
     double SectionColumns;
     Dimension SectionDimension;
@@ -35,15 +34,17 @@ public partial class ReportView : IDisposable
         RenderReport();
     }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(ReportModel is not null)
+        if(firstRender)
         {
-            JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-            await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
+            if(ReportModel is not null)
+            {
+                JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
+                await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
+            }
         }
     }
-
 
     #region render page
     void RenderReport()

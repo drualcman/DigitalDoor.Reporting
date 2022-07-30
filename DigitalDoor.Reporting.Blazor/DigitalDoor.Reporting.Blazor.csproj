@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Update how to remove the references from css and javascript when leave the page RC 1</PackageReleaseNotes>
-    <Version>0.7.23</Version>
+    <PackageReleaseNotes>Change to OnAfterRenderAsync the injection of Javascript Interop RC 1</PackageReleaseNotes>
+    <Version>0.7.24</Version>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.7.21" />
+    <PackageReference Include="DigitalDoor.Reporting.Extensions" Version="0.7.22" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.6" />
   </ItemGroup>
 

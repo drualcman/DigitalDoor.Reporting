@@ -28,22 +28,24 @@ namespace DigitalDoor.Reporting.Blazor.Components
         Dimension PageDimension;
         string WrapperId = $"doc{Guid.NewGuid()}";
 
-        IJSObjectReference module;
+        IJSObjectReference JSModule;
 
         protected override void OnParametersSet()
         {
             if(!OnCreate.HasDelegate && DirectDownload == false) DirectDownload = true;
         }
 
-        protected override async Task OnParametersSetAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            if(ReportModel is not null)
+            if(firstRender)
             {
-                module = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-                await module.InvokeVoidAsync("PrintReports.AddPdfJavascriptsToPage");
+                if(ReportModel is not null)
+                {
+                    JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
+                    await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
+                }
             }
         }
-
 
         async public Task GeneratePdf(string pdfName)
         {
@@ -59,7 +61,7 @@ namespace DigitalDoor.Reporting.Blazor.Components
             PdfResponse response;
             try
             {
-                response = await module.InvokeAsync<PdfResponse>("PrintReports.CreatePdf", WrapperId, pdfName, !DirectDownload, pageOrientation, paperSize);
+                response = await JSModule.InvokeAsync<PdfResponse>("PrintReports.CreatePdf", WrapperId, pdfName, !DirectDownload, pageOrientation, paperSize);
             }
             catch(Exception ex)
             {
@@ -81,11 +83,11 @@ namespace DigitalDoor.Reporting.Blazor.Components
 
         public async void Dispose()
         {
-            if(module != null)
+            if(JSModule != null)
             {
                 try
                 {
-                    await module.DisposeAsync();
+                    await JSModule.DisposeAsync();
                 }
                 catch(Exception ex)
                 {
