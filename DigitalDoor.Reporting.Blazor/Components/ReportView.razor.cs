@@ -13,7 +13,7 @@ namespace DigitalDoor.Reporting.Blazor.Components;
 public partial class ReportView : IDisposable
 {
     [Inject] public IJSRuntime JSRuntime { get; set; }
-    [Parameter] public ReportViewModel ReportModel { get; set; }
+    [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid()}";
 

@@ -13,7 +13,7 @@ namespace DigitalDoor.Reporting.Blazor.Components
         [Inject] public IJSRuntime JSRuntime { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
 
-        [Parameter] public ReportViewModel ReportModel { get; set; }
+        [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
         [Parameter] public bool DirectDownload { get; set; }
         [Parameter] public bool ShowButton { get; set; } = true;
 
