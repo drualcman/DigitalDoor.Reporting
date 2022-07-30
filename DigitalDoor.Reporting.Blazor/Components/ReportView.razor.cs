@@ -4,6 +4,7 @@ using DigitalDoor.Reporting.Entities.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
+using System.Buffers.Text;
 using System.Text;
 using System.Text.Json;
 
@@ -240,10 +241,7 @@ public partial class ReportView : IDisposable
                 EndSection(builder);
 
                 currentPage++;
-                //builder.OpenElement(48, "div");
-                //string styleBreak = $"break-after:always;";
-                //builder.AddAttribute(48, "style", styleBreak);
-                //builder.CloseElement();
+
                 StartPage(builder, data);
                 var newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
                      .GroupBy(r => r.Row);
@@ -257,9 +255,8 @@ public partial class ReportView : IDisposable
     void CreateColumns(RenderTreeBuilder builder, IGrouping<int, ColumnData> group,
         List<ColumnSetup> columns)
     {
-        foreach(var item in group)
+        foreach(ColumnData item in group)
         {
-
             string styleCol;
             if(item.Format is not null)
             {
@@ -271,30 +268,13 @@ public partial class ReportView : IDisposable
             }
 
             styleCol += "position: absolute;";
-
-            byte[] bytes = new byte[] { };
-            if(item.Value is not null)
+            string base64 = GetBase64(item);
+            if(!string.IsNullOrEmpty(base64))
             {
-                JsonElement data = (JsonElement)item.Value;
-                try
-                {
-                    data.TryGetBytesFromBase64(out bytes!);
-                }
-                catch
-                {
-                    bytes = null!;
-                }
-            }
-
-
-            string result;
-            if(bytes is not null && bytes.Length > 10)
-            {
-                result = $"data:image/png;base64,{item.Value}";
+                string result = $"data:image/png;base64,{base64}";
                 builder.OpenElement(4, "div");
                 styleCol += $"background: url('{result}');background-size: cover;background-repeat: no-repeat;";
                 builder.AddAttribute(4, "style", styleCol);
-                //builder.AddAttribute(4, "src", result);
             }
             else
             {
@@ -307,6 +287,40 @@ public partial class ReportView : IDisposable
             builder.CloseElement();
         }
     }
+
+    string GetBase64(ColumnData item)
+    {
+        string base64;
+        if(item.Value is not null)
+        {
+            try
+            {
+                byte[] bytes = new byte[] { };
+                if(item.Value.GetType() == typeof(byte[]))
+                {
+                    bytes = (byte[])item.Value;
+                    base64 = Convert.ToBase64String(bytes);
+                }
+                else if(item.Value.GetType() == typeof(JsonElement))
+                {
+                    JsonElement data = (JsonElement)item.Value;
+                    if(data.TryGetBytesFromBase64(out bytes))
+                    {
+                        base64 = item.Value.ToString();
+                    }
+                    else base64 = string.Empty;
+                }
+                else base64 = string.Empty;
+            }
+            catch
+            {
+                base64 = string.Empty;
+            }
+        }
+        else base64 = string.Empty;
+        return base64;
+    }
+
     int ActiveZindex = 10;
 
     string GetStyle(Format format)
@@ -341,7 +355,7 @@ public partial class ReportView : IDisposable
             $"color: {format.FontDetails.ColorSize.Colour};" +
             $"transform:rotate({format.Angle}deg);" +
             $"text-align: {format.TextAlignment};" +
-            $"text-decoration: {format.TextDecoration.ToString()};" +
+            $"text-decoration: {format.TextDecoration};" +
             $"z-index: {ActiveZindex};" +
             $"overflow: hidden;visibility: visible; display: block;";
         styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";

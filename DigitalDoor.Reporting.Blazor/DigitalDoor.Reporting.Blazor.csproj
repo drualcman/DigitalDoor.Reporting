@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Change to OnAfterRenderAsync the injection of Javascript Interop RC 1</PackageReleaseNotes>
-    <Version>0.7.24</Version>
+    <PackageReleaseNotes>Improve how to get the image convering in base64 to show in the report. RC 1</PackageReleaseNotes>
+    <Version>0.7.26</Version>
   </PropertyGroup>
 
 	<ItemGroup>
