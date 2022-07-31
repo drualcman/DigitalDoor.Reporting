@@ -21,7 +21,7 @@ export const PrintReports = {
             });
         }
     },
-    AddPdfJavascriptsToPage: () => {
+    AddJavascriptsToPage: () => {
         let jspdf = document.getElementById('pdf-javascripts-jspdf')
         if (jspdf == null) {
             jspdf = document.createElement('script');

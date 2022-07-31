@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Update how to remove the references from css and javascript when leave the page RC 1</PackageReleaseNotes>
-    <Version>0.7.23</Version>
+    <PackageReleaseNotes>Fixed Javascript method name to add javascript dependencies. RC 1</PackageReleaseNotes>
+    <Version>0.7.27</Version>
   </PropertyGroup>
 
 	<ItemGroup>
