@@ -41,6 +41,7 @@ namespace DigitalDoor.Reporting.Blazor.Components
                 if(ReportModel is not null)
                 {
                     JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
+                 
                     await JSModule.InvokeVoidAsync("PrintReports.AddJavascriptsToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
                 }
             }

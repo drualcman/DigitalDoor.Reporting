@@ -60,6 +60,7 @@ export const PrintReports = {
             Base64String: '',
             Message: ''
         }       
+    
         const getCanvasContent = new Promise(function (result, error) {
             try {
                 var PdfImages = [{ 'base': null }];
