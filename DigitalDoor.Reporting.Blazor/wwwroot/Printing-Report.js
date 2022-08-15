@@ -63,13 +63,18 @@ export const PrintReports = {
     
         const getCanvasContent = new Promise(function (result, error) {
             try {
+                console.log('scale', window.devicePixelRatio);
+                var options = {
+                    scale: 1,
+                    backgroundColor: null
+                }
                 var PdfImages = [{ 'base': null }];
                 var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
                 pageContainers.forEach(function (key, index) {
                     try {
-                        html2canvas(pageContainers[index]).then(function (canvas) {
+                        html2canvas(pageContainers[index], options).then(function (canvas) {
                             try {
-                                var data = canvas.toDataURL("img/JPG");
+                                var data = canvas.toDataURL("img/PNG");
                                 PdfImages.push({ 'base': data });
                                 if (index == pageContainers.length - 1) {
                                     result(PdfImages);
@@ -108,7 +113,7 @@ export const PrintReports = {
                     var total = pages.length;
                     var j = 1;
                     do {
-                        doc.addImage(pages[j].base, "JPEG", 0, 0, 0, 0, "a" + j, "FAST");
+                        doc.addImage(pages[j].base, "PNG", 0, 0);//, 0, 0, "a" + j, "NONE");
                         j++
                         if (j < total) doc.addPage();
                     } while (j < total);
@@ -136,4 +141,5 @@ export const PrintReports = {
         }
         return getCanvasContent.then((pages) => createPdf(pages).catch((error) => error)).catch((error) => error);
     }
+
 }
