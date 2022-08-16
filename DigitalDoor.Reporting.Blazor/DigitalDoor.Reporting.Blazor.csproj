@@ -13,11 +13,17 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Fixed Javascript method name to add javascript dependencies. RC 1</PackageReleaseNotes>
-    <Version>0.7.27</Version>
+    <PackageReleaseNotes>Improved the image quality. RC 1</PackageReleaseNotes>
+    <Version>0.7.28</Version>
+    <Title>Digital Door Reporting Viewer</Title>
+    <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
 
 	<ItemGroup>
+		<None Include="..\DRIcon.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 		<None Include="..\README.md">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
