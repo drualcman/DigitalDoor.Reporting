@@ -34,6 +34,7 @@ export const PrintReports = {
         if (html2canvas == null) {
             html2canvas = document.createElement('script');
             html2canvas.type = 'text/javascript';
+            //html2canvas.src = "https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js";
             html2canvas.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js";
             html2canvas.id = "pdf-javascripts-html2canvas";
             document.getElementsByTagName('head')[0].appendChild(html2canvas);
@@ -59,11 +60,10 @@ export const PrintReports = {
             Result: true,
             Base64String: '',
             Message: ''
-        }       
-    
+        }
+
         const getCanvasContent = new Promise(function (result, error) {
             try {
-                console.log('scale', window.devicePixelRatio);
                 var options = {
                     scale: 1,
                     backgroundColor: null
@@ -74,7 +74,7 @@ export const PrintReports = {
                     try {
                         html2canvas(pageContainers[index], options).then(function (canvas) {
                             try {
-                                var data = canvas.toDataURL("img/PNG");
+                                var data = canvas.toDataURL("img/jpeg");
                                 PdfImages.push({ 'base': data });
                                 if (index == pageContainers.length - 1) {
                                     result(PdfImages);
@@ -97,7 +97,7 @@ export const PrintReports = {
                 response.Message = e.message;
                 error(response);
             }
-        });        
+        });
 
         const createPdf = function (pages) {
             return new Promise(function (result, error) {
@@ -110,10 +110,15 @@ export const PrintReports = {
                         compress: true
                     }
                     var doc = new jsPDF(options);
+                    var pdfInternals = doc.internal,
+                        pdfPageSize = pdfInternals.pageSize,
+                        pdfPageWidth = pdfPageSize.width,
+                        pdfPageHeight = pdfPageSize.height;
+
                     var total = pages.length;
                     var j = 1;
                     do {
-                        doc.addImage(pages[j].base, "PNG", 0, 0);//, 0, 0, "a" + j, "NONE");
+                        doc.addImage(pages[j].base, "jpeg", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j, "FAST");
                         j++
                         if (j < total) doc.addPage();
                     } while (j < total);
@@ -130,7 +135,7 @@ export const PrintReports = {
                         if (!returnBytes) {
                             doc.save(fileName);
                         }
-                        result(response); 
+                        result(response);
                     }
                 } catch (e) {
                     response.Result = false;
