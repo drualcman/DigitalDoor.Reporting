@@ -291,7 +291,7 @@ public partial class ReportView : IDisposable
 
     string GetBase64(ColumnData item)
     {
-        string base64;
+        string base64 = string.Empty;
         if(item.Value is not null)
         {
             try
@@ -300,26 +300,29 @@ public partial class ReportView : IDisposable
                 if(item.Value.GetType() == typeof(byte[]))
                 {
                     bytes = (byte[])item.Value;
-                    base64 = Convert.ToBase64String(bytes);
+                    base64 =  SetBase64Image(bytes);
                 }
                 else if(item.Value.GetType() == typeof(JsonElement))
                 {
                     JsonElement data = (JsonElement)item.Value;
                     if(data.TryGetBytesFromBase64(out bytes))
                     {
-                        base64 = item.Value.ToString();
+                        base64 = SetBase64Image(bytes);
                     }
-                    else base64 = string.Empty;
                 }
-                else base64 = string.Empty;
             }
             catch
             {
                 base64 = string.Empty;
             }
         }
-        else base64 = string.Empty;
         return base64;
+    }
+
+    string SetBase64Image(byte[] bytes)
+    {
+        if(bytes.Length > 1) return Convert.ToBase64String(bytes);
+        else return string.Empty;
     }
 
     int ActiveZindex = 10;
