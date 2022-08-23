@@ -65,7 +65,7 @@ export const PrintReports = {
         const getCanvasContent = new Promise(function (result, error) {
             try {
                 var options = {
-                    scale: 1,
+                    scale: 5,
                     backgroundColor: null
                 }
                 var PdfImages = [{ 'base': null }];
@@ -74,7 +74,7 @@ export const PrintReports = {
                     try {
                         html2canvas(pageContainers[index], options).then(function (canvas) {
                             try {
-                                var data = canvas.toDataURL("img/jpeg");
+                                var data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'base': data });
                                 if (index == pageContainers.length - 1) {
                                     result(PdfImages);
@@ -110,6 +110,7 @@ export const PrintReports = {
                         compress: true
                     }
                     var doc = new jsPDF(options);
+                    doc.internal.scaleFactor = 30;
                     var pdfInternals = doc.internal,
                         pdfPageSize = pdfInternals.pageSize,
                         pdfPageWidth = pdfPageSize.width,
@@ -118,7 +119,7 @@ export const PrintReports = {
                     var total = pages.length;
                     var j = 1;
                     do {
-                        doc.addImage(pages[j].base, "jpeg", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j, "FAST");
+                        doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
                         j++
                         if (j < total) doc.addPage();
                     } while (j < total);
