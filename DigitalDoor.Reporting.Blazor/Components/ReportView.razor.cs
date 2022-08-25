@@ -321,7 +321,7 @@ public partial class ReportView : IDisposable
 
     string SetBase64Image(byte[] bytes)
     {
-        if(bytes.Length > 1) return Convert.ToBase64String(bytes);
+        if(bytes.Length > 10) return Convert.ToBase64String(bytes);
         else return string.Empty;
     }
 
