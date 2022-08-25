@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Fixed image byte detection, some times get confused and try to set a image when is it not a image. RC 1</PackageReleaseNotes>
-    <Version>0.7.29</Version>
+    <PackageReleaseNotes>Improved again document quality and image detection because some times still not detect correctly. RC 1</PackageReleaseNotes>
+    <Version>0.7.30</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
