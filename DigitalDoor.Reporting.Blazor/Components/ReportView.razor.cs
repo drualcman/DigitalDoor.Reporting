@@ -274,8 +274,12 @@ public partial class ReportView : IDisposable
             {
                 string result = $"data:image/png;base64,{base64}";
                 builder.OpenElement(4, "div");
-                styleCol += $"background: url('{result}');background-size: cover;background-repeat: no-repeat;";
                 builder.AddAttribute(4, "style", styleCol);
+                builder.OpenElement(5, "img");
+                string style = "display: block; width: inherit;";
+                builder.AddAttribute(5, "style", style);
+                builder.AddAttribute(5, "src", result);
+                builder.CloseElement();
             }
             else
             {
@@ -360,6 +364,8 @@ public partial class ReportView : IDisposable
             $"transform:rotate({format.Angle}deg);" +
             $"text-align: {format.TextAlignment};" +
             $"text-decoration: {format.TextDecoration};" +
+            $"text-transform: none;" +
+            $"letter-spacing: 0;" +
             $"z-index: {ActiveZindex};" +
             $"overflow: hidden;visibility: visible; display: block;";
         styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";
