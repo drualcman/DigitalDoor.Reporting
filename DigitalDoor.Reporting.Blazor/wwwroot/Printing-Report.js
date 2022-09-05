@@ -61,18 +61,17 @@ export const PrintReports = {
             Base64String: '',
             Message: ''
         }
-
         const getCanvasContent = new Promise(function (result, error) {
             try {
+                var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);    
                 var options = {
-                    scale: 5,
+                    scale: 3,
                     backgroundColor: null
                 }
                 var PdfImages = [{ 'base': null }];
-                var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
                 pageContainers.forEach(function (key, index) {
                     try {
-                        html2canvas(pageContainers[index], options).then(function (canvas) {
+                        html2canvas(pageContainers[index], options ).then(function (canvas) {                 
                             try {
                                 var data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'base': data });
@@ -98,7 +97,6 @@ export const PrintReports = {
                 error(response);
             }
         });
-
         const createPdf = function (pages) {
             return new Promise(function (result, error) {
                 try {
@@ -115,7 +113,7 @@ export const PrintReports = {
                         pdfPageSize = pdfInternals.pageSize,
                         pdfPageWidth = pdfPageSize.width,
                         pdfPageHeight = pdfPageSize.height;
-
+             
                     var total = pages.length;
                     var j = 1;
                     do {
