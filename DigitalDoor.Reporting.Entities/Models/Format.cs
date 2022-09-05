@@ -51,7 +51,7 @@ namespace DigitalDoor.Reporting.Entities.Models
             Padding = new Kernel();
             Margin = new Kernel();
             Borders = new Border();
-            Background = "white";
+            Background = "transparent";
             Position = new Kernel();
             FontDetails = new();
             Foreground = 0;
