@@ -1,5 +1,4 @@
-﻿let newWebWindow;
-export const PrintReports = {
+﻿export const PrintReports = {
     AddCssToPage: (width, height) => {
         const myContainer = document.getElementById('pdf-styles');
         if (myContainer == null) {
@@ -59,8 +58,19 @@ export const PrintReports = {
         var response = {
             Result: true,
             Base64String: '',
-            Message: ''
+            Message: '',
+            Html: ''
         }
+        const rawHtml = function () {
+            let content = document.querySelectorAll(`#${wrapperId} .main--container`);
+            if (content.length > 0) {
+                return content[0].innerHTML;
+            }
+            else {
+                return '';
+            }
+        }
+        response.Html = rawHtml;
         const getCanvasContent = new Promise(function (result, error) {
             try {
                 var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);    
@@ -144,6 +154,31 @@ export const PrintReports = {
             });
         }
         return getCanvasContent.then((pages) => createPdf(pages).catch((error) => error)).catch((error) => error);
+    },
+    GetHtml: (wrapperId) => {
+        return new Promise(function (result, error) {
+            var response = {
+                Result: true,
+                Base64String: '',
+                Message: '',
+                Html: ''
+            }
+            try {
+                let content = document.querySelectorAll(`#${wrapperId} .main--container`);
+                if (content.length > 0) {
+                    response.Html = content[0].innerHTML;
+                }
+                else {
+                    response.Html = '';
+                }
+                response.Result = true;
+                response.Message = 'Done!. All good!'
+                result(response);
+            } catch (e) {
+                response.Result = false;
+                response.Message = e.message;
+                error(response);
+            }
+        });    
     }
-
 }

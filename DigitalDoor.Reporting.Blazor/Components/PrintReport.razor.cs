@@ -22,7 +22,9 @@ namespace DigitalDoor.Reporting.Blazor.Components
         [Parameter] public EventCallback BeginInvoke { get; set; }
         [Parameter] public EventCallback EndInvoke { get; set; }
         [Parameter] public EventCallback<PdfResponse> OnCreate { get; set; }
+        [Parameter] public EventCallback<PdfResponse> OnGetHtml { get; set; }
 
+        ReportView DocumentBuilder;
 
         Dimension PageDimension;
         string WrapperId = $"doc{Guid.NewGuid()}";
@@ -41,7 +43,7 @@ namespace DigitalDoor.Reporting.Blazor.Components
                 if(ReportModel is not null)
                 {
                     JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-                 
+
                     await JSModule.InvokeVoidAsync("PrintReports.AddJavascriptsToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
                 }
             }
@@ -77,6 +79,14 @@ namespace DigitalDoor.Reporting.Blazor.Components
 
             if(OnCreate.HasDelegate)
                 await OnCreate.InvokeAsync(response);
+        }
+
+        async public Task<PdfResponse> GetHtml()
+        {
+            PdfResponse pdfResponse = await DocumentBuilder.GetHtml();
+            if(OnGetHtml.HasDelegate)
+                await OnGetHtml.InvokeAsync(pdfResponse);
+            return pdfResponse;
         }
 
         Task GeneratePdf() => GeneratePdf(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);

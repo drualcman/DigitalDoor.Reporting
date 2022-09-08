@@ -1,4 +1,5 @@
-﻿using DigitalDoor.Reporting.Entities.Models;
+﻿using DigitalDoor.Reporting.Blazor.Models;
+using DigitalDoor.Reporting.Entities.Models;
 using DigitalDoor.Reporting.Entities.ValueObjects;
 using DigitalDoor.Reporting.Entities.ViewModels;
 using Microsoft.AspNetCore.Components;
@@ -16,7 +17,7 @@ public partial class ReportView : IDisposable
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid()}";
-
+    [Parameter] public EventCallback<PdfResponse> OnGetHtml { get; set; }
 
     RenderFragment Content;
 
@@ -42,8 +43,8 @@ public partial class ReportView : IDisposable
             if(ReportModel is not null)
             {
                 JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-               
-               await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
+
+                await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
             }
         }
     }
@@ -304,7 +305,7 @@ public partial class ReportView : IDisposable
                 if(item.Value.GetType() == typeof(byte[]))
                 {
                     bytes = (byte[])item.Value;
-                    base64 =  SetBase64Image(bytes);
+                    base64 = SetBase64Image(bytes);
                 }
                 else if(item.Value.GetType() == typeof(JsonElement))
                 {
@@ -373,6 +374,28 @@ public partial class ReportView : IDisposable
         return styleContainer;
     }
     #endregion
+
+    async public Task<PdfResponse> GetHtml()
+    {
+        PdfResponse response;
+        try
+        {
+            response = await JSModule.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
+        }
+        catch(Exception ex)
+        {
+            response = new PdfResponse
+            {
+                Base64String = string.Empty,
+                Message = ex.Message,
+                Html = string.Empty,
+                Result = false
+            };
+        }
+        if(OnGetHtml.HasDelegate)
+            await OnGetHtml.InvokeAsync(response);
+        return response;
+    }
 
 
     public async void Dispose()
