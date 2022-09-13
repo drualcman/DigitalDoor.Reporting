@@ -228,10 +228,9 @@ public partial class ReportView : IDisposable
             }
 
             builder.CloseElement();
-
-            if(heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows)
+ 
+            if (heightRow > (SectionDimension.Height / RowDimension.Height)  && item.Format.Section == SectionType.Body && rowNo < totalRows)
             {
-                heightRow = 1;
                 rowNo++;
                 EndSection(builder);
                 //footer
@@ -250,7 +249,7 @@ public partial class ReportView : IDisposable
                 CreateHeader(builder, data, newGroupedHeader);
 
                 StartBody(builder, data);
-                heightRow = 0;
+                heightRow = 1;
             }
         }
     }
