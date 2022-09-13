@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Add HTML to the response type and expose a public method to get HTML in the viewer and in the print buttons. RC 1</PackageReleaseNotes>
-    <Version>0.8.32</Version>
+    <PackageReleaseNotes>Fixed a bug relative to the count of the rows. This generates some times the 1st page is not converted correctly into a PDF. RC 1</PackageReleaseNotes>
+    <Version>0.8.33</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
