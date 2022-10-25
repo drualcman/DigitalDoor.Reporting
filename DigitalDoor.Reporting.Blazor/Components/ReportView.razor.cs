@@ -333,7 +333,7 @@ public partial class ReportView : IDisposable
 
     string GetStyle(Format format)
     {
-        string styleContainer =
+        string styleContainer =                                                
             $"width:{format.Dimension.Width}mm;" +
             $"height:{format.Dimension.Height}mm;" +
             $"background-color: {format.Background};" +
@@ -348,7 +348,6 @@ public partial class ReportView : IDisposable
             $"margin-top: {format.Margin.Top}mm;" +
             $"margin-right: {format.Margin.Right}mm;" +
             $"margin-bottom: {format.Margin.Bottom}mm;" +
-            $"font-weight: {format.FontDetails.FontStyle.Bold};" +
             $"margin-left: {format.Margin.Left}mm;" +
             $"border-style: {format.Borders.Style};" +
             $"border-top-width: {format.Borders.Top.Width}mm;" +
@@ -359,9 +358,11 @@ public partial class ReportView : IDisposable
             $"border-right-color: {format.Borders.Right.Colour};" +
             $"border-bottom-color: {format.Borders.Bottom.Colour};" +
             $"border-bottom-width: {format.Borders.Bottom.Width}mm;" +
-            $"font-size: {format.FontDetails.ColorSize.Width}pt;" +
-            $"color: {format.FontDetails.ColorSize.Colour};" +
             $"transform:rotate({format.Angle}deg);" +
+            $"color: {format.FontDetails.ColorSize.Colour};" +
+            $"font-family: {format.FontDetails.FontName}, Helvetica, sans-serif;" +
+            $"font-weight: {format.FontDetails.FontStyle.Bold};" +
+            $"font-size: {format.FontDetails.ColorSize.Width}pt;" +
             $"text-align: {format.TextAlignment};" +
             $"text-decoration: {format.TextDecoration};" +
             $"text-transform: none;" +
