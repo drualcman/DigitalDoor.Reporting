@@ -1,5 +1,9 @@
 ﻿@media print {
-    body, html, section, header, footer, aside, article, main {visibility: hidden;}
+    body, html, section, header, footer, aside, article, main {
+        visibility: hidden;
+        height: 0;
+        margin-top: 3px;
+    }
     /*@page {
         width: 210mm;
         height: 198mm;
