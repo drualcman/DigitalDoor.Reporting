@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Fixed a bug relative to the count of the rows. This generates some times the 1st page is not converted correctly into a PDF. RC 1</PackageReleaseNotes>
-    <Version>0.8.33</Version>
+    <PackageReleaseNotes>Fixed a issue with the CSS about the print action. RC 1</PackageReleaseNotes>
+    <Version>0.8.34</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
