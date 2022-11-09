@@ -13,8 +13,8 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>Update Microsoft.AspNetCore.Components.Web to version 6.10 and DigitalDoor.Reporting.Entities to version 0.8.23. RC 1</PackageReleaseNotes>
-    <Version>0.8.35</Version>
+    <PackageReleaseNotes>Improved how to inject dynamic the javascript file to manage the print actions. Some times is disposied and get null reference depending how the page are rendered in the UI. RC 1</PackageReleaseNotes>
+    <Version>0.8.36</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
