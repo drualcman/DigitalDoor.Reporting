@@ -1,4 +1,4 @@
-export const PrintReports = {
+﻿export const PrintReports = {
     AddCssToPage: (width, height) => {
         const myContainer = document.getElementById('pdf-styles');
         if (myContainer == null) {
@@ -72,83 +72,85 @@ export const PrintReports = {
         }
         response.Html = rawHtml;
         const getCanvasContent = new Promise(function (result, error) {
-
-            var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);    
-            var options = {
-                scale: 3,
-                backgroundColor: null
-            }
-
-            var PdfImages = [{ 'base': null }];
-            pageContainers.forEach(function (key, index) {
-                try {
-                    html2canvas(pageContainers[index], options ).then(function (canvas) {                 
-                        try {
-                            var data = canvas.toDataURL("img/png");
-                            PdfImages.push({ 'base': data });
-                            if (index == pageContainers.length - 1) {
-                                result(PdfImages);
+            try {
+                var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);    
+                var options = {
+                    scale: 3,
+                    backgroundColor: null
+                }
+                var PdfImages = [{ 'base': null }];
+                pageContainers.forEach(function (key, index) {
+                    try {
+                        html2canvas(pageContainers[index], options ).then(function (canvas) {                 
+                            try {
+                                var data = canvas.toDataURL("img/png");
+                                PdfImages.push({ 'base': data });
+                                if (index == pageContainers.length - 1) {
+                                    result(PdfImages);
+                                }
+                            } catch (e) {
+                                response.Result = false;
+                                response.Message = e.message;
+                                error(response);
                             }
-                        } catch (e) {
-                            response.Result = false;
-                            response.Message = e.message;
-                            error(response);
+                        });
+                    } catch (e) {
+                        response.Result = false;
+                        response.Message = e.message;
+                        error(response);
+                    }
+                });
+            }
+            catch (e) {
+                response.Result = false;
+                response.Message = e.message;
+                error(response);
+            }
+        });
+        const createPdf = function (pages) {
+            return new Promise(function (result, error) {
+                try {
+                    var options = {
+                        orientation: orientation,  // p, l
+                        unit: 'mm',
+                        format: size,   //a4 b3 [1231,1212]
+                        precision: 1,
+                        compress: true
+                    }
+                    var doc = new jsPDF(options);
+                    doc.internal.scaleFactor = 30;
+                    var pdfInternals = doc.internal,
+                        pdfPageSize = pdfInternals.pageSize,
+                        pdfPageWidth = pdfPageSize.width,
+                        pdfPageHeight = pdfPageSize.height;
+             
+                    var total = pages.length;
+                    var j = 1;
+                    do {
+                        doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
+                        j++
+                        if (j < total) doc.addPage();
+                    } while (j < total);
+
+                    var blob = doc.output('blob');
+                    var reader = new FileReader();
+                    reader.readAsDataURL(blob);
+                    response.Result = true;
+                    response.Message = "Printed!";
+                    reader.onloadend = function () {
+                        var base64data = reader.result;
+                        response.Base64String = base64data;
+
+                        if (!returnBytes) {
+                            doc.save(fileName);
                         }
-                    });
+                        result(response);
+                    }
                 } catch (e) {
                     response.Result = false;
                     response.Message = e.message;
                     error(response);
                 }
-            })
-            .catch(e => {
-                response.Result = false;
-                response.Message = e.message;
-            });
-        });
-        const createPdf = function (pages) {
-            return new Promise(function (result, error) {
-                var options = {
-                    orientation: orientation,  // p, l
-                    unit: 'mm',
-                    format: size,   //a4 b3 [1231,1212]
-                    precision: 1,
-                    compress: true
-                }
-                var doc = new jsPDF(options);
-                doc.internal.scaleFactor = 30;
-                var pdfInternals = doc.internal,
-                    pdfPageSize = pdfInternals.pageSize,
-                    pdfPageWidth = pdfPageSize.width,
-                    pdfPageHeight = pdfPageSize.height;
-         
-                var total = pages.length;
-                var j = 1;
-                do {
-                    doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
-                    j++
-                    if (j < total) doc.addPage();
-                } while (j < total);
-
-                var blob = doc.output('blob');
-                var reader = new FileReader();
-                reader.readAsDataURL(blob);
-                response.Result = true;
-                response.Message = "Printed!";
-                reader.onloadend = function () {
-                    var base64data = reader.result;
-                    response.Base64String = base64data;
-
-                    if (!returnBytes) {
-                        doc.save(fileName);
-                    }
-                    result(response);
-                }
-            })
-            .catch(e => {
-                response.Result = false;
-                response.Message = e.message;
-                error(response);
             });
         }
         return getCanvasContent.then((pages) => createPdf(pages).catch((error) => error)).catch((error) => error);
@@ -161,21 +163,22 @@ export const PrintReports = {
                 Message: '',
                 Html: ''
             }
-
-            let content = document.querySelectorAll(`#${wrapperId} .main--container`);
-            if (content.length > 0) {
-                response.Html = content[0].innerHTML;
-            }
-            else {
-                response.Html = '';
-            }
-            response.Result = true;
-            response.Message = 'Done!. All good!'
-            result(response);
-        })
-        .catch(e => {
+            try {
+                let content = document.querySelectorAll(`#${wrapperId} .main--container`);
+                if (content.length > 0) {
+                    response.Html = content[0].innerHTML;
+                }
+                else {
+                    response.Html = '';
+                }
+                response.Result = true;
+                response.Message = 'Done!. All good!'
+                result(response);
+            } catch (e) {
                 response.Result = false;
                 response.Message = e.message;
+                error(response);
+            }
         });    
     }
 }
