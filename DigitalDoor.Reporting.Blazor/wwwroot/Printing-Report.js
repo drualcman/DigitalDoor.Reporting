@@ -93,6 +93,12 @@
                                 response.Message = e.message;
                                 error(response);
                             }
+                        }).catch(e => {
+                            response.Result = false;
+                            console.warn(e);
+                            response.Message = 'HTML2Canvas Exception. Check console warning.';
+                            error(response);
+                            break;
                         });
                     } catch (e) {
                         response.Result = false;
