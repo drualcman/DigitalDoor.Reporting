@@ -73,15 +73,16 @@
         response.Html = rawHtml;
         const getCanvasContent = new Promise(function (result, error) {
             try {
-                var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);    
+                var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
                 var options = {
                     scale: 3,
                     backgroundColor: null
                 }
+
                 var PdfImages = [{ 'base': null }];
                 pageContainers.forEach(function (key, index) {
                     try {
-                        html2canvas(pageContainers[index], options ).then(function (canvas) {                 
+                        html2canvas(pageContainers[index], options).then(function (canvas) {
                             try {
                                 var data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'base': data });
@@ -93,13 +94,13 @@
                                 response.Message = e.message;
                                 error(response);
                             }
-                        }).catch(e => {
+                        })
+                        .catch(e => {
                             response.Result = false;
                             console.warn(e);
                             response.Message = 'HTML2Canvas Exception. Check console warning.';
                             error(response);
-                            break;
-                        });
+                            });
                     } catch (e) {
                         response.Result = false;
                         response.Message = e.message;
@@ -129,13 +130,13 @@
                         pdfPageSize = pdfInternals.pageSize,
                         pdfPageWidth = pdfPageSize.width,
                         pdfPageHeight = pdfPageSize.height;
-             
+
                     var total = pages.length;
                     var j = 1;
                     do {
                         doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
                         j++
-                        if (j < total) doc.addPage();
+                        if (j <= total) doc.addPage();
                     } while (j < total);
 
                     var blob = doc.output('blob');
@@ -159,7 +160,14 @@
                 }
             });
         }
-        return getCanvasContent.then((pages) => createPdf(pages).catch((error) => error)).catch((error) => error);
+
+        async function processPdf() {
+            await getCanvasContent.then()
+            .then((pages) => createPdf(pages).catch((error) => error))
+            .catch((error) => error);
+        }
+
+        return processPdf();
     },
     GetHtml: (wrapperId) => {
         return new Promise(function (result, error) {
@@ -185,6 +193,6 @@
                 response.Message = e.message;
                 error(response);
             }
-        });    
+        });
     }
 }
