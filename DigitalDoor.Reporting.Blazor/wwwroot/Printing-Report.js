@@ -55,7 +55,7 @@
         });
     },
     CreatePdf: (wrapperId, fileName, returnBytes, orientation, size) => {
-        var response = {
+        let response = {
             Result: true,
             Base64String: '',
             Message: '',
@@ -73,20 +73,20 @@
         response.Html = rawHtml;
         const getCanvasContent = new Promise(function (result, error) {
             try {
-                var pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
-                var options = {
+                let pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
+                let options = {
                     scale: 3,
                     backgroundColor: null
                 }
 
-                var PdfImages = [{ 'base': null }];
-                pageContainers.forEach(function (key, index) {
+                let PdfImages = [];
+                Object.values(pageContainers).map((items, index) => {
                     try {
-                        html2canvas(pageContainers[index], options).then(function (canvas) {
+                        html2canvas(items, options).then(function (canvas) {
                             try {
-                                var data = canvas.toDataURL("img/png");
+                                let data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'base': data });
-                                if (index == pageContainers.length - 1) {
+                                if (index == pageContainers.length-1) {
                                     result(PdfImages);
                                 }
                             } catch (e) {
@@ -95,11 +95,10 @@
                                 error(response);
                             }
                         })
-                        .catch(e => {
-                            response.Result = false;
-                            console.warn(e);
-                            response.Message = 'HTML2Canvas Exception. Check console warning.';
-                            error(response);
+                            .catch(e => {
+                                response.Result = false;
+                                response.Message = 'HTML2Canvas Exception. Check console warning.';
+                                error(response);
                             });
                     } catch (e) {
                         response.Result = false;
@@ -117,35 +116,34 @@
         const createPdf = function (pages) {
             return new Promise(function (result, error) {
                 try {
-                    var options = {
+                    let options = {
                         orientation: orientation,  // p, l
                         unit: 'mm',
                         format: size,   //a4 b3 [1231,1212]
                         precision: 1,
                         compress: true
                     }
-                    var doc = new jsPDF(options);
+                    let doc = new jsPDF(options);
                     doc.internal.scaleFactor = 30;
-                    var pdfInternals = doc.internal,
+                    let pdfInternals = doc.internal,
                         pdfPageSize = pdfInternals.pageSize,
                         pdfPageWidth = pdfPageSize.width,
                         pdfPageHeight = pdfPageSize.height;
 
-                    var total = pages.length;
-                    var j = 1;
-                    do {
+                    let total = pages.length;
+                    
+                    for (let j = 0; j < total; j++) {
                         doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
-                        j++
-                        if (j <= total) doc.addPage();
-                    } while (j < total);
+                        doc.addPage();
+                    }
 
-                    var blob = doc.output('blob');
-                    var reader = new FileReader();
+                    let blob = doc.output('blob');
+                    let reader = new FileReader();
                     reader.readAsDataURL(blob);
                     response.Result = true;
                     response.Message = "Printed!";
                     reader.onloadend = function () {
-                        var base64data = reader.result;
+                        let base64data = reader.result;
                         response.Base64String = base64data;
 
                         if (!returnBytes) {
@@ -162,16 +160,16 @@
         }
 
         async function processPdf() {
-            await getCanvasContent.then()
-            .then((pages) => createPdf(pages).catch((error) => error))
+            await getCanvasContent
+            .then()
+            .then(pages => createPdf(pages).catch((error) => error))
             .catch((error) => error);
         }
-
         return processPdf();
     },
     GetHtml: (wrapperId) => {
         return new Promise(function (result, error) {
-            var response = {
+            let response = {
                 Result: true,
                 Base64String: '',
                 Message: '',
