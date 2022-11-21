@@ -76,33 +76,41 @@
                 let pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
                 let options = {
                     scale: 3,
-                    backgroundColor: null
+                    backgroundColor: null,
+                    imageTimeout: 500
                 }
 
+                console.log(pageContainers);
+
                 let PdfImages = [];
-                Object.values(pageContainers).map((items, index) => {
+                Object.values(pageContainers).map(async (items, index) => {
                     try {
-                        html2canvas(items, options).then(function (canvas) {
+                      await  html2canvas(items, options).then(function (canvas) {
                             try {
                                 let data = canvas.toDataURL("img/png");
-                                PdfImages.push({ 'base': data });
-                                if (index == pageContainers.length-1) {
+                                PdfImages.push({ 'page': index, 'base': data });
+                                let containerCount = pageContainers.length;
+                                if (PdfImages.length == containerCount) {
+                                    PdfImages.sort((a, b) => a.page - b.page)
                                     result(PdfImages);
                                 }
                             } catch (e) {
                                 response.Result = false;
                                 response.Message = e.message;
+                                console.warn(e);
                                 error(response);
                             }
                         })
                             .catch(e => {
                                 response.Result = false;
                                 response.Message = 'HTML2Canvas Exception. Check console warning.';
+                                console.warn(e);
                                 error(response);
                             });
                     } catch (e) {
                         response.Result = false;
                         response.Message = e.message;
+                        console.warn(e);
                         error(response);
                     }
                 });
@@ -131,11 +139,13 @@
                         pdfPageHeight = pdfPageSize.height;
 
                     let total = pages.length;
-                    
-                    for (let j = 0; j < total; j++) {
+                    let j = 0;
+                   
+                    do{
                         doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
-                        doc.addPage();
-                    }
+                        j++
+                       if(j <= total - 1) doc.addPage();
+                    }while(j < total);
 
                     let blob = doc.output('blob');
                     let reader = new FileReader();
@@ -158,14 +168,7 @@
                 }
             });
         }
-
-        async function processPdf() {
-            await getCanvasContent
-            .then()
-            .then(pages => createPdf(pages).catch((error) => error))
-            .catch((error) => error);
-        }
-        return processPdf();
+        return getCanvasContent.then(pages => createPdf(pages).catch(error => error)).catch(error => error);
     },
     GetHtml: (wrapperId) => {
         return new Promise(function (result, error) {
