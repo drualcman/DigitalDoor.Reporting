@@ -93,12 +93,10 @@
                     try {
                         html2canvas(filterContainersToPrint[index], options).then(function (canvas) {
                             try {
-                                console.log("check html2canvas", index)
                                 var data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'page': index, 'base': data });
                                 let containerCount = filterContainersToPrint.length;
                                 if (PdfImages.length == containerCount) {
-                                    console.log("check containerCount", index, "==", containerCount - 1)
                                     PdfImages.sort((a, b) => a.page - b.page)
                                     result(PdfImages);
                                 }
@@ -144,7 +142,6 @@
                     let j = 0;
 
                     do {
-                        console.log("check do", j)
                         doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
                         j++
                         if (j <= total - 1) doc.addPage();
