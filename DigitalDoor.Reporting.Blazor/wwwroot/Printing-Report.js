@@ -70,25 +70,35 @@
                 return '';
             }
         }
+
+
         response.Html = rawHtml;
         const getCanvasContent = new Promise(function (result, error) {
             try {
                 let pageContainers = document.querySelectorAll(`#${wrapperId} .main--container`);
+                let validContainers = Array.from(pageContainers);
                 let options = {
                     scale: 3,
                     backgroundColor: null,
                 }
-                
+
+                const filterContainersToPrint = validContainers.filter(items => {
+                    if (items.childNodes[1].childNodes.length > 0) {
+                        return items
+                    }
+                });
 
                 let PdfImages = [];
-                pageContainers.forEach(function (key, index) {
+                filterContainersToPrint.forEach(function (key, index) {
                     try {
-                        html2canvas(pageContainers[index], options).then(function (canvas) {                 
+                        html2canvas(filterContainersToPrint[index], options).then(function (canvas) {
                             try {
+                                console.log("check html2canvas", index)
                                 var data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'page': index, 'base': data });
-                                let containerCount = pageContainers.length;
+                                let containerCount = filterContainersToPrint.length;
                                 if (PdfImages.length == containerCount) {
+                                    console.log("check containerCount", index, "==", containerCount - 1)
                                     PdfImages.sort((a, b) => a.page - b.page)
                                     result(PdfImages);
                                 }
@@ -132,12 +142,13 @@
 
                     let total = pages.length;
                     let j = 0;
-                   
-                    do{
+
+                    do {
+                        console.log("check do", j)
                         doc.addImage(pages[j].base, "png", 0, 0, pdfPageWidth, pdfPageHeight, "a" + j);
                         j++
-                       if(j <= total - 1) doc.addPage();
-                    }while(j < total);
+                        if (j <= total - 1) doc.addPage();
+                    } while (j < total);
 
                     let blob = doc.output('blob');
                     let reader = new FileReader();
