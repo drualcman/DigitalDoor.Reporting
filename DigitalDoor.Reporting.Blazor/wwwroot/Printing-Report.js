@@ -77,15 +77,15 @@
                 let options = {
                     scale: 3,
                     backgroundColor: null,
-                    imageTimeout: 500
                 }
+                
 
                 let PdfImages = [];
-                Object.values(pageContainers).map(async (items, index) => {
+                pageContainers.forEach(function (key, index) {
                     try {
-                      await  html2canvas(items, options).then(function (canvas) {
+                        html2canvas(pageContainers[index], options).then(function (canvas) {                 
                             try {
-                                let data = canvas.toDataURL("img/png");
+                                var data = canvas.toDataURL("img/png");
                                 PdfImages.push({ 'page': index, 'base': data });
                                 let containerCount = pageContainers.length;
                                 if (PdfImages.length == containerCount) {
@@ -94,20 +94,14 @@
                                 }
                             } catch (e) {
                                 response.Result = false;
-                                response.Message = e.message;
-                                console.warn(e);
-                                error(response);
-                            }
-                        })
-                            .catch(e => {
-                                response.Result = false;
                                 response.Message = 'HTML2Canvas Exception. Check console warning.';
                                 console.warn(e);
                                 error(response);
-                            });
+                            }
+                        });
                     } catch (e) {
                         response.Result = false;
-                        response.Message = e.message;
+                        response.Message = 'HTML2Canvas Exception. Check console warning.';
                         console.warn(e);
                         error(response);
                     }
