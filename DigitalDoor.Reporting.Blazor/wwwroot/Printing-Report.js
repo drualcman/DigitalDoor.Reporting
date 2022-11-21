@@ -72,7 +72,6 @@ export const PrintReports = {
             }
         }
 
-
         response.Html = rawHtml;
         const getCanvasContent = new Promise(function (result, error) {
             try {
@@ -81,45 +80,50 @@ export const PrintReports = {
                 let options = {
                     scale: 3,
                     backgroundColor: null,
-                }
+                };
 
                 const filterContainersToPrint = validContainers.filter(items => {
+                    response.Message = "No document found!";
                     if (items.childNodes[1].childNodes.length == 0) {
-                        response.Result = false;
-                        response.Message = "No document found!"
-                        result(response);
+                        return null;
                     } else if (items.childNodes[1].childNodes.length > 0)  return items;
                     else {
-                        console.warn("Something went wrong... please report and create a ticket.")
+                        return null;
                     }
                 });
 
                 let PdfImages = [];
-                filterContainersToPrint.forEach(function (key, index) {
-                    try {
-                        html2canvas(filterContainersToPrint[index], options).then(function (canvas) {
-                            try {
-                                var data = canvas.toDataURL("img/png");
-                                PdfImages.push({ 'page': index, 'base': data });
-                                let containerCount = filterContainersToPrint.length;
-                                if (PdfImages.length == containerCount) {
-                                    PdfImages.sort((a, b) => a.page - b.page)
-                                    result(PdfImages);
+                if (filterContainersToPrint) {
+                    filterContainersToPrint.forEach(function (key, index) {
+                        try {
+                            html2canvas(filterContainersToPrint[index], options).then(function (canvas) {
+                                try {
+                                    var data = canvas.toDataURL("img/png");
+                                    PdfImages.push({ 'page': index, 'base': data });
+                                    let containerCount = filterContainersToPrint.length;
+                                    if (PdfImages.length == containerCount) {
+                                        PdfImages.sort((a, b) => a.page - b.page)
+                                        result(PdfImages);
+                                    }
+                                } catch (e) {
+                                    response.Result = false;
+                                    response.Message = 'HTML2Canvas Exception. Check console warning.';
+                                    console.warn(e);
+                                    error(response);
                                 }
-                            } catch (e) {
-                                response.Result = false;
-                                response.Message = 'HTML2Canvas Exception. Check console warning.';
-                                console.warn(e);
-                                error(response);
-                            }
-                        });
-                    } catch (e) {
-                        response.Result = false;
-                        response.Message = 'HTML2Canvas Exception. Check console warning.';
-                        console.warn(e);
-                        error(response);
-                    }
-                });
+                            });
+                        } catch (e) {
+                            response.Result = false;
+                            response.Message = 'HTML2Canvas Exception. Check console warning.';
+                            console.warn(e);
+                            error(response);
+                        }
+                    });
+                }
+                else {
+                    response.Result = false;
+                    error(response);
+                }
             }
             catch (e) {
                 response.Result = false;
