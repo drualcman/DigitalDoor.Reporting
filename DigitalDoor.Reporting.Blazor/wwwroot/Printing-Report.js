@@ -87,7 +87,7 @@ export const PrintReports = {
                     if (items.childNodes[1].childNodes.length == 0) {
                         response.Result = false;
                         response.Message = "No document found!"
-                        error(response);
+                        result(response);
                     } else if (items.childNodes[1].childNodes.length > 0)  return items;
                     else {
                         console.warn("Something went wrong... please report and create a ticket.")
