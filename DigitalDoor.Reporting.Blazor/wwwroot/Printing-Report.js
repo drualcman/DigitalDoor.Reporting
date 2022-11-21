@@ -80,8 +80,6 @@
                     imageTimeout: 500
                 }
 
-                console.log(pageContainers);
-
                 let PdfImages = [];
                 Object.values(pageContainers).map(async (items, index) => {
                     try {
