@@ -42,8 +42,7 @@ public partial class ReportView : IDisposable
         {
             if(ReportModel is not null)
             {
-                JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-
+                JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js?v={DateTime.Now.Ticks}");
                 await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
             }
         }
