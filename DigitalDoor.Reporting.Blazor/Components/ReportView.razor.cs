@@ -5,7 +5,6 @@ using DigitalDoor.Reporting.Entities.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
-using System.Buffers.Text;
 using System.Text;
 using System.Text.Json;
 
@@ -16,7 +15,7 @@ public partial class ReportView : IDisposable
     [Inject] public IJSRuntime JSRuntime { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
-    [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid()}";
+    [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
     [Parameter] public EventCallback<PdfResponse> OnGetHtml { get; set; }
 
     RenderFragment Content;
@@ -227,8 +226,8 @@ public partial class ReportView : IDisposable
             }
 
             builder.CloseElement();
- 
-            if (heightRow > (SectionDimension.Height / RowDimension.Height)  && item.Format.Section == SectionType.Body && rowNo < totalRows)
+
+            if(heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows)
             {
                 rowNo++;
                 EndSection(builder);
@@ -332,7 +331,7 @@ public partial class ReportView : IDisposable
 
     string GetStyle(Format format)
     {
-        string styleContainer =                                                
+        string styleContainer =
             $"width:{format.Dimension.Width}mm;" +
             $"height:{format.Dimension.Height}mm;" +
             $"background-color: {format.Background};" +
