@@ -1,4 +1,5 @@
-﻿export const PrintReports = {
+﻿
+export const PrintReports = {
     AddCssToPage: (width, height) => {
         const myContainer = document.getElementById('pdf-styles');
         if (myContainer == null) {
@@ -83,8 +84,13 @@
                 }
 
                 const filterContainersToPrint = validContainers.filter(items => {
-                    if (items.childNodes[1].childNodes.length > 0) {
-                        return items
+                    if (items.childNodes[1].childNodes.length == 0) {
+                        response.Result = false;
+                        response.Message = "No document found!"
+                        error(response);
+                    } else if (items.childNodes[1].childNodes.length > 0)  return items;
+                    else {
+                        console.warn("Something went wrong... please report and create a ticket.")
                     }
                 });
 
@@ -118,6 +124,7 @@
             catch (e) {
                 response.Result = false;
                 response.Message = e.message;
+                console.warn(e);
                 error(response);
             }
         });
