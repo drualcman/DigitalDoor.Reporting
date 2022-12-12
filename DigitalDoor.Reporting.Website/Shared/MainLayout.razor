@@ -1,0 +1,21 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+    <main>
+        <div class="top-row px-4">
+            <div class="flex search-wp center">
+                <div class="center pos-relative">
+                    <input type="text" class="search-input" placeholder="Search here" />
+                    <span class="btn-search"><i class="fa-solid fa-magnifying-glass"></i></span>
+                </div>
+            </div>
+        </div>
+
+        <article class="container mt-3">
+            @Body
+        </article>
+    </main>
+</div>
