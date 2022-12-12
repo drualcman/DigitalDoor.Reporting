@@ -50,7 +50,13 @@
     background-color: rgba(255,255,255,0.1);
     color: white;
 }
-
+.container-fluid{
+    display:flex;
+    justify-content:space-between;
+    height:100%;
+    align-items:center;
+    padding: 0 0.75rem;
+}
 @media (min-width: 641px) {
     .navbar-toggler {
         display: none;
@@ -65,5 +71,14 @@
         /* Allow sidebar to scroll for tall menus */
         height: calc(100vh - 3.5rem);
         overflow-y: auto;
+    }
+}
+@media (max-width: 640px){
+    .collapse.nav-scrollable {
+        display: none;
+        transition-property: display;
+        transition-duration: 0.5s;
+        transition-timing-function: ease-in-out;
+        transition-delay: 0.6s;
     }
 }
