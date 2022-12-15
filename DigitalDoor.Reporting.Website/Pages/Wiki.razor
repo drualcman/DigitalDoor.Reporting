@@ -5,9 +5,9 @@
     <p class="sub mb-3">First Download our Nugets bla bla bla bla lba lba</p>
 
     <div class="tabs is-boxed">
-        <ul>
+        <ul class="tabs-item">
             <li class="is-active">
-                <a>
+                <a >
                     <span class="icon is-small"><i class="fas fa-image" aria-hidden="true"></i></span>
                     <span>.NET CLI</span>
                 </a>
@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li>
-                <a>
+                <a >
                     <span class="icon is-small"><i class="fas fa-film" aria-hidden="true"></i></span>
                     <span>Package Reference</span>
                 </a>
@@ -38,8 +38,108 @@
             </li>
         </ul>
     </div>
-    <div class="border-top-none">
-        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est.</p>
+    <div class="tab-content mb-3">
+        <div class="tab-pane is-active" id="dotnet-cli">
+            <div class="install-script-row">
+                <pre class="scripts" id="dotnet-cli-text"><span class="install-command-row">dotnet add package DigitalDoor.Reporting.Blazor --version 0.9.38</span></pre>
+                <div class="copy-button">
+                    <button id="dotnet-cli-button" class="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the .NET CLI command" role="button" data-original-title="" title="">
+                        <span class="ms-Icon ms-Icon--Copy" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="package-manager">
+            <div class="install-script-row">
+                <pre class="scripts" id="package-manager-text"><span class="install-command-row">NuGet\Install-Package DigitalDoor.Reporting.Blazor -Version 0.9.38</span></pre>
+                <div class="copy-button">
+                    <button id="package-manager-button" class="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Package Manager command" role="button" data-original-title="" title="">
+                        <span class="ms-Icon ms-Icon--Copy" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="icon-text alert alert-info">
+                <i class="ms-Icon ms-Icon--Info" aria-hidden="true"></i>
+                This command is intended to be used within the Package Manager Console in Visual Studio, as it uses the NuGet module's version of <a href="https://docs.microsoft.com/en-us/nuget/reference/ps-reference/ps-ref-install-package">Install-Package</a>.
+            </div>
+        </div>
+        <div class="tab-pane " id="package-reference">
+            <div class="install-script-row">
+                <pre class="scripts" id="package-reference-text"><span class="install-command-row">&lt;PackageReference Include="DigitalDoor.Reporting.Blazor" Version="0.9.38" /&gt;</span></pre>
+                <div class="copy-button">
+                    <button id="package-reference-button" class="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the PackageReference XML node" role="button" data-original-title="" title="">
+                        <span class="ms-Icon ms-Icon--Copy" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="icon-text alert alert-info">
+                <i class="ms-Icon ms-Icon--Info" aria-hidden="true"></i>
+                For projects that support <a href="https://docs.microsoft.com/en-us/nuget/consume-packages/package-references-in-project-files">PackageReference</a>, copy this XML node into the project file to reference the package.
+            </div>
+        </div>
+        <div class="tab-pane " id="paket-cli">
+            <div class="install-script-row">
+                <pre class="scripts" id="paket-cli-text"><span class="install-command-row">paket add DigitalDoor.Reporting.Blazor --version 0.9.38</span></pre>
+                <div class="copy-button">
+                    <button id="paket-cli-button" class="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Paket CLI command" role="button" data-original-title="" title="">
+                        <span class="ms-Icon ms-Icon--Copy" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="icon-text alert alert-warning" role="alert" aria-live="assertive">
+                <i class="ms-Icon ms-Icon--Warning" aria-hidden="true"></i>
+                <b display="none" aria-label="warning"></b> The NuGet Team does not provide support for this client. Please contact its <a href="https://fsprojects.github.io/Paket/contact.html" aria-label="Contact the maintainers of the Paket CLI client">maintainers</a> for support.
+            </div>
+        </div>
+        <div class="tab-pane " id="script-interactive">
+            <div class="install-script-row">
+                <pre class="scripts" id="script-interactive-text"><span class="install-command-row">#r "nuget: DigitalDoor.Reporting.Blazor, 0.9.38"</span></pre>
+                <div class="copy-button">
+                    <button id="script-interactive-button" class="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Script &amp; Interactive command" role="button" data-original-title="" title="">
+                        <span class="ms-Icon ms-Icon--Copy" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="icon-text alert alert-info">
+                <i class="ms-Icon ms-Icon--Info" aria-hidden="true"></i>
+                #r directive can be used in F# Interactive, C# scripting and .NET Interactive. Copy this into the interactive tool or source code of the script to reference the package.
+            </div>
+        </div>
+        <div role="tabpanel" class="tab-pane " id="cake">
+            <div class="install-script-row">
+                <pre class="scripts" id="cake-text"><span class="install-command-row">// Install DigitalDoor.Reporting.Blazor as a Cake Addin
+                    #addin nuget:?package=DigitalDoor.Reporting.Blazor&amp;version=0.9.38
+                // Install DigitalDoor.Reporting.Blazor as a Cake Tool
+                #tool nuget:?package=DigitalDoor.Reporting.Blazor&amp;version=0.9.38</span></pre>
+                <div class="copy-button">
+                    <button id="cake-button" class="btn btn-default btn-warning" type="button" data-toggle="popover" data-placement="bottom" data-content="Copied." aria-label="Copy the Cake command" role="button" data-original-title="" title="">
+                        <span class="ms-Icon ms-Icon--Copy" aria-hidden="true"></span>
+                    </button>
+                </div>
+            </div>
+            <div class="icon-text alert alert-warning" role="alert" aria-live="assertive">
+                <i class="ms-Icon ms-Icon--Warning" aria-hidden="true"></i>
+                <b display="none" aria-label="warning"></b> The NuGet Team does not provide support for this client. Please contact its <a href="https://cakebuild.net/support/nuget" aria-label="Contact the maintainers of the Cake client">maintainers</a> for support.
+            </div>
+        </div>
+    </div>
+
+    <div class="class-wp">
+        <h2 class="sub">Class Name</h2>
+        <p class="p">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est.</p>
+        
+        <div class="box-code">
+            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est.
+        </div>
+    </div>
+    <div class="class-wp">
+        <h2 class="sub">Class Name</h2>
+        <p class="p mb-3">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est.</p>
+
+        <div class="box-code">
+            Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est.
+        </div>
     </div>
 
 </section>
+

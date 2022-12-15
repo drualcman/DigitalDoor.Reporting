@@ -1,0 +1,13 @@
+﻿.img-wp { 
+    background: url('/img/Ellipse.png') no-repeat;
+    width:150px;
+    height:150px;
+    background-size:cover;
+}
+.team-wp {
+
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+
+}
