@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalDoor.Reporting.Exten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalDoor.Reporting.Blazor", "DigitalDoor.Reporting.Blazor\DigitalDoor.Reporting.Blazor.csproj", "{B9BB3D44-BA7D-4BFD-BDEB-9F2FBBEB8655}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DigitalDoor.Reporting.Website", "DigitalDoor.Reporting.Website\DigitalDoor.Reporting.Website.csproj", "{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalDoor.Reporting.Website", "DigitalDoor.Reporting.Website\DigitalDoor.Reporting.Website.csproj", "{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
