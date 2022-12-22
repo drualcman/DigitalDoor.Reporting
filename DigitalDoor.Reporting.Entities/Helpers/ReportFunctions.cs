@@ -40,9 +40,7 @@ public class ReportFunctions
             {
                 PropertyName = "TotalPages",
                 ObjectName = "FreeText"
-            },
-
-
+            }
         });
         data.Add(new ColumnData
         {
@@ -53,7 +51,6 @@ public class ReportFunctions
                 ObjectName = "FreeText"
             },
             Section = section
-
         });
     }
 

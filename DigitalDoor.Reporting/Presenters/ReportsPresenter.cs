@@ -28,7 +28,8 @@ public class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 
         if(pages % 2 > 0) pages++;
 
-        Content = new ReportViewModel(setup, data);
+        Content = new ReportViewModel(setup, data);        
+
         if(pages != 0)
             Content.Pages = (int)pages;
         else

@@ -95,7 +95,6 @@ public class Section //no rowlist no addorw
 
             },
             DataColumn = new Item(paginationItem)
-
         });
 
     private readonly Dimension DefaultDimensions = new Dimension(5, 10);

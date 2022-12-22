@@ -395,7 +395,6 @@ public partial class ReportView : IDisposable
         return response;
     }
 
-
     public async void Dispose()
     {
         if(JSModule != null)
