@@ -29,6 +29,8 @@
     padding: 0;
     display: inline-grid;
     max-height: 1123px;
+    text-align: unset;
+    box-sizing: unset;
 }
 
 .modal-close {

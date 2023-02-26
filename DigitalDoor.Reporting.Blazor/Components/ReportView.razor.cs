@@ -276,13 +276,16 @@ public partial class ReportView : IDisposable
                 builder.OpenElement(5, "img");
                 string style = "display: block; width: inherit;";
                 builder.AddAttribute(5, "style", style);
+                builder.AddAttribute(5, "title", "picture");
+                builder.AddAttribute(5, "alt", "picture");
                 builder.AddAttribute(5, "src", result);
                 builder.CloseElement();
             }
             else
             {
                 builder.OpenElement(4, "div");
-                builder.AddAttribute(4, "style", styleCol);
+                builder.AddAttribute(4, "style", styleCol);   
+                builder.AddAttribute(5, "title", item.Value);
                 if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, totalpages);
                 else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, currentPage);
                 else builder.AddContent(4, item.Value);
@@ -366,7 +369,7 @@ public partial class ReportView : IDisposable
             $"text-transform: none;" +
             $"letter-spacing: 0;" +
             $"z-index: {ActiveZindex};" +
-            $"overflow: hidden;visibility: visible; display: block;";
+            $"overflow: hidden;visibility: visible; display: block;box-sizing: unset;";
         styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";
         ActiveZindex++;
         return styleContainer;

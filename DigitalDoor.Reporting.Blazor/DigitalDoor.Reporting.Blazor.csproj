@@ -40,6 +40,7 @@
 
   <ItemGroup>
     <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.8.23" />
+    <PackageReference Include="itext7.pdfhtml" Version="4.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
   </ItemGroup>
 
