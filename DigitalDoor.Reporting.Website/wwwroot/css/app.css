@@ -153,6 +153,14 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+
+.keyword {
+    color: #0101fd;
+}
+.title-class, .parameter, .type, .attribute {
+    color: #006881;
+}
 .mt-1 {
     margin-top: 1rem;
 }
