@@ -5,6 +5,7 @@ using DigitalDoor.Reporting.Entities.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Rendering;
 using Microsoft.JSInterop;
+using System.Linq.Expressions;
 using System.Text;
 using System.Text.Json;
 
@@ -172,6 +173,24 @@ public partial class ReportView : IDisposable
     void EndSection(RenderTreeBuilder builder) =>
         builder.CloseElement();
 
+    Format GetColumnFormat(List<ColumnSetup> columns, Item item)
+    {
+        Format format;
+        try
+        {
+            ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
+            if (column is not null) 
+                format = column.Format; 
+            else
+                format = null;
+        }
+        catch
+        {
+            format = null;
+        }
+        return format;
+    }
+
     void CreateRow(RenderTreeBuilder builder,
         IEnumerable<IGrouping<int, ColumnData>> grouped,
         ReportViewModel data,
@@ -251,6 +270,7 @@ public partial class ReportView : IDisposable
             }
         }
     }
+
     void CreateColumns(RenderTreeBuilder builder, IGrouping<int, ColumnData> group,
         List<ColumnSetup> columns)
     {
@@ -263,7 +283,7 @@ public partial class ReportView : IDisposable
             }
             else
             {
-                styleCol = GetStyle(columns.First(c => c.DataColumn.Equals(item.Column)).Format);
+                styleCol = GetStyle(GetColumnFormat(columns, item.Column));
             }
 
             styleCol += "position: absolute;";
@@ -276,16 +296,13 @@ public partial class ReportView : IDisposable
                 builder.OpenElement(5, "img");
                 string style = "display: block; width: inherit;";
                 builder.AddAttribute(5, "style", style);
-                builder.AddAttribute(5, "title", "picture");
-                builder.AddAttribute(5, "alt", "picture");
                 builder.AddAttribute(5, "src", result);
                 builder.CloseElement();
             }
             else
             {
                 builder.OpenElement(4, "div");
-                builder.AddAttribute(4, "style", styleCol);   
-                builder.AddAttribute(5, "title", item.Value);
+                builder.AddAttribute(4, "style", styleCol);
                 if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, totalpages);
                 else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, currentPage);
                 else builder.AddContent(4, item.Value);
@@ -333,44 +350,48 @@ public partial class ReportView : IDisposable
     int ActiveZindex = 10;
 
     string GetStyle(Format format)
-    {
-        string styleContainer =
-            $"width:{format.Dimension.Width}mm;" +
-            $"height:{format.Dimension.Height}mm;" +
-            $"background-color: {format.Background};" +
-            $"padding-top: {format.Padding.Top}mm; " +
-            $"padding-right: {format.Padding.Right}mm; " +
-            $"padding-left: {format.Padding.Left}mm; " +
-            $"padding-bottom: {format.Padding.Bottom}mm;" +
-            $"top: {format.Position.Top}mm;" +
-            $"right: {format.Position.Right}mm;" +
-            $"bottom: {format.Position.Bottom}mm;" +
-            $"left: {format.Position.Left}mm;" +
-            $"margin-top: {format.Margin.Top}mm;" +
-            $"margin-right: {format.Margin.Right}mm;" +
-            $"margin-bottom: {format.Margin.Bottom}mm;" +
-            $"margin-left: {format.Margin.Left}mm;" +
-            $"border-style: {format.Borders.Style};" +
-            $"border-top-width: {format.Borders.Top.Width}mm;" +
-            $"border-top-color: {format.Borders.Top.Colour};" +
-            $"border-left-width: {format.Borders.Left.Width}mm;" +
-            $"border-left-color: {format.Borders.Left.Colour};" +
-            $"border-right-width: {format.Borders.Right.Width}mm;" +
-            $"border-right-color: {format.Borders.Right.Colour};" +
-            $"border-bottom-color: {format.Borders.Bottom.Colour};" +
-            $"border-bottom-width: {format.Borders.Bottom.Width}mm;" +
-            $"transform:rotate({format.Angle}deg);" +
-            $"color: {format.FontDetails.ColorSize.Colour};" +
-            $"font-family: {format.FontDetails.FontName}, Helvetica, sans-serif;" +
-            $"font-weight: {format.FontDetails.FontStyle.Bold};" +
-            $"font-size: {format.FontDetails.ColorSize.Width}pt;" +
-            $"text-align: {format.TextAlignment};" +
-            $"text-decoration: {format.TextDecoration};" +
-            $"text-transform: none;" +
-            $"letter-spacing: 0;" +
-            $"z-index: {ActiveZindex};" +
-            $"overflow: hidden;visibility: visible; display: block;box-sizing: unset;";
-        styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";
+    {       
+        string styleContainer = string.Empty;
+        if(format is not null)
+        {
+            styleContainer =
+                $"width:{format.Dimension.Width}mm;" +
+                $"height:{format.Dimension.Height}mm;" +
+                $"background-color: {format.Background};" +
+                $"padding-top: {format.Padding.Top}mm; " +
+                $"padding-right: {format.Padding.Right}mm; " +
+                $"padding-left: {format.Padding.Left}mm; " +
+                $"padding-bottom: {format.Padding.Bottom}mm;" +
+                $"top: {format.Position.Top}mm;" +
+                $"right: {format.Position.Right}mm;" +
+                $"bottom: {format.Position.Bottom}mm;" +
+                $"left: {format.Position.Left}mm;" +
+                $"margin-top: {format.Margin.Top}mm;" +
+                $"margin-right: {format.Margin.Right}mm;" +
+                $"margin-bottom: {format.Margin.Bottom}mm;" +
+                $"margin-left: {format.Margin.Left}mm;" +
+                $"border-style: {format.Borders.Style};" +
+                $"border-top-width: {format.Borders.Top.Width}mm;" +
+                $"border-top-color: {format.Borders.Top.Colour};" +
+                $"border-left-width: {format.Borders.Left.Width}mm;" +
+                $"border-left-color: {format.Borders.Left.Colour};" +
+                $"border-right-width: {format.Borders.Right.Width}mm;" +
+                $"border-right-color: {format.Borders.Right.Colour};" +
+                $"border-bottom-color: {format.Borders.Bottom.Colour};" +
+                $"border-bottom-width: {format.Borders.Bottom.Width}mm;" +
+                $"transform:rotate({format.Angle}deg);" +
+                $"color: {format.FontDetails.ColorSize.Colour};" +
+                $"font-family: {format.FontDetails.FontName}, Helvetica, sans-serif;" +
+                $"font-weight: {format.FontDetails.FontStyle.Bold};" +
+                $"font-size: {format.FontDetails.ColorSize.Width}pt;" +
+                $"text-align: {format.TextAlignment};" +
+                $"text-decoration: {format.TextDecoration};" +
+                $"text-transform: none;" +
+                $"letter-spacing: 0;" +
+                $"z-index: {ActiveZindex};" +
+                $"overflow: hidden;visibility: visible; display: block;";
+            styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";
+        }
         ActiveZindex++;
         return styleContainer;
     }
