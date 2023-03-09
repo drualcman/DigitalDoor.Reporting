@@ -389,7 +389,7 @@ public partial class ReportView : IDisposable
                 $"text-transform: none;" +
                 $"letter-spacing: 0;" +
                 $"z-index: {ActiveZindex};" +
-                $"overflow: hidden;visibility: visible; display: block;";
+                $"overflow: hidden;visibility: visible; display: block;box-sizing: unset;";
             styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";
         }
         ActiveZindex++;
