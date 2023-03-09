@@ -179,16 +179,28 @@ public partial class ReportView : IDisposable
         try
         {
             ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
-            if (column is not null) 
-                format = column.Format; 
-            else
-                format = null;
+            format = column.Format; 
         }
         catch
         {
             format = null;
         }
         return format;
+    }
+
+    bool HasColumn(List<ColumnSetup> columns, Item item)
+    {
+        bool result;
+        try
+        {
+            ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
+            result = column is not null;
+        }
+        catch
+        {
+            result = false;
+        }
+        return result;
     }
 
     void CreateRow(RenderTreeBuilder builder,
@@ -276,38 +288,41 @@ public partial class ReportView : IDisposable
     {
         foreach(ColumnData item in group)
         {
-            string styleCol;
-            if(item.Format is not null)
+            if(HasColumn(columns, item.Column))
             {
-                styleCol = GetStyle(item.Format);
-            }
-            else
-            {
-                styleCol = GetStyle(GetColumnFormat(columns, item.Column));
-            }
+                string styleCol;
+                if(item.Format is not null)
+                {
+                    styleCol = GetStyle(item.Format);
+                }
+                else
+                {
+                    styleCol = GetStyle(GetColumnFormat(columns, item.Column));
+                }
 
-            styleCol += "position: absolute;";
-            string base64 = GetBase64(item);
-            if(!string.IsNullOrEmpty(base64))
-            {
-                string result = $"data:image/png;base64,{base64}";
-                builder.OpenElement(4, "div");
-                builder.AddAttribute(4, "style", styleCol);
-                builder.OpenElement(5, "img");
-                string style = "display: block; width: inherit;";
-                builder.AddAttribute(5, "style", style);
-                builder.AddAttribute(5, "src", result);
+                styleCol += "position: absolute;";
+                string base64 = GetBase64(item);
+                if(!string.IsNullOrEmpty(base64))
+                {
+                    string result = $"data:image/png;base64,{base64}";
+                    builder.OpenElement(4, "div");
+                    builder.AddAttribute(4, "style", styleCol);
+                    builder.OpenElement(5, "img");
+                    string style = "display: block; width: inherit;";
+                    builder.AddAttribute(5, "style", style);
+                    builder.AddAttribute(5, "src", result);
+                    builder.CloseElement();
+                }
+                else
+                {
+                    builder.OpenElement(4, "div");
+                    builder.AddAttribute(4, "style", styleCol);
+                    if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, totalpages);
+                    else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, currentPage);
+                    else builder.AddContent(4, item.Value);
+                }
                 builder.CloseElement();
             }
-            else
-            {
-                builder.OpenElement(4, "div");
-                builder.AddAttribute(4, "style", styleCol);
-                if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, totalpages);
-                else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, currentPage);
-                else builder.AddContent(4, item.Value);
-            }
-            builder.CloseElement();
         }
     }
 
