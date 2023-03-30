@@ -13,8 +13,11 @@
     <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; blazor; pdf</PackageTags>
-    <PackageReleaseNotes>2023-03-09: Fixed "Sequence contains no matching element" when try to get the format for the ColumnData</PackageReleaseNotes>
-    <Version>0.9.39</Version>
+    <PackageReleaseNotes>
+		2023-03-09: Fixed "Sequence contains no matching element" when try to get the format for the ColumnData.
+		2023-03-31: Update Microsoft.AspNetCore.Components.Web to version 6.0.15
+	</PackageReleaseNotes>
+    <Version>0.10.39</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
@@ -40,7 +43,8 @@
 
   <ItemGroup>
     <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.8.23" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.10" />
+    <PackageReference Include="itext7" Version="7.2.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.15" />
   </ItemGroup>
 
 </Project>
