@@ -1,13 +1,8 @@
-﻿using DigitalDoor.Reporting.Blazor.Models;
-using DigitalDoor.Reporting.Entities.Helpers;
-using DigitalDoor.Reporting.Entities.ValueObjects;
-using DigitalDoor.Reporting.Entities.ViewModels;
-using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
+﻿using System.Reflection;
 
 namespace DigitalDoor.Reporting.Blazor.Components
 {
-    public partial class PrintReport
+    public partial class PrintReport : IAsyncDisposable
     {
         [Inject] public IJSRuntime JSRuntime { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
@@ -27,7 +22,8 @@ namespace DigitalDoor.Reporting.Blazor.Components
         ReportView DocumentBuilder;
 
         Dimension PageDimension;
-        string WrapperId = $"doc{Guid.NewGuid()}";
+        string WrapperId = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
+        IJSObjectReference JSModule;
 
         protected override void OnParametersSet()
         {
@@ -40,7 +36,7 @@ namespace DigitalDoor.Reporting.Blazor.Components
             {
                 if(ReportModel is not null)
                 {
-                    await using IJSObjectReference JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
+                    JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./{ContentHelper.ContentPath}/Printing-Report.js?v={DateTime.Today.ToFileTimeUtc()}");
                     await JSModule.InvokeVoidAsync("PrintReports.AddJavascriptsToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
                 }
             }
@@ -52,24 +48,34 @@ namespace DigitalDoor.Reporting.Blazor.Components
                 await BeginInvoke.InvokeAsync();
 
             PdfResponse response = await DocumentBuilder.GetHtml();
-            try
+            if(response.Result)
             {
-                string pageOrientation = ReportModel.Page.Orientation == Orientation.Landscape ? "l" : "p";
-
-                PageDimension = ReportModel.Page.Dimension;
-                ReportFunctions reportFunctions = new ReportFunctions();
-                string paperSize = reportFunctions.GetPaperSizeName(PageDimension).ToLower();
-                await using IJSObjectReference JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", "./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js");
-                response = await JSModule.InvokeAsync<PdfResponse>("PrintReports.CreatePdf", WrapperId, pdfName, !DirectDownload, pageOrientation, paperSize);
-            }
-            catch(Exception ex)
-            {
-                response = new PdfResponse
+                try
                 {
-                    Base64String = string.Empty,
-                    Message = ex.Message,
-                    Result = false
-                };
+                    if(JSModule is not null)
+                    {
+                        string pageOrientation = ReportModel.Page.Orientation == Orientation.Landscape ? "l" : "p";
+
+                        PageDimension = ReportModel.Page.Dimension;
+                        ReportFunctions reportFunctions = new ReportFunctions();
+                        string paperSize = reportFunctions.GetPaperSizeName(PageDimension).ToLower();
+                        response = await JSModule.InvokeAsync<PdfResponse>("PrintReports.CreatePdf", WrapperId, pdfName, !DirectDownload, pageOrientation, paperSize);
+                    }
+                    else
+                    {
+                        response.Message = "Javascript not load! Can't create a PDF.";
+                        response.Result = false;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    response = new PdfResponse
+                    {
+                        Base64String = string.Empty,
+                        Message = ex.Message,
+                        Result = false
+                    };
+                }
             }
 
             if(OnCreate.HasDelegate)
@@ -89,5 +95,20 @@ namespace DigitalDoor.Reporting.Blazor.Components
         }
 
         Task GeneratePdf() => GeneratePdf(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);
+
+        public async ValueTask DisposeAsync()
+        {
+            if(JSModule != null)
+            {
+                try
+                {
+                    await JSModule.DisposeAsync();
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
     }
 }
