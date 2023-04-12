@@ -16,13 +16,21 @@ public class Section //no rowlist no addorw
     public Section()
     {
         Format = new Format(SectionType.Body) { Dimension = new Dimension(PageSize.A4) };
-        Row = null;
+        Row = new Row(Format.Dimension);
         ColumnsNumber = 1;
     }
 
-    public Section(SectionType section) : this() => Format = new Format(section);
+    public Section(SectionType section) : this()
+    {
+        Format = new Format(section); 
+        Row = new Row(Format.Dimension);
+    }
 
-    public Section(Format format) : this() => Format = format;
+    public Section(Format format) : this()
+    {
+        Format = format; 
+        Row = new Row(Format.Dimension);
+    }
 
     public Section(Dimension dimension) : this(new Format(dimension)) { }
     public Section(Dimension dimension, SectionType section) : this(new Format(dimension) { Section = section }) { }
