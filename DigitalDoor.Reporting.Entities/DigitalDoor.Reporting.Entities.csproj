@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -14,8 +14,9 @@
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
-	  <PackageReleaseNotes>Update Kernel to be a decimal values. Default background come to transparent RC 1</PackageReleaseNotes>
-	  <Version>0.8.23</Version>
+	  <PackageReleaseNotes>
+		  2023-04-13: Refactor Section contructor to set the row dimmension equals to a section dimention like a default value. RC 1</PackageReleaseNotes>
+	  <Version>0.8.24</Version>
   </PropertyGroup>
 
 
