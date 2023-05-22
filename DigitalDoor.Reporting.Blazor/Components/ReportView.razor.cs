@@ -1,17 +1,8 @@
-﻿using DigitalDoor.Reporting.Blazor.Models;
-using DigitalDoor.Reporting.Entities.Models;
-using DigitalDoor.Reporting.Entities.ValueObjects;
-using DigitalDoor.Reporting.Entities.ViewModels;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Rendering;
-using Microsoft.JSInterop;
-using System.Linq.Expressions;
-using System.Text;
-using System.Text.Json;
+﻿using DigitalDoor.Reporting.Entities.Models;
 
 namespace DigitalDoor.Reporting.Blazor.Components;
 
-public partial class ReportView : IDisposable
+public partial class ReportView : IAsyncDisposable
 {
     [Inject] public IJSRuntime JSRuntime { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
@@ -25,39 +16,39 @@ public partial class ReportView : IDisposable
     Dimension SectionDimension;
     Dimension RowDimension;
     Border RowBorders;
-    int totalpages;
-    int currentPage;
+    int Totalpages;
+    int CurrentPage;
+    int CurrentDivId;
 
 
-    IJSObjectReference JSModule;
+    readonly Lazy<Task<IJSObjectReference>> ModuleTask;
 
     protected override void OnParametersSet()
     {
         RenderReport();
     }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    public ReportView()
     {
-        if(firstRender)
-        {
-            if(ReportModel is not null)
-            {
-                JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./_content/DigitalDoor.Reporting.Blazor/Printing-Report.js?v={DateTime.Now.Ticks}");
-                await JSModule.InvokeVoidAsync("PrintReports.AddCssToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
-            }
-        }
+        base.OnInitialized();
+        ModuleTask = new Lazy<Task<IJSObjectReference>>(() => GetJSObjectReference(JSRuntime));
     }
+
+    private Task<IJSObjectReference> GetJSObjectReference(IJSRuntime jsRuntime) =>
+        jsRuntime.InvokeAsync<IJSObjectReference>(
+            "import", $"./{ContentHelper.ContentPath}/Printing-Report.js?v={DateTime.Today.ToFileTimeUtc()}").AsTask();
+
 
     #region render page
     void RenderReport()
     {
-        totalpages = ReportModel.Pages;
+        Totalpages = ReportModel.Pages;
 
         Content = builder =>
         {
             //create a page
             StartPage(builder, ReportModel);
-            currentPage = ReportModel.CurrentPage;
+            CurrentPage = ReportModel.CurrentPage;
             var grouped = ReportModel.Data.Where(d => d.Section == SectionType.Header)
                 .GroupBy(r => r.Row);
 
@@ -67,11 +58,14 @@ public partial class ReportView : IDisposable
             grouped = ReportModel.Data.Where(d => d.Section == SectionType.Body)
                 .GroupBy(r => r.Row);
 
-            StartBody(builder, ReportModel);
+            StartBody(builder, ReportModel);                 //start body
+
+            StartColumnSection(builder);       //start first column
 
             CreateRow(builder, grouped, ReportModel, ReportModel.Body.Items);
 
-            EndSection(builder);
+            EndSection(builder);                            //end column
+            EndSection(builder);                            //end body
 
             //footer
             grouped = ReportModel.Data.Where(d => d.Section == SectionType.Footer)
@@ -86,7 +80,8 @@ public partial class ReportView : IDisposable
     void StartPage(RenderTreeBuilder builder, ReportViewModel data)
     {
         string pageSetUp = "main--container";
-        builder.OpenElement(0, "div");
+        CurrentDivId = 0;
+        builder.OpenElement(CurrentDivId, "div");
 
         Format format = new Format(data.Page);
         if(ReportModel.Page.Orientation == Orientation.Landscape)
@@ -96,35 +91,38 @@ public partial class ReportView : IDisposable
 
         string styleContainer = $"{GetStyle(format)}";
 
-        builder.AddAttribute(0, "style", styleContainer);
-        builder.AddAttribute(0, "class", pageSetUp);
+        builder.AddAttribute(CurrentDivId, "style", styleContainer);
+        builder.AddAttribute(CurrentDivId, "class", pageSetUp);
     }
 
     void CreateHeader(RenderTreeBuilder builder, ReportViewModel data, IEnumerable<IGrouping<int, ColumnData>> grouped)
     {
-        builder.OpenElement(1, "div");
+        CurrentDivId++;
+        builder.OpenElement(CurrentDivId, "div");
         string headerWp = "headerWp";
-        string styleHeader = $"{GetStyle(data.Header.Format)}" +
-            $"position: relative;";
+        string styleHeader = $"{GetStyle(data.Header.Format)}position: relative;";
         //$"border-bottom: {data.Header.PageSetup.Padding.Bottom}mm solid #000;" +
 
-        builder.AddAttribute(1, "style", styleHeader);
-        builder.AddAttribute(1, "class", headerWp);
+        builder.AddAttribute(CurrentDivId, "style", styleHeader);
+        builder.AddAttribute(CurrentDivId, "class", headerWp);
 
         SectionColumns = data.Header.ColumnsNumber;
         SectionDimension = data.Header.Format.Dimension;
         RowDimension = data.Header.Row.Dimension;
         RowBorders = data.Header.Row.Borders;
-
+            
+        StartColumnSection(builder);       //start first column
         CreateRow(builder, grouped, data, data.Header.Items);
 
         builder.CloseElement();
+        builder.CloseElement();
+        CurrentDivId--;
     }
 
     void StartBody(RenderTreeBuilder builder, ReportViewModel data)
     {
-        string bodyWp = "body-wp";
-        string styleBody = "";
+        string bodyWp = "body-wp";                                                  
+        string styleBody;
         SectionColumns = data.Body.ColumnsNumber;
 
         if(SectionColumns > 1)
@@ -134,44 +132,61 @@ public partial class ReportView : IDisposable
             {
                 frString.Append("1fr ");
             }
-            styleBody = $"{GetStyle(data.Body.Format)}" +
+            styleBody = $"{GetStyle(data.Body.Format).Replace("display: block;", "")}" +
                 $"display:grid; grid-template-columns:{frString}; position:relative; grid-auto-rows: {data.Body.Row.Dimension.Height}mm ";
         }
         else
         {
             styleBody = $"{GetStyle(data.Body.Format)}" + $"position:relative;";
         }
-        builder.OpenElement(2, "div");
-        builder.AddAttribute(2, "style", styleBody);
-        builder.AddAttribute(2, "class", bodyWp);
+        CurrentDivId++;
+        builder.OpenElement(CurrentDivId, "div");
+        builder.AddAttribute(CurrentDivId, "style", styleBody);
+        builder.AddAttribute(CurrentDivId, "class", bodyWp);
 
         SectionDimension = data.Body.Format.Dimension;
         RowDimension = data.Body.Row.Dimension;
         RowBorders = data.Body.Row.Borders;
     }
 
+    void StartColumnSection(RenderTreeBuilder builder)
+    {
+        string bodyWp = "body-wp";
+        string styleColumn = $"position:relative;overflow: hidden;height:{SectionDimension.Height}mm; width:{RowDimension.Width}mm;";
+        CurrentDivId++;
+        builder.OpenElement(CurrentDivId, "div");
+        builder.AddAttribute(CurrentDivId, "style", styleColumn);
+        builder.AddAttribute(CurrentDivId, "class", bodyWp);
+    }
+
     void CreateFooter(RenderTreeBuilder builder, ReportViewModel data, IEnumerable<IGrouping<int, ColumnData>> grouped)
     {
         string footerWp = "footerWp";
-        string styleFooter = $"{GetStyle(data.Footer.Format)}" +
-          $"position:relative;";
+        string styleFooter = $"{GetStyle(data.Footer.Format)}position:relative;";
 
-        builder.OpenElement(5, "div");
-        builder.AddAttribute(5, "style", styleFooter);
-        builder.AddAttribute(5, "class", footerWp);
+        CurrentDivId++;
+        builder.OpenElement(CurrentDivId, "div");
+        builder.AddAttribute(CurrentDivId, "style", styleFooter);
+        builder.AddAttribute(CurrentDivId, "class", footerWp);
 
         SectionColumns = data.Footer.ColumnsNumber;
         SectionDimension = data.Footer.Format.Dimension;
         RowDimension = data.Footer.Row.Dimension;
         RowBorders = data.Footer.Row.Borders;
-
+              
+        StartColumnSection(builder);       //start first column
         CreateRow(builder, grouped, data, data.Footer.Items);
 
         builder.CloseElement();
+        builder.CloseElement();
+        CurrentDivId--;
     }
 
-    void EndSection(RenderTreeBuilder builder) =>
+    void EndSection(RenderTreeBuilder builder)
+    {
         builder.CloseElement();
+        CurrentDivId--;
+    }
 
     Format GetColumnFormat(List<ColumnSetup> columns, Item item)
     {
@@ -179,7 +194,7 @@ public partial class ReportView : IDisposable
         try
         {
             ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
-            format = column.Format; 
+            format = column.Format;
         }
         catch
         {
@@ -198,6 +213,7 @@ public partial class ReportView : IDisposable
         }
         catch
         {
+            Console.WriteLine("error");
             result = false;
         }
         return result;
@@ -212,10 +228,12 @@ public partial class ReportView : IDisposable
         int totalRows = grouped.Count();
         int rowNo = 1;
         int myColumn = 1;
+        bool newPage = false;
         foreach(var group in grouped)
         {
             ColumnData row = group.FirstOrDefault();
-            builder.OpenElement(30, "div");
+            CurrentDivId++;
+            builder.OpenElement(CurrentDivId, "div");
 
             ColumnSetup item = columns.FirstOrDefault(c => c.DataColumn.Equals(row.Column));
 
@@ -231,56 +249,70 @@ public partial class ReportView : IDisposable
              $"border-bottom-color: {RowBorders.Bottom.Colour};" +
              $"border-bottom-width: {RowBorders.Bottom.Width}mm;";
 
-            builder.AddAttribute(30, "style", styleRow);
+            builder.AddAttribute(CurrentDivId, "style", styleRow);
 
             if(item != null)
             {
                 CreateColumns(builder, group, columns);
-                if(SectionColumns > 1)
-                {
-                    if(myColumn >= SectionColumns)
-                    {
-                        heightRow++;
-                        myColumn = 1;
-                    }
-                    else
-                    {
-
-                        myColumn++;
-                    }
-                }
-                else heightRow++;
             }
             else
             {
-                builder.AddAttribute(3, "style", "display:none");
+                builder.AddAttribute(CurrentDivId, "style", "display:none");
             }
 
-            builder.CloseElement();
+            heightRow++;
+            EndSection(builder);            //end element
+            newPage = heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows;
 
-            if(heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows)
+            //if(heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows)
+            if(newPage)
             {
-                rowNo++;
-                EndSection(builder);
-                //footer
-                var newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
-                    .GroupBy(r => r.Row);
-
-                CreateFooter(builder, data, newGroupedFooter);
-
-                EndSection(builder);
-
-                currentPage++;
-
-                StartPage(builder, data);
-                var newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
-                     .GroupBy(r => r.Row);
-                CreateHeader(builder, data, newGroupedHeader);
-
-                StartBody(builder, data);
-                heightRow = 1;
+                if(SectionColumns > 1)
+                {
+                    if(myColumn < SectionColumns)
+                    {
+                        heightRow = 1;
+                        myColumn++;
+                        EndSection(builder);            //end column
+                        StartColumnSection(builder);    //start new column
+                    }
+                    else
+                    {
+                        NewPage(builder, data);
+                        rowNo++;
+                        heightRow = 1;
+                    }
+                }
+                else
+                {
+                    NewPage(builder, data);
+                    rowNo++;
+                    heightRow = 1;
+                }
             }
         }
+    }
+
+    void NewPage(RenderTreeBuilder builder, ReportViewModel data)
+    {
+        EndSection(builder);            //end column
+        EndSection(builder);            //end body
+                                        //footer
+        var newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
+            .GroupBy(r => r.Row);
+
+        CreateFooter(builder, data, newGroupedFooter);
+
+        EndSection(builder);
+
+        CurrentPage++;
+
+        StartPage(builder, data);
+        var newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
+             .GroupBy(r => r.Row);
+        CreateHeader(builder, data, newGroupedHeader);
+
+        StartBody(builder, data);
     }
 
     void CreateColumns(RenderTreeBuilder builder, IGrouping<int, ColumnData> group,
@@ -305,23 +337,28 @@ public partial class ReportView : IDisposable
                 if(!string.IsNullOrEmpty(base64))
                 {
                     string result = $"data:image/png;base64,{base64}";
-                    builder.OpenElement(4, "div");
-                    builder.AddAttribute(4, "style", styleCol);
-                    builder.OpenElement(5, "img");
+                    CurrentDivId++;
+                    builder.OpenElement(CurrentDivId, "div");
+                    builder.AddAttribute(CurrentDivId, "style", styleCol);
+                    CurrentDivId++;
+                    builder.OpenElement(CurrentDivId, "img");
                     string style = "display: block; width: inherit;";
-                    builder.AddAttribute(5, "style", style);
-                    builder.AddAttribute(5, "src", result);
+                    builder.AddAttribute(CurrentDivId, "style", style);
+                    builder.AddAttribute(CurrentDivId, "src", result);
                     builder.CloseElement();
+                    CurrentDivId--;
                 }
                 else
                 {
-                    builder.OpenElement(4, "div");
-                    builder.AddAttribute(4, "style", styleCol);
-                    if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, totalpages);
-                    else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, currentPage);
-                    else builder.AddContent(4, item.Value);
+                    CurrentDivId++;
+                    builder.OpenElement(CurrentDivId, "div");
+                    builder.AddAttribute(CurrentDivId, "style", styleCol);
+                    if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, Totalpages);
+                    else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, CurrentPage);
+                    else builder.AddContent(CurrentDivId, item.Value);
                 }
                 builder.CloseElement();
+                CurrentDivId--;
             }
         }
     }
@@ -365,7 +402,7 @@ public partial class ReportView : IDisposable
     int ActiveZindex = 10;
 
     string GetStyle(Format format)
-    {       
+    {
         string styleContainer = string.Empty;
         if(format is not null)
         {
@@ -417,7 +454,8 @@ public partial class ReportView : IDisposable
         PdfResponse response;
         try
         {
-            response = await JSModule.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
+            IJSObjectReference module = await ModuleTask.Value;
+            response = await module.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
         }
         catch(Exception ex)
         {
@@ -434,18 +472,20 @@ public partial class ReportView : IDisposable
         return response;
     }
 
-    public async void Dispose()
+
+    public async ValueTask DisposeAsync()
     {
-        if(JSModule != null)
+        try
         {
-            try
+            if(ModuleTask.IsValueCreated)
             {
-                await JSModule.DisposeAsync();
+                IJSObjectReference module = await ModuleTask.Value;
+                await module.DisposeAsync();
             }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
         }
     }
 }
