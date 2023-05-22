@@ -17,9 +17,9 @@
 		2023-03-09: Fixed "Sequence contains no matching element" when try to get the format for the ColumnData.
 		2023-03-31: Update Microsoft.AspNetCore.Components.Web to version 6.0.15
 		2023-04-13: Small improvements how to load javasscript in button to print or download PDF
-		2023-05-22: Change and implement create columns and pagination correctly. Remove add css from javascript file and use HeadContent component to avoid JAVASCRIPT
+		2023-05-22: Change and implement create columns and pagination correctly. Remove add css from javascript file and use HeadContent component to avoid JAVASCRIPT. Create helper to get the url to load javascript using lazy lading only when it's necessary
 	</PackageReleaseNotes>
-    <Version>0.10.39</Version>
+    <Version>0.11.40</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
@@ -45,7 +45,6 @@
 
   <ItemGroup>
     <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.8.23" />
-    <PackageReference Include="itext7" Version="7.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.15" />
   </ItemGroup>
 
