@@ -1,4 +1,8 @@
-﻿<div class="dd-report-container">
+﻿@using System.Reflection;
+<HeadContent>
+    <link rel="stylesheet" href="_content/DigitalDoor.Reporting.Blazor/style.css?version=@DateTime.Today.ToFileTimeUtc()" id="pdf-styles" />   
+</HeadContent>
+<div class="dd-report-container">
     <div class="report-container" >
         <div class="report-background" id="@WrapperId">
             @if (ShowPreview)

@@ -1,26 +1,5 @@
 ﻿
 export const PrintReports = {
-    AddCssToPage: (width, height) => {
-        const myContainer = document.getElementById('pdf-styles');
-        if (myContainer == null) {
-            let print = document.createElement('link');
-            print.id = "pdf-styles";
-            print.rel = 'stylesheet';
-            print.href = './_content/DigitalDoor.Reporting.Blazor/style.css';
-            document.getElementsByTagName('head')[0].appendChild(print);
-            window.addEventListener('beforeunload', function (e) {
-                //remove css used
-                try {
-                    const myContainer = document.getElementById('pdf-styles');
-                    if (myContainer == null) {
-                        myContainer.remove();
-                    }
-                } catch (e) {
-                    console.info(e);
-                }
-            });
-        }
-    },
     AddJavascriptsToPage: () => {
         let jspdf = document.getElementById('pdf-javascripts-jspdf')
         if (jspdf == null) {
@@ -34,7 +13,6 @@ export const PrintReports = {
         if (html2canvas == null) {
             html2canvas = document.createElement('script');
             html2canvas.type = 'text/javascript';
-            //html2canvas.src = "https://cdnjs.cloudflare.com/ajax/libs/dom-to-image/2.6.0/dom-to-image.min.js";
             html2canvas.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.js";
             html2canvas.id = "pdf-javascripts-html2canvas";
             document.getElementsByTagName('head')[0].appendChild(html2canvas);
