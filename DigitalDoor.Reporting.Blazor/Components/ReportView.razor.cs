@@ -110,7 +110,7 @@ public partial class ReportView : IAsyncDisposable
         SectionDimension = data.Header.Format.Dimension;
         RowDimension = data.Header.Row.Dimension;
         RowBorders = data.Header.Row.Borders;
-            
+
         StartColumnSection(builder);       //start first column
         CreateRow(builder, grouped, data, data.Header.Items);
 
@@ -121,7 +121,7 @@ public partial class ReportView : IAsyncDisposable
 
     void StartBody(RenderTreeBuilder builder, ReportViewModel data)
     {
-        string bodyWp = "body-wp";                                                  
+        string bodyWp = "body-wp";
         string styleBody;
         SectionColumns = data.Body.ColumnsNumber;
 
@@ -173,7 +173,7 @@ public partial class ReportView : IAsyncDisposable
         SectionDimension = data.Footer.Format.Dimension;
         RowDimension = data.Footer.Row.Dimension;
         RowBorders = data.Footer.Row.Borders;
-              
+
         StartColumnSection(builder);       //start first column
         CreateRow(builder, grouped, data, data.Footer.Items);
 
@@ -279,16 +279,17 @@ public partial class ReportView : IAsyncDisposable
                     else
                     {
                         NewPage(builder, data);
-                        rowNo++;
                         heightRow = 1;
+                        myColumn = 1;
                     }
                 }
                 else
                 {
                     NewPage(builder, data);
-                    rowNo++;
                     heightRow = 1;
+                    myColumn = 1;
                 }
+                rowNo++;
             }
         }
     }
@@ -312,7 +313,7 @@ public partial class ReportView : IAsyncDisposable
              .GroupBy(r => r.Row);
         CreateHeader(builder, data, newGroupedHeader);
 
-        StartBody(builder, data);        
+        StartBody(builder, data);
         StartColumnSection(builder);       //start first column
     }
 
