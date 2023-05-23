@@ -18,8 +18,9 @@
 		2023-03-31: Update Microsoft.AspNetCore.Components.Web to version 6.0.15
 		2023-04-13: Small improvements how to load javasscript in button to print or download PDF
 		2023-05-22: Change and implement create columns and pagination correctly. Remove add css from javascript file and use HeadContent component to avoid JAVASCRIPT. Create helper to get the url to load javascript using lazy lading only when it's necessary
+		2023-05-23: Fixed a mistake when have more than 1 page not start new column when create new page. Update nuet Entities to version 0.8.25
 	</PackageReleaseNotes>
-    <Version>0.11.40</Version>
+    <Version>0.11.41</Version>
     <Title>Digital Door Reporting Viewer</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
   </PropertyGroup>
@@ -44,8 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.8.23" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.15" />
+    <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.8.25" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.16" />
   </ItemGroup>
 
 </Project>

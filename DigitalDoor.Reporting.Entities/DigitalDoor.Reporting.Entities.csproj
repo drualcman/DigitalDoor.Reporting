@@ -15,8 +15,10 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
-		  2023-04-13: Refactor Section contructor to set the row dimmension equals to a section dimention like a default value. RC 1</PackageReleaseNotes>
-	  <Version>0.8.24</Version>
+		  2023-04-13: Refactor Section contructor to set the row dimmension equals to a section dimention like a default value. RC 1
+		  2023-05-23: Add new property readonly to know if the font IdBold.
+	  </PackageReleaseNotes>
+	  <Version>0.8.25</Version>
   </PropertyGroup>
 
 
