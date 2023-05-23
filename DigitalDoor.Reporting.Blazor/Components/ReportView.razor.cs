@@ -312,7 +312,8 @@ public partial class ReportView : IAsyncDisposable
              .GroupBy(r => r.Row);
         CreateHeader(builder, data, newGroupedHeader);
 
-        StartBody(builder, data);
+        StartBody(builder, data);        
+        StartColumnSection(builder);       //start first column
     }
 
     void CreateColumns(RenderTreeBuilder builder, IGrouping<int, ColumnData> group,
