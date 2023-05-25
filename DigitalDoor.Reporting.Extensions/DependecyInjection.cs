@@ -12,6 +12,10 @@ public static class ServicesDependency
         services.AddScoped<IReportsOutputPort>(serivce => serivce.GetService<ReportsPresenter>());
         services.AddScoped<IReportsPresenter>(serivce => serivce.GetService<ReportsPresenter>());
 
+        services.AddScoped<PDFReportPresenter>();
+        services.AddScoped<IPDFReportOutputPort>(service => service.GetService<PDFReportPresenter>());
+        services.AddScoped<IPDFReportPresenter>(services => services.GetService<PDFReportPresenter>());
+
         return services;
     }
 }
