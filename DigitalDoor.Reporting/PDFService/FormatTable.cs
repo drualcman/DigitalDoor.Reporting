@@ -12,7 +12,7 @@ namespace DigitalDoor.Reporting.PDF
     internal class FormatTable
     {
         public int Row { get; set; }
-        private decimal Position { get; set; }
+        public decimal Position { get; set; }
         public List<ColumnFormat> Columns { get; set; }
 
         public async Task<List<FormatTable>> GetTableFormat(List<ColumnSetup> setups, List<ColumnData> data)
@@ -41,6 +41,7 @@ namespace DigitalDoor.Reporting.PDF
                             {
                                 var NewSetup = new ColumnSetup() { Format = new Format() }; ;
                                 NewSetup.Format.Dimension.Width = (double)setups[i].Format.Position.Left - (setups[i - 1].Format.Dimension.Width + (double)setups[i - 1].Format.Position.Left);
+                                NewSetup.Format.Dimension.Height = (double)setups[i].Format.Dimension.Height;
                                 Format.Columns.Add(new ColumnFormat()
                                 {
                                     Column = NewSetup,
@@ -68,6 +69,7 @@ namespace DigitalDoor.Reporting.PDF
                             {
                                 var NewSetup = new ColumnSetup() { Format = new Format() };
                                 NewSetup.Format.Dimension.Width = (double)setups[i].Format.Position.Left;
+                                NewSetup.Format.Dimension.Height = (double)setups[i].Format.Dimension.Height;
                                 Format = new FormatTable()
                                 {
                                     Row = Counter,

@@ -79,11 +79,11 @@ namespace DigitalDoor.Reporting.PDF
         private async Task CreateBody(Table table)
         {
             Cell Cell = MakerTable.CreateCell();
+            Cell.SetBorder(Border.NO_BORDER);
             List<ColumnData> Data = ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Body).ToList();
             List<FormatTable> Format = await FormatTable.GetTableFormat(ReportViewModel.Body.Items, Data);
             int Rows = (int)(ReportViewModel.Body.Format.Dimension.Height / ReportViewModel.Body.Row.Dimension.Height);
             var Pages = Helper.Split(Format, Rows);
-            List<Task> Tasks = new List<Task>();
             foreach (var Page in Pages)
             {
                 Table Table = await MakerTable.SetCellContent(ReportViewModel.Body,Page);
@@ -101,6 +101,7 @@ namespace DigitalDoor.Reporting.PDF
         private async Task<Cell> CreateTableContent(Section section, List<ColumnData> sectionData)
         {
             Cell Cell = MakerTable.CreateCell();
+            Cell.SetBorder(Border.NO_BORDER);
             List<FormatTable> Format = await FormatTable.GetTableFormat(section.Items, sectionData);
             Table Table = await MakerTable.SetCellContent(section,Format);
             Cell.Add(Table);

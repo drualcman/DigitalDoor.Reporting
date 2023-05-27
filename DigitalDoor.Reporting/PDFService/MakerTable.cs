@@ -1,7 +1,10 @@
 ﻿using DigitalDoor.Reporting.Entities.Models;
 using DigitalDoor.Reporting.PDF;
+using iText.Kernel.Colors;
+using iText.Kernel.Pdf.Canvas.Draw;
 using iText.Layout.Borders;
 using iText.Layout.Element;
+using Org.BouncyCastle.Math.EC.Rfc7748;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,23 +32,21 @@ namespace DigitalDoor.Reporting.PDFService
         private void CreateRows(Table table, List<FormatTable> rows)
         {
             Cell Cell = CreateCell();
-            foreach (var ItemFormat in rows)
+            for (int i = 0; i < rows.Count; i++)
             {
-                var Item = CreateRowContent(ItemFormat);
+                float Top = (float)rows[i].Position;
+                if (Top != 0)
+                {
+                   Top =  GetPaddingTop(rows, i) - Top;
+                }
+                var Item = CreateRowContent(rows[i],Top);
+                Item.SetPaddingTop(Helper.MillimeterToPixel((float)10));
                 Cell.Add(Item);
                 table.AddCell(Cell);
             }
         }
 
-        public Cell CreateCell()
-        {
-            Cell Cell = new Cell();
-            Cell.SetMargins(0, 0, 0, 0);
-            Cell.SetPaddings(0, 0, 0, 0);
-            Cell.SetBorder(Border.NO_BORDER);
-            return Cell;
-        }
-        private Table CreateRowContent(FormatTable format)
+        private Table CreateRowContent(FormatTable format,float top)
         {
             float[] Columns = new float[format.Columns.Count];
             for (int i = 0; i < format.Columns.Count; i++)
@@ -55,11 +56,11 @@ namespace DigitalDoor.Reporting.PDFService
             Table Item = new Table(Columns);
             Item.SetMargins(0, 0, 0, 0);
             Item.SetPaddings(0, 0, 0, 0);
-            CreateColumnContent(Item, format);
+            CreateColumnContent(Item, format,top);
             return Item;
         }
 
-        private void CreateColumnContent(Table table, FormatTable format)
+        private void CreateColumnContent(Table table, FormatTable format,float top)
         {
             foreach (var item in format.Columns)
             {
@@ -70,9 +71,31 @@ namespace DigitalDoor.Reporting.PDFService
                     Text = Helper.MapperSetParagraph(Content, item);
                 }
                 Cell Cell = CreateCell();
+                Cell.SetMinHeight((float)item.Column.Format.Dimension.Height * 2.4443f);
+                Cell.SetPaddingTop(Helper.MillimeterToPixel(top));
                 Cell.Add(Text);
                 table.AddCell(Cell);
             }
+        }
+
+        private float GetPaddingTop(List<FormatTable> rows, int index)
+        {
+            float Result = 0;
+            for (int i = 0; i <= index; i++)
+            {
+                Result += (float)rows[i].Columns[0].Column.Format.Dimension.Height;
+            }
+            return Result;
+        }
+
+
+        public Cell CreateCell()
+        {
+            Cell Cell = new Cell();
+            Cell.SetMargins(0, 0, 0, 0);
+            Cell.SetPaddings(0, 0, 0, 0);
+            Cell.SetBorder(new SolidBorder(ColorConstants.WHITE, 0));
+            return Cell;
         }
     }
 }

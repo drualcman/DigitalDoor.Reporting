@@ -30,11 +30,14 @@ namespace DigitalDoor.Reporting.PDFService
             {
                 Text.SetItalic();
             }
-            Text.SetMarginTop((float)(item.Column.Format.Padding.Top + item.Column.Format.Position.Top));
-            Text.SetMarginBottom((float)item.Column.Format.Padding.Bottom);
-            Text.SetMarginLeft((float)item.Column.Format.Padding.Left);
-            Text.SetMarginRight((float)item.Column.Format.Padding.Right);
-            Text.SetPaddings(0, 0, 0, 0);
+            Text.SetPaddingTop(MillimeterToPixel(item.Column.Format.Padding.Top));
+            Text.SetPaddingBottom(MillimeterToPixel(item.Column.Format.Padding.Bottom));
+            Text.SetPaddingLeft(MillimeterToPixel(item.Column.Format.Padding.Left));
+            Text.SetPaddingRight(MillimeterToPixel(item.Column.Format.Padding.Right));
+            Text.SetMarginTop(MillimeterToPixel(item.Column.Format.Margin.Top));
+            Text.SetMarginBottom(MillimeterToPixel(item.Column.Format.Margin.Bottom));
+            Text.SetMarginLeft(MillimeterToPixel(item.Column.Format.Margin.Left));
+            Text.SetMarginRight(MillimeterToPixel(item.Column.Format.Margin.Right));
             Text.SetFontColor(Color);
             Text.SetFont(PdfFontFactory.CreateFont(item.Column.Format.FontDetails.FontName));
             TextAlignment Aligment = item.Column.Format.TextAlignment switch
