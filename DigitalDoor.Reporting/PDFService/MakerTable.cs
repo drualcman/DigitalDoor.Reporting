@@ -70,7 +70,8 @@ namespace DigitalDoor.Reporting.PDFService
                 {
                     Text = Helper.MapperSetParagraph(Content, item);
                 }
-                Cell Cell = CreateCell();
+                var Borders = item.Column.Format.Borders;
+                Cell Cell = CreateCell(Borders);
                 Cell.SetMinHeight((float)item.Column.Format.Dimension.Height * 2.4443f);
                 Cell.SetPaddingTop(Helper.MillimeterToPixel(top));
                 Cell.Add(Text);
@@ -88,6 +89,28 @@ namespace DigitalDoor.Reporting.PDFService
             return Result;
         }
 
+
+        public Cell CreateCell(Entities.ValueObjects.Border border )
+        {
+            Cell Cell = CreateCell();
+            if (border.Top.Width > 0)
+            {
+                Cell.SetBorderTop(new SolidBorder(Helper.GetColor(border.Top.Colour), (float)border.Top.Width));
+            }
+            if (border.Bottom.Width > 0)
+            {
+                Cell.SetBorderBottom(new SolidBorder(Helper.GetColor(border.Bottom.Colour), (float)border.Bottom.Width));
+            }
+            if (border.Left.Width > 0)
+            {
+                Cell.SetBorderLeft(new SolidBorder(Helper.GetColor(border.Left.Colour), (float)border.Left.Width));
+            }
+            if (border.Right.Width > 0)
+            {
+                Cell.SetBorderRight(new SolidBorder(Helper.GetColor(border.Right.Colour), (float)border.Right.Width));
+            }
+            return Cell;
+        }
 
         public Cell CreateCell()
         {

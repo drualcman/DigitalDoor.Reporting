@@ -1,27 +1,30 @@
-﻿using DigitalDoor.Reporting.Entities.Models;
-using DigitalDoor.Reporting.PDF;
+﻿using DigitalDoor.Reporting.PDF;
+using iText.IO.Image;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
-using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using Org.BouncyCastle.Asn1.X509;
+using System.Text;
 using Report = DigitalDoor.Reporting.Entities.ValueObjects;
-
 namespace DigitalDoor.Reporting.PDFService
 {
     internal class HelperPDF
     {
+        public Color GetColor(string color)
+        {
+            return color switch
+            {
+                "green" => ColorConstants.GREEN,
+                _ => ColorConstants.BLACK
+            };
+        }
+
         public Paragraph MapperSetParagraph(string textValue, ColumnFormat item)
         {
             Paragraph Text = new Paragraph();
             Text.Add(textValue);
             Text.SetFontSize((float)item.Column.Format.FontDetails.ColorSize.Width);
-            Color Color = item.Column.Format.FontDetails.ColorSize.Colour switch
-            {
-                "Green" => ColorConstants.GREEN,
-                _ => ColorConstants.BLACK
-            };
+            Color Color = GetColor(item.Column.Format.FontDetails.ColorSize.Colour.ToLower());
             if (item.Column.Format.FontDetails.FontStyle.Bold > 400)
             {
                 Text.SetBold();
@@ -39,7 +42,21 @@ namespace DigitalDoor.Reporting.PDFService
             Text.SetMarginLeft(MillimeterToPixel(item.Column.Format.Margin.Left));
             Text.SetMarginRight(MillimeterToPixel(item.Column.Format.Margin.Right));
             Text.SetFontColor(Color);
-            Text.SetFont(PdfFontFactory.CreateFont(item.Column.Format.FontDetails.FontName));
+            try
+            {
+                Text.SetFont(PdfFontFactory.CreateFont(item.Column.Format.FontDetails.FontName));
+                int Angle = item.Column.Format.Angle switch
+                {
+                    90 => 2,
+                    -90 => -2,
+                    _ => 0
+                };
+                if (Angle != 0)
+                {
+                    Text.SetRotationAngle(Math.PI/Angle);
+                }
+            }
+            catch { }
             TextAlignment Aligment = item.Column.Format.TextAlignment switch
             {
                 Report.TextAlignment.Right => TextAlignment.RIGHT,
@@ -49,6 +66,37 @@ namespace DigitalDoor.Reporting.PDFService
             };
             Text.SetTextAlignment(Aligment);
             return Text;
+        }
+
+        public Image MapperSetImage(string bytes, ColumnFormat item)
+        {
+            byte[] ImageBytes = Encoding.ASCII.GetBytes(bytes);
+            Image Image = null;
+            try
+            {
+                ImageData imageData = ImageDataFactory.Create(ImageBytes);
+                Image = new Image(imageData);
+                Image.SetPaddingTop(MillimeterToPixel(item.Column.Format.Padding.Top));
+                Image.SetPaddingBottom(MillimeterToPixel(item.Column.Format.Padding.Bottom));
+                Image.SetPaddingLeft(MillimeterToPixel(item.Column.Format.Padding.Left));
+                Image.SetPaddingRight(MillimeterToPixel(item.Column.Format.Padding.Right));
+                Image.SetMarginTop(MillimeterToPixel(item.Column.Format.Margin.Top));
+                Image.SetMarginBottom(MillimeterToPixel(item.Column.Format.Margin.Bottom));
+                Image.SetMarginLeft(MillimeterToPixel(item.Column.Format.Margin.Left));
+                Image.SetMarginRight(MillimeterToPixel(item.Column.Format.Margin.Right));
+                int Angle = item.Column.Format.Angle switch
+                {
+                    90 => 2,
+                    -90 => -2,
+                    _ => 0
+                };
+                if (Angle != 0)
+                {
+                    Image.SetRotationAngle(Math.PI/Angle);
+                }
+            }
+            catch { }
+            return Image;
         }
 
         public float MillimeterToPixel(double milimiter)

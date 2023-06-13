@@ -73,36 +73,44 @@ namespace DigitalDoor.Reporting.PDF
         private async Task CreateHeader(Table table)
         {
             List<ColumnData> Data = ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Header).ToList();
-            table.AddHeaderCell(await CreateTableContent(ReportViewModel.Header, Data));
+            if(Data.Count > 0)
+            {
+                table.AddHeaderCell(await CreateTableContent(ReportViewModel.Header, Data, ReportViewModel.Header.Format.Borders));
+            }
         }
 
         private async Task CreateBody(Table table)
         {
-            Cell Cell = MakerTable.CreateCell();
-            Cell.SetBorder(Border.NO_BORDER);
+            Cell Cell = MakerTable.CreateCell(ReportViewModel.Body.Format.Borders);
             List<ColumnData> Data = ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Body).ToList();
-            List<FormatTable> Format = await FormatTable.GetTableFormat(ReportViewModel.Body.Items, Data);
-            int Rows = (int)(ReportViewModel.Body.Format.Dimension.Height / ReportViewModel.Body.Row.Dimension.Height);
-            var Pages = Helper.Split(Format, Rows);
-            foreach (var Page in Pages)
+            if(Data.Count > 0)
             {
-                Table Table = await MakerTable.SetCellContent(ReportViewModel.Body,Page);
-                Cell.Add(Table);
-                table.AddCell(Cell);
+                
+                List<FormatTable> Format = await FormatTable.GetTableFormat(ReportViewModel.Body.Items, Data);
+                int Rows = (int)(ReportViewModel.Body.Format.Dimension.Height / ReportViewModel.Body.Row.Dimension.Height);
+                var Pages = Helper.Split(Format, Rows);
+                foreach (var Page in Pages)
+                {
+                    Table Table = await MakerTable.SetCellContent(ReportViewModel.Body,Page);
+                    Cell.Add(Table);
+                    table.AddCell(Cell);
+                }
             }
         }
 
         private async Task CreateFooter(Table table)
         {
             List<ColumnData> Data = ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Footer).ToList();
-            table.AddFooterCell(await CreateTableContent(ReportViewModel.Footer, Data));
+            if (Data.Count > 0)
+            {
+                table.AddFooterCell(await CreateTableContent(ReportViewModel.Footer, Data,ReportViewModel.Footer.Format.Borders));
+            }
         }
 
-        private async Task<Cell> CreateTableContent(Section section, List<ColumnData> sectionData)
+        private async Task<Cell> CreateTableContent(Section section, List<ColumnData> sectionData, Report.Border borders)
         {
-            Cell Cell = MakerTable.CreateCell();
-            Cell.SetBorder(Border.NO_BORDER);
-            List<FormatTable> Format = await FormatTable.GetTableFormat(section.Items, sectionData);
+            Cell Cell = MakerTable.CreateCell(borders);
+             List<FormatTable> Format = await FormatTable.GetTableFormat(section.Items, sectionData);
             Table Table = await MakerTable.SetCellContent(section,Format);
             Cell.Add(Table);
             return Cell;
