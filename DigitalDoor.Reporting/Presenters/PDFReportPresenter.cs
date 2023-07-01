@@ -15,7 +15,7 @@ namespace DigitalDoor.Reporting.Presenters
 
         public async Task Handle(ReportViewModel report)
         {
-            ITextPDF PDF = new(report);
+            TextPDF PDF = new(report);
             Report = await PDF.CreatePDFReport();
         }
     }
