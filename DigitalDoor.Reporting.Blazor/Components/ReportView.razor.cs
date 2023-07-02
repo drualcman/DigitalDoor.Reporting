@@ -109,6 +109,10 @@ public partial class ReportView : IAsyncDisposable
         SectionColumns = data.Header.ColumnsNumber;
         SectionDimension = data.Header.Format.Dimension;
         RowDimension = data.Header.Row.Dimension;
+        if(data.Header.Format.Orientation == Orientation.Landscape)
+        {
+            RowDimension = new Dimension(data.Header.Row.Dimension.Height, data.Header.Row.Dimension.Width);
+        }
         RowBorders = data.Header.Row.Borders;
 
         StartColumnSection(builder);       //start first column
@@ -145,7 +149,11 @@ public partial class ReportView : IAsyncDisposable
         builder.AddAttribute(CurrentDivId, "class", bodyWp);
 
         SectionDimension = data.Body.Format.Dimension;
-        RowDimension = data.Body.Row.Dimension;
+        RowDimension = data.Body.Row.Dimension; 
+        if(data.Body.Format.Orientation == Orientation.Landscape)
+        {
+            RowDimension = new Dimension(data.Body.Row.Dimension.Height, data.Body.Row.Dimension.Width);
+        }
         RowBorders = data.Body.Row.Borders;
     }
 
@@ -171,7 +179,11 @@ public partial class ReportView : IAsyncDisposable
 
         SectionColumns = data.Footer.ColumnsNumber;
         SectionDimension = data.Footer.Format.Dimension;
-        RowDimension = data.Footer.Row.Dimension;
+        RowDimension = data.Footer.Row.Dimension;        
+        if(data.Footer.Format.Orientation == Orientation.Landscape)
+        {
+            RowDimension = new Dimension(data.Footer.Row.Dimension.Height, data.Footer.Row.Dimension.Width);
+        }
         RowBorders = data.Footer.Row.Borders;
 
         StartColumnSection(builder);       //start first column
