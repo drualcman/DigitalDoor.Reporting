@@ -12,6 +12,8 @@
     background-color: rgba(10,10,10,.69);
 }
 .modal-content {
+    height: contain;
+    width: contain;
     max-width: calc(90%);
     position: relative;
     margin: 0 auto;
