@@ -6,13 +6,13 @@
     position: fixed;
     z-index: 400000;
     display: flex;
+    padding: 1rem;
 }
 .modal-background {
-    background-color: rgba(10,10,10,.86);
+    background-color: rgba(10,10,10,.69);
 }
 .modal-content {
-    height: calc(100vh - 50px);
-    width: calc(80% - 50px);
+    max-width: calc(90%);
     position: relative;
     margin: 0 auto;
     display: flex;
@@ -113,8 +113,7 @@
         overflow:hidden;
         position:absolute;
         top:0px!important;
-        left:0px!important;
-       
+        left:0px!important;       
     }
     .box {
         overflow: auto;
