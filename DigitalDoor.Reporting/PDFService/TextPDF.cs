@@ -108,7 +108,7 @@ namespace DigitalDoor.Reporting.PDF
                     Text.SetPageNumber(PositionPage);
                     page.Add(Text);
                 }
-                if (item.Image != null)
+                if (item.Image != null && item.Image.Length > 0)
                 {
                     Image Image = MapperImage.SetImage(item.Image, item, height, weight);
                     Image.SetPageNumber(PositionPage);

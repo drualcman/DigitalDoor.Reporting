@@ -14,7 +14,7 @@ namespace DigitalDoor.Reporting.PDFService
             Paragraph Text = new Paragraph();
             Text.SetFontSize((float)(item.Column.Format.FontDetails.ColorSize.Width));
             Color Color = GetColor(item.Column.Format.FontDetails.ColorSize.Colour.ToLower());
-            if (item.Column.Format.FontDetails.FontStyle.Bold > 400)
+            if (item.Column.Format.FontDetails.FontStyle.Bold > 599)
             {
                 Text.SetBold();
             }
