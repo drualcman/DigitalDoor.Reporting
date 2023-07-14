@@ -4,10 +4,11 @@ using iText.Kernel.Font;
 using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Org.BouncyCastle.Asn1.X509;
 using Report = DigitalDoor.Reporting.Entities.ValueObjects;
 namespace DigitalDoor.Reporting.PDFService
 {
-    internal class TextMapperParagraph : TextMapperBase
+    internal class TextMapperParagraph : TextMapperBase 
     {
         public Paragraph SetParagraph(string textValue, ColumnContent item, decimal height, decimal weight)
         {

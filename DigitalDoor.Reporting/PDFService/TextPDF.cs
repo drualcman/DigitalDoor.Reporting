@@ -1,8 +1,10 @@
 ﻿using DigitalDoor.Reporting.Entities.ViewModels;
 using DigitalDoor.Reporting.PDFService;
+using iText.Kernel.Colors;
 using iText.Kernel.Geom;
 using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Layout.Borders;
 using iText.Layout.Element;
 using Report = DigitalDoor.Reporting.Entities.ValueObjects;
 
@@ -13,6 +15,7 @@ namespace DigitalDoor.Reporting.PDF
         readonly ReportViewModel ReportViewModel;
         readonly TextMapperParagraph MapperParagraph;
         readonly TextMapperImage MapperImage;
+        readonly TextMapperBorder MapperBorder;
         readonly TextHelper Helper;
         readonly decimal HeightHeader;
         readonly decimal HeightFooter;
@@ -23,6 +26,7 @@ namespace DigitalDoor.Reporting.PDF
             ReportViewModel = reportViewModel;
             MapperParagraph = new TextMapperParagraph();
             MapperImage = new TextMapperImage();
+            MapperBorder = new TextMapperBorder();  
             Helper = new TextHelper();
             HeightHeader =  (decimal)(ReportViewModel.Header.Format.Dimension.Height + ReportViewModel.Body.Format.Dimension.Height + ReportViewModel.Footer.Format.Dimension.Height);
             HeightBody = (decimal)(ReportViewModel.Body.Format.Dimension.Height + ReportViewModel.Footer.Format.Dimension.Height);
@@ -104,9 +108,18 @@ namespace DigitalDoor.Reporting.PDF
                 string Content = item.Value;
                 if (!string.IsNullOrEmpty(Content))
                 {
-                    Paragraph Text = MapperParagraph.SetParagraph(Content, item, height, weight);
-                    Text.SetPageNumber(PositionPage);
-                    page.Add(Text);
+                    if (Content == " ")
+                    {
+                        Div BorderSpaceWhite = MapperBorder.SetBorder(item, height, weight);
+                        BorderSpaceWhite.SetPageNumber(PositionPage);
+                        page.Add(BorderSpaceWhite);
+                    }
+                    else
+                    {
+                        Paragraph Text = MapperParagraph.SetParagraph(Content, item, height, weight);
+                        Text.SetPageNumber(PositionPage);
+                        page.Add(Text);
+                    }
                 }
                 if (item.Image != null && item.Image.Length > 0)
                 {
