@@ -66,21 +66,24 @@ namespace DigitalDoor.Reporting.PDFService
                     ColumnData Data = RowData.FirstOrDefault(r => r.Row == Counter);
                     if (Data != null)
                     {
-                        if (Data?.Value.GetType() == typeof(byte[]))
+                        if(Data.Value != null)
                         {
-                            Content.Columns.Add(new ColumnContent()
+                            if (Data?.Value.GetType() == typeof(byte[]))
                             {
-                                Column = setups[i],
-                                Image = (byte[])Data.Value
-                            });
-                        }
-                        else
-                        {
-                            Content.Columns.Add(new ColumnContent()
+                                Content.Columns.Add(new ColumnContent()
+                                {
+                                    Column = setups[i],
+                                    Image = (byte[])Data.Value
+                                });
+                            }
+                            else
                             {
-                                Column = setups[i],
-                                Value = Data.Value.ToString()
-                            });
+                                Content.Columns.Add(new ColumnContent()
+                                {
+                                    Column = setups[i],
+                                    Value = Data.Value.ToString()
+                                });
+                            }
                         }
                     }
                 }

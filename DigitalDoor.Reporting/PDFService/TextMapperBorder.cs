@@ -16,14 +16,14 @@ namespace DigitalDoor.Reporting.PDFService
             Div.SetWidth(MillimeterToPixel(item.Column.Format.Dimension.Width));
             Div.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
             Div.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                          MillimeterToPixel((height+1.5m)-item.Column.Format.Position.Top), MillimeterToPixel(item.Column.Format.Dimension.Width));
+                          MillimeterToPixel(height-item.Column.Format.Position.Top), MillimeterToPixel(item.Column.Format.Dimension.Width));
             if(item.Column.Format.Borders.Bottom.Width > 0 && 
                 item.Column.Format.Borders.Top.Width > 0 && 
                 item.Column.Format.Borders.Left.Width >0 &&
                 item.Column.Format.Borders.Right.Width > 0)
             {
                 Div.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                          MillimeterToPixel((height-(decimal)item.Column.Format.Dimension.Height+1.5m)-item.Column.Format.Position.Top), 
+                          MillimeterToPixel((height-(decimal)item.Column.Format.Dimension.Height)-item.Column.Format.Position.Top), 
                           MillimeterToPixel(item.Column.Format.Dimension.Width));
             }
             if (item.Column.Format.Borders.Bottom.Width > 0)

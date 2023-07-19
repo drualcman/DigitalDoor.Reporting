@@ -25,7 +25,7 @@ namespace DigitalDoor.Reporting.PDFService
                 Image.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
                 Image.SetWidth(MillimeterToPixel(item.Column.Format.Dimension.Width));
                 Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                        MillimeterToPixel(height-item.Column.Format.Position.Top-(decimal)(item.Column.Format.Dimension.Height/1.2)));
+                        MillimeterToPixel(height-item.Column.Format.Position.Top-(decimal)(item.Column.Format.Dimension.Height)));
                 if (item.Column.Format.Borders.Top.Width > 0)
                 {
                     Image.SetBorderTop(new SolidBorder(GetColor(item.Column.Format.Borders.Top.Colour), (float)item.Column.Format.Borders.Top.Width));
@@ -52,28 +52,28 @@ namespace DigitalDoor.Reporting.PDFService
                 {
                     if (item.Column.Format.Position.Left <= 0)
                     {
-                        Image.SetMaxHeight(MillimeterToPixel(item.Column.Format.Dimension.Height/2));
+                        Image.SetMaxHeight(MillimeterToPixel(item.Column.Format.Dimension.Height/1.88));
                         if (Angle == 2)
                         {
-                            Image.SetFixedPosition(MillimeterToPixel(weight), MillimeterToPixel(height-(item.Column.Format.Position.Top+4)));
+                            Image.SetFixedPosition(MillimeterToPixel(weight), MillimeterToPixel(height-(item.Column.Format.Position.Top+1)));
                         }
                         else
                         {
-                            Image.SetFixedPosition(MillimeterToPixel(weight), MillimeterToPixel(height-(item.Column.Format.Position.Top-4)));
+                            Image.SetFixedPosition(MillimeterToPixel(weight), MillimeterToPixel(height-(item.Column.Format.Position.Top-1)));
                         }
                         Image.SetRotationAngle(Math.PI/Angle);
-                        Image.SetMarginTop(5);
+                        Image.SetMarginTop(7);
                     }
                     else
                     {
                         Image.SetMaxHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
                         if (Angle == 2)
                         {
-                            Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight), MillimeterToPixel(height-(item.Column.Format.Position.Top+4)));
+                            Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight), MillimeterToPixel(height-(item.Column.Format.Position.Top+1)));
                         }
                         else
                         {
-                            Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight), MillimeterToPixel(height-(item.Column.Format.Position.Top-4)));
+                            Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight), MillimeterToPixel(height-(item.Column.Format.Position.Top-1)));
                         }
                         Image.SetRotationAngle(Math.PI/Angle);
                     }

@@ -1,6 +1,7 @@
 ﻿using DigitalDoor.Reporting.Entities.ValueObjects;
 using iText.Kernel.Colors;
 using iText.Layout.Borders;
+using Org.BouncyCastle.Utilities.Encoders;
 
 namespace DigitalDoor.Reporting.PDFService
 {
@@ -8,11 +9,16 @@ namespace DigitalDoor.Reporting.PDFService
     {
         public Color GetColor(string color)
         {
-            return color switch
+            System.Drawing.Color Color;
+            if(color.Contains('#'))
             {
-                "green" => ColorConstants.GREEN,
-                _ => ColorConstants.BLACK
-            };
+                Color  = System.Drawing.ColorTranslator.FromHtml(color);
+            }
+            else
+            {
+                Color = System.Drawing.Color.FromName(color);
+            }
+            return new DeviceRgb(Color);
         }
 
         public iText.Layout.Borders.Border GetBorder(BorderStyle style, double width)

@@ -69,15 +69,15 @@ namespace DigitalDoor.Reporting.PDFService
             };
             if (Angle != 0)
             {
-                Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight)+MillimeterToPixel(item.Column.Format.Dimension.Width/1.7),
-                MillimeterToPixel(height-(item.Column.Format.Position.Top+8)),
+                Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight)+MillimeterToPixel(item.Column.Format.Dimension.Width/1.49),
+                MillimeterToPixel(height-(item.Column.Format.Position.Top+10)),
                                       MillimeterToPixel(item.Column.Format.Dimension.Width));
                 Text.SetRotationAngle(Math.PI/Angle);
             }
             else
             {
                 Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                                      MillimeterToPixel(height-(item.Column.Format.Position.Top+(decimal)(item.Column.Format.FontDetails.ColorSize.Width*0.33))),
+                                      MillimeterToPixel(height-(item.Column.Format.Position.Top+(decimal)(item.Column.Format.FontDetails.ColorSize.Width*0.53))),
                                       MillimeterToPixel(item.Column.Format.Dimension.Width));
             }
             Text.Add(textValue);
