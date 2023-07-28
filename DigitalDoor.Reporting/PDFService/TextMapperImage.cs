@@ -1,4 +1,5 @@
-﻿using DigitalDoor.Reporting.PDF;
+﻿using DigitalDoor.Reporting.Entities.ValueObjects;
+using DigitalDoor.Reporting.PDF;
 using iText.IO.Image;
 using iText.Layout.Borders;
 using iText.Layout.Element;
@@ -25,22 +26,23 @@ namespace DigitalDoor.Reporting.PDFService
                 Image.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
                 Image.SetWidth(MillimeterToPixel(item.Column.Format.Dimension.Width));
                 Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                        MillimeterToPixel(height-item.Column.Format.Position.Top-(decimal)(item.Column.Format.Dimension.Height)));
+                        MillimeterToPixel(height-item.Column.Format.Position.Top-(decimal)item.Column.Format.Dimension.Height));
+                BorderStyle Style = item.Column.Format.Borders.Style;
                 if (item.Column.Format.Borders.Top.Width > 0)
                 {
-                    Image.SetBorderTop(new SolidBorder(GetColor(item.Column.Format.Borders.Top.Colour), (float)item.Column.Format.Borders.Top.Width));
+                    Image.SetBorderTop(GetBorder(Style, item.Column.Format.Borders.Top.Width, item.Column.Format.Borders.Top.Colour));
                 }
                 if (item.Column.Format.Borders.Bottom.Width > 0)
                 {
-                    Image.SetBorderBottom(new SolidBorder(GetColor(item.Column.Format.Borders.Bottom.Colour), (float)item.Column.Format.Borders.Bottom.Width));
+                    Image.SetBorderBottom(GetBorder(Style, item.Column.Format.Borders.Bottom.Width, item.Column.Format.Borders.Bottom.Colour));
                 }
                 if (item.Column.Format.Borders.Left.Width > 0)
                 {
-                    Image.SetBorderLeft(new SolidBorder(GetColor(item.Column.Format.Borders.Left.Colour), (float)item.Column.Format.Borders.Left.Width));
+                    Image.SetBorderLeft(GetBorder(Style, item.Column.Format.Borders.Left.Width, item.Column.Format.Borders.Left.Colour));
                 }
                 if (item.Column.Format.Borders.Right.Width > 0)
                 {
-                    Image.SetBorderRight(new SolidBorder(GetColor(item.Column.Format.Borders.Right.Colour), (float)item.Column.Format.Borders.Right.Width));
+                    Image.SetBorderRight(GetBorder(Style, item.Column.Format.Borders.Right.Width, item.Column.Format.Borders.Right.Colour));
                 }
                 int Angle = item.Column.Format.Angle switch
                 {

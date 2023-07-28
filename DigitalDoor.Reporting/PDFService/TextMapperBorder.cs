@@ -1,4 +1,5 @@
-﻿using DigitalDoor.Reporting.PDF;
+﻿using DigitalDoor.Reporting.Entities.ValueObjects;
+using DigitalDoor.Reporting.PDF;
 using iText.Layout.Element;
 using System;
 using System.Collections.Generic;
@@ -26,21 +27,22 @@ namespace DigitalDoor.Reporting.PDFService
                           MillimeterToPixel((height-(decimal)item.Column.Format.Dimension.Height)-item.Column.Format.Position.Top), 
                           MillimeterToPixel(item.Column.Format.Dimension.Width));
             }
+            BorderStyle Style = item.Column.Format.Borders.Style;
             if (item.Column.Format.Borders.Bottom.Width > 0)
             {
-                Div.SetBorderBottom(GetBorder(item.Column.Format.Borders.Style, item.Column.Format.Borders.Bottom.Width));
+                Div.SetBorderBottom(GetBorder(Style, item.Column.Format.Borders.Bottom.Width,item.Column.Format.Borders.Bottom.Colour));
             }
             if (item.Column.Format.Borders.Top.Width >  0)
             {
-                Div.SetBorderTop(GetBorder(item.Column.Format.Borders.Style, item.Column.Format.Borders.Top.Width));
+                Div.SetBorderTop(GetBorder(Style, item.Column.Format.Borders.Top.Width,item.Column.Format.Borders.Top.Colour));
             }
             if (item.Column.Format.Borders.Right.Width > 0)
             {
-                Div.SetBorderRight(GetBorder(item.Column.Format.Borders.Style, item.Column.Format.Borders.Right.Width));
+                Div.SetBorderRight(GetBorder(Style, item.Column.Format.Borders.Right.Width,item.Column.Format.Borders.Right.Colour));
             }
             if (item.Column.Format.Borders.Left.Width > 0)
             {
-                Div.SetBorderLeft(GetBorder(item.Column.Format.Borders.Style, item.Column.Format.Borders.Left.Width));
+                Div.SetBorderLeft(GetBorder(Style, item.Column.Format.Borders.Left.Width,item.Column.Format.Borders.Left.Colour));
             }
             return Div;
         }

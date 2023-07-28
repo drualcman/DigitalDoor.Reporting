@@ -1,14 +1,12 @@
 ﻿using DigitalDoor.Reporting.PDF;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
-using iText.Layout.Borders;
 using iText.Layout.Element;
 using iText.Layout.Properties;
-using Org.BouncyCastle.Asn1.X509;
 using Report = DigitalDoor.Reporting.Entities.ValueObjects;
 namespace DigitalDoor.Reporting.PDFService
 {
-    internal class TextMapperParagraph : TextMapperBase 
+    internal class TextMapperParagraph : TextMapperBase
     {
         public Paragraph SetParagraph(string textValue, ColumnContent item, decimal height, decimal weight)
         {
@@ -32,21 +30,22 @@ namespace DigitalDoor.Reporting.PDFService
             Text.SetMarginLeft(MillimeterToPixel(item.Column.Format.Margin.Left));
             Text.SetMarginRight(MillimeterToPixel(item.Column.Format.Margin.Right));
             Text.SetFontColor(Color);
+            Report.BorderStyle Style = item.Column.Format.Borders.Style;
             if (item.Column.Format.Borders.Top.Width > 0)
             {
-                Text.SetBorderTop(new SolidBorder(GetColor(item.Column.Format.Borders.Top.Colour), (float)item.Column.Format.Borders.Top.Width));
+                Text.SetBorderTop(GetBorder(Style, item.Column.Format.Borders.Top.Width, item.Column.Format.Borders.Top.Colour));
             }
             if (item.Column.Format.Borders.Bottom.Width > 0)
             {
-                Text.SetBorderBottom(new SolidBorder(GetColor(item.Column.Format.Borders.Bottom.Colour), (float)item.Column.Format.Borders.Bottom.Width));
+                Text.SetBorderBottom(GetBorder(Style, item.Column.Format.Borders.Bottom.Width, item.Column.Format.Borders.Bottom.Colour));
             }
             if (item.Column.Format.Borders.Left.Width > 0)
             {
-                Text.SetBorderLeft(new SolidBorder(GetColor(item.Column.Format.Borders.Left.Colour), (float)item.Column.Format.Borders.Left.Width));
+                Text.SetBorderLeft(GetBorder(Style, item.Column.Format.Borders.Left.Width, item.Column.Format.Borders.Left.Colour));
             }
             if (item.Column.Format.Borders.Right.Width > 0)
             {
-                Text.SetBorderRight(new SolidBorder(GetColor(item.Column.Format.Borders.Right.Colour), (float)item.Column.Format.Borders.Right.Width));
+                Text.SetBorderRight(GetBorder(Style, item.Column.Format.Borders.Right.Width, item.Column.Format.Borders.Right.Colour));
             }
             try
             {

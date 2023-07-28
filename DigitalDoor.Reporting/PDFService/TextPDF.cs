@@ -16,6 +16,7 @@ namespace DigitalDoor.Reporting.PDF
         readonly TextMapperParagraph MapperParagraph;
         readonly TextMapperImage MapperImage;
         readonly TextMapperBorder MapperBorder;
+        readonly TextMapperBase MapperBase;
         readonly TextHelper Helper;
         readonly decimal HeightHeader;
         readonly decimal HeightFooter;
@@ -27,6 +28,7 @@ namespace DigitalDoor.Reporting.PDF
             MapperParagraph = new TextMapperParagraph();
             MapperImage = new TextMapperImage();
             MapperBorder = new TextMapperBorder();  
+            MapperBase = new TextMapperBase();
             Helper = new TextHelper();
             HeightHeader =  (decimal)(ReportViewModel.Header.Format.Dimension.Height + ReportViewModel.Body.Format.Dimension.Height + ReportViewModel.Footer.Format.Dimension.Height);
             HeightBody = (decimal)(ReportViewModel.Body.Format.Dimension.Height + ReportViewModel.Footer.Format.Dimension.Height);
@@ -71,6 +73,9 @@ namespace DigitalDoor.Reporting.PDF
             decimal ColumnWeight = 0;
             for (int i = 0; i < Pages.Count; i++)
             {
+                MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height,HeightBody);
+                MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber,ReportViewModel.Body.Format.Dimension.Height,HeightFooter);
+                MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
                 if (i > 0)
                 {
                     PageNumber +=1;
