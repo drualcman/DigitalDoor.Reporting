@@ -73,15 +73,15 @@ namespace DigitalDoor.Reporting.PDF
             decimal ColumnWeight = 0;
             for (int i = 0; i < Pages.Count; i++)
             {
-                MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height,HeightBody);
-                MapperBase.DrawBackground(page, ReportViewModel.Body.Format.Background, PageNumber,ReportViewModel.Body.Format.Dimension.Height,HeightFooter);
-                MapperBase.DrawBackground(page, ReportViewModel.Footer.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
                 if (i > 0)
                 {
                     PageNumber +=1;
                     ColumnWeight =0;
                     HeightBodyElement = HeightBody;
                 }
+                MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height, HeightBody);
+                MapperBase.DrawBackground(page, ReportViewModel.Body.Format.Background, PageNumber, ReportViewModel.Body.Format.Dimension.Height, HeightFooter);
+                MapperBase.DrawBackground(page, ReportViewModel.Footer.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
                 HeaderElements?.ForEach(async Element => await DrawContent(page, Element, HeightHeader, PageNumber, 0));
                 FooterElements?.ForEach(async Element => await DrawContent(page, Element, HeightFooter, PageNumber, 0));
                 await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight);
