@@ -34,7 +34,7 @@ namespace DigitalDoor.Reporting.Entities.Models
         { }
 
         public ColumnSetup(double width, double height, Item column) :
-            this(new Dimension(height, width), column)
+            this(new Dimension(width, height), column)
         { }
     }
 }
