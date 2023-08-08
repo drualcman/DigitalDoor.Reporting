@@ -82,49 +82,54 @@ namespace DigitalDoor.Reporting.PDF
                 MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height, HeightBody);
                 MapperBase.DrawBackground(page, ReportViewModel.Body.Format.Background, PageNumber, ReportViewModel.Body.Format.Dimension.Height, HeightFooter);
                 MapperBase.DrawBackground(page, ReportViewModel.Footer.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
-                HeaderElements?.ForEach(async Element => await DrawContent(page, Element, HeightHeader, PageNumber, 0));
-                FooterElements?.ForEach(async Element => await DrawContent(page, Element, HeightFooter, PageNumber, 0));
-                await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight);
+                HeaderElements?.ForEach(async Element => await DrawContent(page, Element, HeightHeader, PageNumber, 0, HeightBody));
+                FooterElements?.ForEach(async Element => await DrawContent(page, Element, HeightFooter, PageNumber, 0,0));
+                await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight,HeightFooter);
                 while (ColumnsNumber > i+1 && i+1 < Pages.Count)
                 {
                     i += 1;
                     HeightBodyElement = HeightBody;
                     ColumnWeight +=  (decimal)(ReportViewModel.Body.Row.Dimension.Width+ReportViewModel.Body.ColumnsSpace);
-                    await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight);
+                    await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight,HeightFooter);
                 }
             }
         }
 
-        private async Task CreateBodyElements(Document page, List<ColumnContent> pagesElements, decimal heightBodyElement, int numberPage, decimal columnWeight)
+        private async Task CreateBodyElements(Document page, List<ColumnContent> pagesElements, decimal heightBodyElement, int numberPage, decimal columnWeight, decimal heightBackground)
         {
             List<ColumnContent> PageElements = pagesElements;
             for (int r = 0; r < PageElements.Count; r++)
             {
                 ColumnContent Element = PageElements[r];
-                await DrawContent(page, Element, heightBodyElement, numberPage, columnWeight);
+                if (ReportViewModel.Body.Row.Borders != null)
+                {
+                    //Agregar pintar border
+                }
+                await DrawContent(page, Element, heightBodyElement, numberPage, columnWeight,heightBackground);
                 heightBodyElement -= (decimal)ReportViewModel.Body.Row.Dimension.Height;
             }
         }
 
-        private Task DrawContent(Document page, ColumnContent format, decimal height, int PositionPage, decimal weight)
+        private Task DrawContent(Document page, ColumnContent format, decimal height, int PositionPage, decimal weight,decimal heightBackground)
         {
             foreach (var item in format.Columns)
             {
                 string Content = item.Value;
-                if (!string.IsNullOrEmpty(Content))
+                if (Content == " ")
                 {
-                    if (Content == " ")
-                    {
-                        Div BorderSpaceWhite = MapperBorder.SetBorder(item, height, weight);
-                        BorderSpaceWhite.SetPageNumber(PositionPage);
-                        page.Add(BorderSpaceWhite);
-                    }
-                    else
-                    {
-                        Paragraph Text = MapperParagraph.SetParagraph(Content, item, height, weight);
-                        Text.SetPageNumber(PositionPage);
-                        page.Add(Text);
-                    }
+                    Div BorderSpaceWhite = MapperBorder.SetBorder(item, height, weight);
+                    BorderSpaceWhite.SetPageNumber(PositionPage);
+                    page.Add(BorderSpaceWhite);
+                }
+                else if(Content == "")
+                {
+                    MapperBase.DrawBackground(page, item.Column.Format.Background, PositionPage, item.Column.Format.Dimension.Height, heightBackground);
+                }
+                else
+                {
+                    Paragraph Text = MapperParagraph.SetParagraph(Content, item, height, weight);
+                    Text.SetPageNumber(PositionPage);
+                    page.Add(Text);
                 }
                 if (item.Image != null && item.Image.Length > 0)
                 {
