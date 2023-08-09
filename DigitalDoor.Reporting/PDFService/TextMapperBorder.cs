@@ -1,4 +1,5 @@
-﻿using DigitalDoor.Reporting.Entities.ValueObjects;
+﻿using DigitalDoor.Reporting.Entities.Models;
+using DigitalDoor.Reporting.Entities.ValueObjects;
 using DigitalDoor.Reporting.PDF;
 using iText.Layout.Element;
 using System;
@@ -11,38 +12,38 @@ namespace DigitalDoor.Reporting.PDFService
 {
     internal class TextMapperBorder : TextMapperBase
     {
-        public Div SetBorder(ColumnContent item, decimal height, decimal weight)
+        public Div SetBorder(ColumnSetup item, decimal height, decimal weight)
         {
             Div Div = new Div();
-            Div.SetWidth(MillimeterToPixel(item.Column.Format.Dimension.Width));
-            Div.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
-            Div.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                          MillimeterToPixel(height-item.Column.Format.Position.Top), MillimeterToPixel(item.Column.Format.Dimension.Width));
-            if(item.Column.Format.Borders.Bottom.Width > 0 && 
-                item.Column.Format.Borders.Top.Width > 0 && 
-                item.Column.Format.Borders.Left.Width >0 &&
-                item.Column.Format.Borders.Right.Width > 0)
+            Div.SetWidth(MillimeterToPixel(item.Format.Dimension.Width));
+            Div.SetHeight(MillimeterToPixel(item.Format.Dimension.Height));
+            Div.SetFixedPosition(MillimeterToPixel(item.Format.Position.Left+weight),
+                          MillimeterToPixel(height-item.Format.Position.Top), MillimeterToPixel(item.Format.Dimension.Width));
+            if(item.Format.Borders.Bottom.Width > 0 && 
+                item.Format.Borders.Top.Width > 0 && 
+                item.Format.Borders.Left.Width >0 &&
+                item.Format.Borders.Right.Width > 0)
             {
-                Div.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight),
-                          MillimeterToPixel((height-(decimal)item.Column.Format.Dimension.Height)-item.Column.Format.Position.Top), 
-                          MillimeterToPixel(item.Column.Format.Dimension.Width));
+                Div.SetFixedPosition(MillimeterToPixel(item.Format.Position.Left+weight),
+                          MillimeterToPixel((height-(decimal)item.Format.Dimension.Height)-item.Format.Position.Top), 
+                          MillimeterToPixel(item.Format.Dimension.Width));
             }
-            BorderStyle Style = item.Column.Format.Borders.Style;
-            if (item.Column.Format.Borders.Bottom.Width > 0)
+            BorderStyle Style = item.Format.Borders.Style;
+            if (item.Format.Borders.Bottom.Width > 0)
             {
-                Div.SetBorderBottom(GetBorder(Style, item.Column.Format.Borders.Bottom.Width,item.Column.Format.Borders.Bottom.Colour));
+                Div.SetBorderBottom(GetBorder(Style, item.Format.Borders.Bottom.Width,item.Format.Borders.Bottom.Colour));
             }
-            if (item.Column.Format.Borders.Top.Width >  0)
+            if (item.Format.Borders.Top.Width >  0)
             {
-                Div.SetBorderTop(GetBorder(Style, item.Column.Format.Borders.Top.Width,item.Column.Format.Borders.Top.Colour));
+                Div.SetBorderTop(GetBorder(Style, item.Format.Borders.Top.Width,item.Format.Borders.Top.Colour));
             }
-            if (item.Column.Format.Borders.Right.Width > 0)
+            if (item.Format.Borders.Right.Width > 0)
             {
-                Div.SetBorderRight(GetBorder(Style, item.Column.Format.Borders.Right.Width,item.Column.Format.Borders.Right.Colour));
+                Div.SetBorderRight(GetBorder(Style, item.Format.Borders.Right.Width, item.Format.Borders.Right.Colour));
             }
-            if (item.Column.Format.Borders.Left.Width > 0)
+            if (item.Format.Borders.Left.Width > 0)
             {
-                Div.SetBorderLeft(GetBorder(Style, item.Column.Format.Borders.Left.Width,item.Column.Format.Borders.Left.Colour));
+                Div.SetBorderLeft(GetBorder(Style, item.Format.Borders.Left.Width, item.Format.Borders.Left.Colour));
             }
             return Div;
         }

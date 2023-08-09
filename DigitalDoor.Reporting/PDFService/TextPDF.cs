@@ -1,4 +1,5 @@
-﻿using DigitalDoor.Reporting.Entities.ViewModels;
+﻿using DigitalDoor.Reporting.Entities.Models;
+using DigitalDoor.Reporting.Entities.ViewModels;
 using DigitalDoor.Reporting.PDFService;
 using iText.Kernel.Colors;
 using iText.Kernel.Geom;
@@ -103,7 +104,12 @@ namespace DigitalDoor.Reporting.PDF
                 ColumnContent Element = PageElements[r];
                 if (ReportViewModel.Body.Row.Borders != null)
                 {
-                    //Agregar pintar border
+                    ColumnSetup setup = new ColumnSetup();
+                    setup.Format.Borders = ReportViewModel.Body.Row.Borders;
+                    setup.Format.Dimension.Width = ReportViewModel.Body.Row.Dimension.Width;
+                    Div BorderBody = MapperBorder.SetBorder(setup,heightBodyElement-(decimal)ReportViewModel.Body.Row.Dimension.Height, columnWeight);
+                    BorderBody.SetPageNumber(numberPage);
+                    page.Add(BorderBody);
                 }
                 await DrawContent(page, Element, heightBodyElement, numberPage, columnWeight,heightBackground);
                 heightBodyElement -= (decimal)ReportViewModel.Body.Row.Dimension.Height;
@@ -117,7 +123,7 @@ namespace DigitalDoor.Reporting.PDF
                 string Content = item.Value;
                 if (Content == " ")
                 {
-                    Div BorderSpaceWhite = MapperBorder.SetBorder(item, height, weight);
+                    Div BorderSpaceWhite = MapperBorder.SetBorder(item.Column, height, weight);
                     BorderSpaceWhite.SetPageNumber(PositionPage);
                     page.Add(BorderSpaceWhite);
                 }
