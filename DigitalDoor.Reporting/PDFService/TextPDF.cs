@@ -121,21 +121,24 @@ namespace DigitalDoor.Reporting.PDF
             foreach (var item in format.Columns)
             {
                 string Content = item.Value;
-                if (Content == " ")
+                if(Content != null)
                 {
-                    Div BorderSpaceWhite = MapperBorder.SetBorder(item.Column, height, weight);
-                    BorderSpaceWhite.SetPageNumber(PositionPage);
-                    page.Add(BorderSpaceWhite);
-                }
-                else if(Content == "")
-                {
-                    MapperBase.DrawBackground(page, item.Column.Format.Background, PositionPage, item.Column.Format.Dimension.Height, heightBackground);
-                }
-                else
-                {
-                    Paragraph Text = MapperParagraph.SetParagraph(Content, item, height, weight);
-                    Text.SetPageNumber(PositionPage);
-                    page.Add(Text);
+                    if (Content == " ")
+                    {
+                        Div BorderSpaceWhite = MapperBorder.SetBorder(item.Column, height, weight);
+                        BorderSpaceWhite.SetPageNumber(PositionPage);
+                        page.Add(BorderSpaceWhite);
+                    }
+                    else if (Content == "")
+                    {
+                        MapperBase.DrawBackground(page, item.Column.Format.Background, PositionPage, item.Column.Format.Dimension.Height, heightBackground);
+                    }
+                    else
+                    {
+                        Paragraph Text = MapperParagraph.SetParagraph(Content, item, height, weight);
+                        Text.SetPageNumber(PositionPage);
+                        page.Add(Text);
+                    }
                 }
                 if (item.Image != null && item.Image.Length > 0)
                 {

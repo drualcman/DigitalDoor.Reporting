@@ -30,19 +30,19 @@ namespace DigitalDoor.Reporting.PDFService
                 BorderStyle Style = item.Column.Format.Borders.Style;
                 if (item.Column.Format.Borders.Top.Width > 0)
                 {
-                    Image.SetBorderTop(GetBorder(Style, item.Column.Format.Borders.Top.Width, item.Column.Format.Borders.Top.Colour));
+                    Image.SetBorderTop(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Top.Width), item.Column.Format.Borders.Top.Colour));
                 }
                 if (item.Column.Format.Borders.Bottom.Width > 0)
                 {
-                    Image.SetBorderBottom(GetBorder(Style, item.Column.Format.Borders.Bottom.Width, item.Column.Format.Borders.Bottom.Colour));
+                    Image.SetBorderBottom(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Bottom.Width), item.Column.Format.Borders.Bottom.Colour));
                 }
                 if (item.Column.Format.Borders.Left.Width > 0)
                 {
-                    Image.SetBorderLeft(GetBorder(Style, item.Column.Format.Borders.Left.Width, item.Column.Format.Borders.Left.Colour));
+                    Image.SetBorderLeft(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Left.Width), item.Column.Format.Borders.Left.Colour));
                 }
                 if (item.Column.Format.Borders.Right.Width > 0)
                 {
-                    Image.SetBorderRight(GetBorder(Style, item.Column.Format.Borders.Right.Width, item.Column.Format.Borders.Right.Colour));
+                    Image.SetBorderRight(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Right.Width), item.Column.Format.Borders.Right.Colour));
                 }
                 int Angle = item.Column.Format.Angle switch
                 {

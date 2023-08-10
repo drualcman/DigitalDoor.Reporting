@@ -31,19 +31,19 @@ namespace DigitalDoor.Reporting.PDFService
             BorderStyle Style = item.Format.Borders.Style;
             if (item.Format.Borders.Bottom.Width > 0)
             {
-                Div.SetBorderBottom(GetBorder(Style, item.Format.Borders.Bottom.Width,item.Format.Borders.Bottom.Colour));
+                Div.SetBorderBottom(GetBorder(Style, MillimeterToPixel(item.Format.Borders.Bottom.Width),item.Format.Borders.Bottom.Colour));
             }
             if (item.Format.Borders.Top.Width >  0)
             {
-                Div.SetBorderTop(GetBorder(Style, item.Format.Borders.Top.Width,item.Format.Borders.Top.Colour));
+                Div.SetBorderTop(GetBorder(Style, MillimeterToPixel(item.Format.Borders.Top.Width),item.Format.Borders.Top.Colour));
             }
             if (item.Format.Borders.Right.Width > 0)
             {
-                Div.SetBorderRight(GetBorder(Style, item.Format.Borders.Right.Width, item.Format.Borders.Right.Colour));
+                Div.SetBorderRight(GetBorder(Style, MillimeterToPixel(item.Format.Borders.Right.Width), item.Format.Borders.Right.Colour));
             }
             if (item.Format.Borders.Left.Width > 0)
             {
-                Div.SetBorderLeft(GetBorder(Style, item.Format.Borders.Left.Width, item.Format.Borders.Left.Colour));
+                Div.SetBorderLeft(GetBorder(Style, MillimeterToPixel(item.Format.Borders.Left.Width), item.Format.Borders.Left.Colour));
             }
             return Div;
         }

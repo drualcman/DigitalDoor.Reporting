@@ -33,19 +33,19 @@ namespace DigitalDoor.Reporting.PDFService
             Report.BorderStyle Style = item.Column.Format.Borders.Style;
             if (item.Column.Format.Borders.Top.Width > 0)
             {
-                Text.SetBorderTop(GetBorder(Style, item.Column.Format.Borders.Top.Width, item.Column.Format.Borders.Top.Colour));
+                Text.SetBorderTop(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Top.Width), item.Column.Format.Borders.Top.Colour));
             }
             if (item.Column.Format.Borders.Bottom.Width > 0)
             {
-                Text.SetBorderBottom(GetBorder(Style, item.Column.Format.Borders.Bottom.Width, item.Column.Format.Borders.Bottom.Colour));
+                Text.SetBorderBottom(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Bottom.Width), item.Column.Format.Borders.Bottom.Colour));
             }
             if (item.Column.Format.Borders.Left.Width > 0)
             {
-                Text.SetBorderLeft(GetBorder(Style, item.Column.Format.Borders.Left.Width, item.Column.Format.Borders.Left.Colour));
+                Text.SetBorderLeft(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Left.Width), item.Column.Format.Borders.Left.Colour));
             }
             if (item.Column.Format.Borders.Right.Width > 0)
             {
-                Text.SetBorderRight(GetBorder(Style, item.Column.Format.Borders.Right.Width, item.Column.Format.Borders.Right.Colour));
+                Text.SetBorderRight(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Right.Width), item.Column.Format.Borders.Right.Colour));
             }
             try
             {
