@@ -1,11 +1,8 @@
-﻿using DigitalDoor.Reporting.Entities.Models;
+﻿using DigitalDoor.Reporting.Entities.Helpers;
+using DigitalDoor.Reporting.Entities.Models;
 using DigitalDoor.Reporting.PDF;
-using Org.BouncyCastle.Asn1.X509;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace DigitalDoor.Reporting.PDFService
 {
@@ -66,9 +63,20 @@ namespace DigitalDoor.Reporting.PDFService
                     ColumnData Data = RowData.FirstOrDefault(r => r.Row == Counter);
                     if (Data != null)
                     {
-                        if(Data.Value != null)
+                        if (Data.Value != null)
                         {
-                            if (Data?.Value.GetType() == typeof(byte[]))
+
+                            if (ImageValidator.IsLikelyImage(Data.Value.ToString()))
+                            {
+                                JsonElement JsonValue = (JsonElement)Data.Value;
+                                JsonValue.TryGetBytesFromBase64(out byte[] image);
+                                Content.Columns.Add(new ColumnContent()
+                                {
+                                    Column = setups[i],
+                                    Image = image
+                                });
+                            }
+                            else if (Data?.Value.GetType() == typeof(byte[]))
                             {
                                 Content.Columns.Add(new ColumnContent()
                                 {
