@@ -6,15 +6,17 @@
     <Nullable>enable</Nullable>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <PackageLicenseFile>License.txt</PackageLicenseFile>
-	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
+	  <Authors>Sergi Ortiz Gomez, Angel Guiao, Daniel Rosas Mialma</Authors>
 	  <Company>DIGITAL DOOR Pty Ltd</Company>
 	  <Description>Create reports from code.</Description>
 	  <Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting; blazor; pdf</PackageTags>
-	  <PackageReleaseNotes>Update the nuget to use correctly the nugets drom Digital Door Entities and Helpers RC 1</PackageReleaseNotes>
-	  <Version>0.7.22</Version>
+	  <PackageReleaseNotes>
+      2023-08-10: Add Create PDF Using IText7 C#
+    </PackageReleaseNotes>
+	  <Version>1.12.43</Version>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -29,9 +31,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="DigitalDoor.Reporting.Entities" Version="0.8.23" />
 	  <PackageReference Include="DigitalDoor.Reporting.Helpers" Version="0.7.21" />
     <PackageReference Include="itext7" Version="7.2.5" />
 	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DigitalDoor.Reporting.Entities\DigitalDoor.Reporting.Entities.csproj" />
+  </ItemGroup>
 	
 </Project>

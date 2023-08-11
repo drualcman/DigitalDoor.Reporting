@@ -15,7 +15,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>First release version RC 1</PackageReleaseNotes>
-	  <Version>0.7.21</Version>
+	  <Version>1.12.43</Version>
   </PropertyGroup>
 
 	<ItemGroup>

@@ -1,11 +1,14 @@
-﻿using System.Reflection;
+﻿using DigitalDoor.Reporting.Entities.Interfaces;
+using System.Reflection;
 
 namespace DigitalDoor.Reporting.Blazor.Components
 {
-    public partial class PrintReport : IAsyncDisposable
+    public partial class PrintReport
     {
-        [Inject] public IJSRuntime JSRuntime { get; set; }
         [Inject] public NavigationManager NavigationManager { get; set; }
+
+        [Inject] public IPDFReportOutputPort OutPortPDF { get; set; }
+        [Inject] public IPDFReportPresenter PresenterPDF { get; set; }
 
         [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
         [Parameter] public bool DirectDownload { get; set; }
@@ -23,61 +26,28 @@ namespace DigitalDoor.Reporting.Blazor.Components
 
         Dimension PageDimension;
         string WrapperId = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
-        IJSObjectReference JSModule;
 
         protected override void OnParametersSet()
         {
             if(!OnCreate.HasDelegate && DirectDownload == false) DirectDownload = true;
         }
 
-        protected override async Task OnAfterRenderAsync(bool firstRender)
-        {
-            if(firstRender)
-            {
-                if(ReportModel is not null)
-                {
-                    JSModule = await JSRuntime.InvokeAsync<IJSObjectReference>("import", $"./{ContentHelper.ContentPath}/Printing-Report.js?v={DateTime.Today.ToFileTimeUtc()}");
-                    await JSModule.InvokeVoidAsync("PrintReports.AddJavascriptsToPage", ReportModel.Page.Dimension.Width, ReportModel.Page.Dimension.Height);
-                }
-            }
-        }
 
         async public Task GeneratePdf(string pdfName)
         {
             if(BeginInvoke.HasDelegate)
                 await BeginInvoke.InvokeAsync();
-
-            PdfResponse response = await DocumentBuilder.GetHtml();
-            if(response.Result)
+            await OutPortPDF.Handle(ReportModel);
+            byte[] Report =  PresenterPDF.Report;
+            PdfResponse response = await DocumentBuilder.GetHtml();  
+            if (DirectDownload)
             {
-                try
-                {
-                    if(JSModule is not null)
-                    {
-                        string pageOrientation = ReportModel.Page.Orientation == Orientation.Landscape ? "l" : "p";
-
-                        PageDimension = ReportModel.Page.Dimension;
-                        ReportFunctions reportFunctions = new ReportFunctions();
-                        string paperSize = reportFunctions.GetPaperSizeName(PageDimension).ToLower();
-                        response = await JSModule.InvokeAsync<PdfResponse>("PrintReports.CreatePdf", WrapperId, pdfName, !DirectDownload, pageOrientation, paperSize);
-                    }
-                    else
-                    {
-                        response.Message = "Javascript not load! Can't create a PDF.";
-                        response.Result = false;
-                    }
-                }
-                catch(Exception ex)
-                {
-                    response = new PdfResponse
-                    {
-                        Base64String = string.Empty,
-                        Message = ex.Message,
-                        Result = false
-                    };
-                }
+                 response = await DocumentBuilder.SaveAsFile(Report, pdfName);
             }
-
+            else
+            {
+                response.Base64String = Convert.ToBase64String(Report);
+            }
             if(OnCreate.HasDelegate)
                 await OnCreate.InvokeAsync(response);
 
@@ -95,20 +65,5 @@ namespace DigitalDoor.Reporting.Blazor.Components
         }
 
         Task GeneratePdf() => GeneratePdf(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);
-
-        public async ValueTask DisposeAsync()
-        {
-            if(JSModule != null)
-            {
-                try
-                {
-                    await JSModule.DisposeAsync();
-                }
-                catch(Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                }
-            }
-        }
     }
 }

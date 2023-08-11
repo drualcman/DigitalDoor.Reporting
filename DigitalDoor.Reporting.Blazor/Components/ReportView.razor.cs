@@ -1,4 +1,6 @@
 ﻿using DigitalDoor.Reporting.Entities.Models;
+using iText.Kernel.Pdf;
+using System.Reflection;
 
 namespace DigitalDoor.Reporting.Blazor.Components;
 
@@ -36,7 +38,7 @@ public partial class ReportView : IAsyncDisposable
 
     private Task<IJSObjectReference> GetJSObjectReference(IJSRuntime jsRuntime) =>
         jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", $"./{ContentHelper.ContentPath}/Printing-Report.js?v={DateTime.Today.ToFileTimeUtc()}").AsTask();
+            "import", $"./{ContentHelper.ContentPath}/ReportTools.js?v={DateTime.Today.ToFileTimeUtc()}").AsTask();
 
 
     #region render page
@@ -382,26 +384,22 @@ public partial class ReportView : IAsyncDisposable
         string base64 = string.Empty;
         if(item.Value is not null)
         {
-            try
+            if (ImageValidator.IsLikelyImage(item.Value.ToString()))
             {
                 byte[] bytes = new byte[] { };
-                if(item.Value.GetType() == typeof(byte[]))
-                {
-                    bytes = (byte[])item.Value;
-                    base64 = SetBase64Image(bytes);
-                }
-                else if(item.Value.GetType() == typeof(JsonElement))
+                if (item.Value.GetType() == typeof(JsonElement))
                 {
                     JsonElement data = (JsonElement)item.Value;
-                    if(data.TryGetBytesFromBase64(out bytes))
+                    if (data.TryGetBytesFromBase64(out bytes))
                     {
                         base64 = SetBase64Image(bytes);
                     }
                 }
-            }
-            catch
-            {
-                base64 = string.Empty;
+                else if (item.Value.GetType() == typeof(byte[]))
+                {
+                    bytes = (byte[])item.Value;
+                    base64 = SetBase64Image(bytes);
+                }
             }
         }
         return base64;
@@ -462,6 +460,26 @@ public partial class ReportView : IAsyncDisposable
         return styleContainer;
     }
     #endregion
+
+    public async Task<PdfResponse> SaveAsFile(byte[] Report,string pdfName)
+    {
+        PdfResponse response = await GetHtml();
+        if (Report.Length > 0)
+        {
+            response.Result = true;
+            response.Base64String = Convert.ToBase64String(Report);
+            try
+            {
+                IJSObjectReference module = await ModuleTask.Value;
+                await module.InvokeVoidAsync("PrintReports.SaveAsFile", pdfName, response.Base64String);
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        return response;
+    }
 
     async public Task<PdfResponse> GetHtml()
     {

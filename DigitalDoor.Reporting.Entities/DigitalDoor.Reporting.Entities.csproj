@@ -7,7 +7,7 @@
 
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <PackageLicenseFile>License.txt</PackageLicenseFile>
-	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
+	  <Authors>Sergi Ortiz Gomez, Angel Guiao, Daniel Rosas Mialma</Authors>
 	  <Company>DIGITAL DOOR Pty Ltd</Company>
 	  <Description>Entities to create reports using DigitalDorr Reporting.</Description>
 	  <Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
@@ -17,8 +17,9 @@
 	  <PackageReleaseNotes>
 		  2023-04-13: Refactor Section contructor to set the row dimmension equals to a section dimention like a default value. RC 1
 		  2023-05-23: Add new property readonly to know if the font IdBold.
+      2023-08-23: Add Image Validator
 	  </PackageReleaseNotes>
-	  <Version>0.8.25</Version>
+	  <Version>1.12.43</Version>
   </PropertyGroup>
 
 

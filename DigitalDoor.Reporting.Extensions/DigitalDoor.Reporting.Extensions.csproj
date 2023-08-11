@@ -15,11 +15,10 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>Add nuget dependency from DigitalDoor Reporting RC 1</PackageReleaseNotes>
-	  <Version>0.7.22</Version>
+	  <Version>1.12.43</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DigitalDoor.Reporting" Version="0.7.22" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 	
@@ -32,6 +31,10 @@
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\DigitalDoor.Reporting\DigitalDoor.Reporting.csproj" />
 	</ItemGroup>
 
 </Project>
