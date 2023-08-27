@@ -5,7 +5,7 @@ using DigitalDoor.Reporting.Entities.ViewModels;
 
 namespace DigitalDoor.Reporting.Presenters;
 
-public class ReportsPresenter : IReportsPresenter, IReportsOutputPort
+internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 {
     public ReportViewModel Content { get; private set; }
 

@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace DigitalDoor.Reporting.Entities.Helpers
+﻿namespace DigitalDoor.Reporting.Entities.Helpers
 {
     public class ExpressionsTools
     {

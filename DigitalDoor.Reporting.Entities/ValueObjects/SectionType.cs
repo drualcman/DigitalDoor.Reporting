@@ -1,10 +1,9 @@
-﻿namespace DigitalDoor.Reporting.Entities.ValueObjects
+﻿namespace DigitalDoor.Reporting.Entities.ValueObjects;
+
+public enum SectionType
 {
-    public enum SectionType
-    {
-        Body,
-        Page,
-        Header,
-        Footer
-    }
+    Body,
+    Page,
+    Header,
+    Footer
 }

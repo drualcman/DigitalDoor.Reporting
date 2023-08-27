@@ -1,6 +1,4 @@
-﻿using System.Text.RegularExpressions;
-
-namespace DigitalDoor.Reporting.Entities.Helpers
+﻿namespace DigitalDoor.Reporting.Entities.Helpers
 {
     public static class ImageValidator
     {

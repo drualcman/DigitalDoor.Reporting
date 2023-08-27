@@ -1,5 +1,4 @@
 ﻿using DigitalDoor.Reporting.Entities.Interfaces;
-using System.Reflection;
 
 namespace DigitalDoor.Reporting.Blazor.Components
 {
@@ -7,63 +6,53 @@ namespace DigitalDoor.Reporting.Blazor.Components
     {
         [Inject] public NavigationManager NavigationManager { get; set; }
 
-        [Inject] public IPDFReportOutputPort OutPortPDF { get; set; }
-        [Inject] public IPDFReportPresenter PresenterPDF { get; set; }
+        [Inject] public IReportAsBytes ReportPdf { get; set; }
 
         [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
-        [Parameter] public bool DirectDownload { get; set; }
-        [Parameter] public bool ShowButton { get; set; } = true;
-
+        [Parameter] public bool DirectDownload { get; set; } = true;
         [Parameter] public string PdfName { get; set; } = "document.pdf";
         [Parameter] public RenderFragment ChildContent { get; set; }
         [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object> AdditionalAttributes { get; set; }
         [Parameter] public EventCallback BeginInvoke { get; set; }
         [Parameter] public EventCallback EndInvoke { get; set; }
         [Parameter] public EventCallback<PdfResponse> OnCreate { get; set; }
-        [Parameter] public EventCallback<PdfResponse> OnGetHtml { get; set; }
+        [Parameter] public EventCallback<string> OnGetHtml { get; set; }
 
         ReportView DocumentBuilder;
 
-        Dimension PageDimension;
         string WrapperId = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
 
-        protected override void OnParametersSet()
-        {
-            if(!OnCreate.HasDelegate && DirectDownload == false) DirectDownload = true;
-        }
-
-
-        async public Task GeneratePdf(string pdfName)
+        async Task GeneratePdf(string pdfName)
         {
             if(BeginInvoke.HasDelegate)
                 await BeginInvoke.InvokeAsync();
-            await OutPortPDF.Handle(ReportModel);
-            byte[] Report =  PresenterPDF.Report;
-            PdfResponse response = await DocumentBuilder.GetHtml();  
-            if (DirectDownload)
+            PdfResponse response;
+            if(DirectDownload)
             {
-                 response = await DocumentBuilder.SaveAsFile(Report, pdfName);
+                response = await DocumentBuilder.SaveAsFile(pdfName);
             }
             else
             {
-                response.Base64String = Convert.ToBase64String(Report);
+                response = new();
+                response.Html = await DocumentBuilder.GetHtml();
+                byte[] report = await ReportPdf.GenerateReport(ReportModel);
+                response.Base64String = Convert.ToBase64String(report);
             }
+
             if(OnCreate.HasDelegate)
                 await OnCreate.InvokeAsync(response);
 
             if(EndInvoke.HasDelegate)
                 await EndInvoke.InvokeAsync();
-
         }
 
-        async public Task<PdfResponse> GetHtml()
+        async public Task<string> GetHtml()
         {
-            PdfResponse pdfResponse = await DocumentBuilder.GetHtml();
-            if(OnGetHtml.HasDelegate)
-                await OnGetHtml.InvokeAsync(pdfResponse);
-            return pdfResponse;
+            string result = await DocumentBuilder.GetHtml();            
+            return result;
         }
 
-        Task GeneratePdf() => GeneratePdf(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);
+        Task GeneratePdf() => 
+            GeneratePdf(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);
     }
 }

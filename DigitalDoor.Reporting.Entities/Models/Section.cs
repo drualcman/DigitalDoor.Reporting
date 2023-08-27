@@ -1,8 +1,4 @@
-﻿using DigitalDoor.Reporting.Entities.Helpers;
-using DigitalDoor.Reporting.Entities.ValueObjects;
-using System.Linq.Expressions;
-
-namespace DigitalDoor.Reporting.Entities.Models;
+﻿namespace DigitalDoor.Reporting.Entities.Models;
 
 public class Section //no rowlist no addorw
 {
@@ -22,13 +18,13 @@ public class Section //no rowlist no addorw
 
     public Section(SectionType section) : this()
     {
-        Format = new Format(section); 
+        Format = new Format(section);
         Row = new Row(Format.Dimension);
     }
 
     public Section(Format format) : this()
     {
-        Format = format; 
+        Format = format;
         Row = new Row(Format.Dimension);
     }
 

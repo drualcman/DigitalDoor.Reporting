@@ -1,9 +1,6 @@
-﻿using DigitalDoor.Reporting.Entities.ViewModels;
+﻿namespace DigitalDoor.Reporting.Entities.Interfaces;
 
-namespace DigitalDoor.Reporting.Entities.Interfaces
+public interface IReportsPresenter
 {
-    public interface IReportsPresenter
-    {
-        public ReportViewModel Content { get; }
-    }
+    public ReportViewModel Content { get; }
 }

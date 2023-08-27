@@ -1,6 +1,6 @@
-﻿@if(ReportModel is not null && ShowButton == true)
+﻿@if(ReportModel is not null)
 {
-    <div @onclick=GeneratePdf @attributes="AdditionalAttributes">
+    <button type="button" @onclick=GeneratePdf @attributes="AdditionalAttributes">
         @if(ChildContent is not null)
         {
             @ChildContent
@@ -9,9 +9,11 @@
         {
             <span class="button is-link btn btn-primary">Generate PDF</span>
         }
-    </div>
-
-    <ReportView ReportModel=ReportModel ShowPreview=false WrapperId="@WrapperId" @ref=DocumentBuilder />
+    </button>
+    <ReportView ReportModel=ReportModel 
+        ShowPreview=false 
+        OnGetHtml=OnGetHtml
+        WrapperId="@WrapperId" @ref=DocumentBuilder />
 }
 
 

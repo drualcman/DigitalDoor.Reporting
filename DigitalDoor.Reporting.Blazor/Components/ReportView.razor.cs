@@ -1,16 +1,15 @@
-﻿using DigitalDoor.Reporting.Entities.Models;
-using iText.Kernel.Pdf;
-using System.Reflection;
+﻿using DigitalDoor.Reporting.Entities.Interfaces;
 
 namespace DigitalDoor.Reporting.Blazor.Components;
 
 public partial class ReportView : IAsyncDisposable
 {
-    [Inject] public IJSRuntime JSRuntime { get; set; }
+    [Inject] public IJSRuntime JSRuntime { get; set; }   
+    [Inject] public IReportAsBytes ReportPdf { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
-    [Parameter] public EventCallback<PdfResponse> OnGetHtml { get; set; }
+    [Parameter] public EventCallback<string> OnGetHtml { get; set; }
 
     RenderFragment Content;
 
@@ -151,7 +150,7 @@ public partial class ReportView : IAsyncDisposable
         builder.AddAttribute(CurrentDivId, "class", bodyWp);
 
         SectionDimension = data.Body.Format.Dimension;
-        RowDimension = data.Body.Row.Dimension; 
+        RowDimension = data.Body.Row.Dimension;
         if(data.Body.Format.Orientation == Orientation.Landscape)
         {
             RowDimension = new Dimension(data.Body.Row.Dimension.Height, data.Body.Row.Dimension.Width);
@@ -181,7 +180,7 @@ public partial class ReportView : IAsyncDisposable
 
         SectionColumns = data.Footer.ColumnsNumber;
         SectionDimension = data.Footer.Format.Dimension;
-        RowDimension = data.Footer.Row.Dimension;        
+        RowDimension = data.Footer.Row.Dimension;
         if(data.Footer.Format.Orientation == Orientation.Landscape)
         {
             RowDimension = new Dimension(data.Footer.Row.Dimension.Height, data.Footer.Row.Dimension.Width);
@@ -384,18 +383,18 @@ public partial class ReportView : IAsyncDisposable
         string base64 = string.Empty;
         if(item.Value is not null)
         {
-            if (ImageValidator.IsLikelyImage(item.Value.ToString()))
+            if(ImageValidator.IsLikelyImage(item.Value.ToString()))
             {
                 byte[] bytes = new byte[] { };
-                if (item.Value.GetType() == typeof(JsonElement))
+                if(item.Value.GetType() == typeof(JsonElement))
                 {
                     JsonElement data = (JsonElement)item.Value;
-                    if (data.TryGetBytesFromBase64(out bytes))
+                    if(data.TryGetBytesFromBase64(out bytes))
                     {
                         base64 = SetBase64Image(bytes);
                     }
                 }
-                else if (item.Value.GetType() == typeof(byte[]))
+                else if(item.Value.GetType() == typeof(byte[]))
                 {
                     bytes = (byte[])item.Value;
                     base64 = SetBase64Image(bytes);
@@ -461,13 +460,14 @@ public partial class ReportView : IAsyncDisposable
     }
     #endregion
 
-    public async Task<PdfResponse> SaveAsFile(byte[] Report,string pdfName)
+    public async Task<PdfResponse> SaveAsFile(string pdfName)
     {
-        PdfResponse response = await GetHtml();
-        if (Report.Length > 0)
+        PdfResponse response = new(); 
+        byte[] report = await ReportPdf.GenerateReport(ReportModel);
+        if(report.Length > 0)
         {
             response.Result = true;
-            response.Base64String = Convert.ToBase64String(Report);
+            response.Base64String = Convert.ToBase64String(report);
             try
             {
                 IJSObjectReference module = await ModuleTask.Value;
@@ -478,30 +478,27 @@ public partial class ReportView : IAsyncDisposable
                 Console.WriteLine(ex.Message);
             }
         }
+        response.Html = await GetHtml();
         return response;
     }
 
-    async public Task<PdfResponse> GetHtml()
+    async public Task<string> GetHtml()
     {
-        PdfResponse response;
+        string result;
         try
         {
             IJSObjectReference module = await ModuleTask.Value;
-            response = await module.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
+            PdfResponse response = await module.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
+            result = response.Html;
         }
         catch(Exception ex)
         {
-            response = new PdfResponse
-            {
-                Base64String = string.Empty,
-                Message = ex.Message,
-                Html = string.Empty,
-                Result = false
-            };
+            Console.WriteLine(ex.Message);
+            result = string.Empty;
         }
-        if(OnGetHtml.HasDelegate)
-            await OnGetHtml.InvokeAsync(response);
-        return response;
+        if(OnGetHtml.HasDelegate)         
+            await OnGetHtml.InvokeAsync(result);
+        return result;
     }
 
 

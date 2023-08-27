@@ -1,8 +1,4 @@
-﻿using DigitalDoor.Reporting.Entities.Models;
-using DigitalDoor.Reporting.Entities.ValueObjects;
-using System.Reflection;
-
-namespace DigitalDoor.Reporting.Entities.Helpers;
+﻿namespace DigitalDoor.Reporting.Entities.Helpers;
 
 public class ReportFunctions
 {

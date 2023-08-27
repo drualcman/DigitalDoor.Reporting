@@ -1,10 +1,9 @@
-﻿namespace DigitalDoor.Reporting.Entities.ValueObjects
+﻿namespace DigitalDoor.Reporting.Entities.ValueObjects;
+
+public enum ValueType
 {
-    public enum ValueType
-    {
-        Value,
-        Sum,
-        Percentage,
-        Average,
-    }
+    Value,
+    Sum,
+    Percentage,
+    Average,
 }

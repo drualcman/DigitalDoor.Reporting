@@ -1,8 +1,7 @@
-﻿namespace DigitalDoor.Reporting.Entities.ValueObjects
+﻿namespace DigitalDoor.Reporting.Entities.ValueObjects;
+
+public enum Orientation
 {
-    public enum Orientation
-    {
-        Landscape,
-        Portrait,
-    }
+    Landscape,
+    Portrait,
 }

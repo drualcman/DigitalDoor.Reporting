@@ -5,7 +5,6 @@ namespace DigitalDoor.Reporting.Helpers
 {
     public class Images
     {
-
         public bool TryGetImageBytes(object img, out byte[] bytes)
         {
             bool result;
@@ -22,7 +21,7 @@ namespace DigitalDoor.Reporting.Helpers
                     result = true;
                 }
                 else
-                {
+                {                       
                     bytes = default!;
                     result = false;
                 }

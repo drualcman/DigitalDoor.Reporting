@@ -1,10 +1,9 @@
-﻿namespace DigitalDoor.Reporting.Entities.ValueObjects
+﻿namespace DigitalDoor.Reporting.Entities.ValueObjects;
+
+public enum TextAlignment
 {
-    public enum TextAlignment
-    {
-        Justify,
-        Right,
-        Center,
-        Left
-    }
+    Justify,
+    Right,
+    Center,
+    Left
 }

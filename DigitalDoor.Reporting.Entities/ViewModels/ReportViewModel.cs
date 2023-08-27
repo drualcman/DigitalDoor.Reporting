@@ -1,6 +1,4 @@
-﻿using DigitalDoor.Reporting.Entities.Models;
-
-namespace DigitalDoor.Reporting.Entities.ViewModels;
+﻿namespace DigitalDoor.Reporting.Entities.ViewModels;
 
 public class ReportViewModel : Setup
 {

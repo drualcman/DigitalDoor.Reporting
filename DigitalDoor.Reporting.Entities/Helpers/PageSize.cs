@@ -1,6 +1,4 @@
-﻿using DigitalDoor.Reporting.Entities.ValueObjects;
-
-namespace DigitalDoor.Reporting.Entities.Helpers;
+﻿namespace DigitalDoor.Reporting.Entities.Helpers;
 
 public class PageSize
 {
