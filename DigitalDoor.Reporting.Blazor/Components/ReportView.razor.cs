@@ -4,7 +4,7 @@ namespace DigitalDoor.Reporting.Blazor.Components;
 
 public partial class ReportView : IAsyncDisposable
 {
-    [Inject] public IJSRuntime JSRuntime { get; set; }   
+    [Inject] public IJSRuntime JSRuntime { get; set; }
     [Inject] public IReportAsBytes ReportPdf { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
@@ -382,22 +382,24 @@ public partial class ReportView : IAsyncDisposable
     {
         string base64 = string.Empty;
         if(item.Value is not null)
-        {
-            if(ImageValidator.IsLikelyImage(item.Value.ToString()))
+        {  
+            if(item.Value.GetType() == typeof(byte[]))
             {
-                byte[] bytes = new byte[] { };
+                base64 = SetBase64Image((byte[])item.Value);
+            }
+            else if(ImageValidator.IsLikelyImage(item.Value.ToString()))
+            {
                 if(item.Value.GetType() == typeof(JsonElement))
                 {
                     JsonElement data = (JsonElement)item.Value;
-                    if(data.TryGetBytesFromBase64(out bytes))
+                    if(data.TryGetBytesFromBase64(out byte[] bytes))
                     {
                         base64 = SetBase64Image(bytes);
                     }
                 }
-                else if(item.Value.GetType() == typeof(byte[]))
+                else 
                 {
-                    bytes = (byte[])item.Value;
-                    base64 = SetBase64Image(bytes);
+                    base64 = item.Value.ToString();
                 }
             }
         }
@@ -460,9 +462,11 @@ public partial class ReportView : IAsyncDisposable
     }
     #endregion
 
+
+    #region methods
     public async Task<PdfResponse> SaveAsFile(string pdfName)
     {
-        PdfResponse response = new(); 
+        PdfResponse response = new();
         byte[] report = await ReportPdf.GenerateReport(ReportModel);
         if(report.Length > 0)
         {
@@ -496,7 +500,7 @@ public partial class ReportView : IAsyncDisposable
             Console.WriteLine(ex.Message);
             result = string.Empty;
         }
-        if(OnGetHtml.HasDelegate)         
+        if(OnGetHtml.HasDelegate)
             await OnGetHtml.InvokeAsync(result);
         return result;
     }
@@ -517,4 +521,5 @@ public partial class ReportView : IAsyncDisposable
             Console.WriteLine(ex.Message);
         }
     }
+    #endregion
 }
