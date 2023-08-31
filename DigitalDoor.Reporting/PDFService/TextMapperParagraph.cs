@@ -1,4 +1,5 @@
 ﻿using DigitalDoor.Reporting.PDF;
+using iText.IO.Font;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
 using iText.Layout.Element;
@@ -50,7 +51,14 @@ internal class TextMapperParagraph : TextMapperBase
         }
         try
         {
-            Text.SetFont(PdfFontFactory.CreateFont(item.Column.Format.FontDetails.FontName));
+            string FontName = item.Column.Format.FontDetails.FontName;
+            if (!PdfFontFactory.IsRegistered(FontName))
+            {
+                string Path = $@"C:\\Windows\\Fonts\{FontName}.TTF";
+                PdfFontFactory.Register(Path, FontName);
+            }
+            var Font = PdfFontFactory.CreateRegisteredFont(FontName, PdfEncodings.WINANSI,PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
+            Text.SetFont(Font);
         }
         catch { }
         TextAlignment Aligment = item.Column.Format.TextAlignment switch

@@ -35,7 +35,7 @@ internal class TextPDF
     }
 
     public async Task<byte[]> CreatePDFReport()
-    {
+     {
         using MemoryStream OutputStream = new MemoryStream();
         PdfWriter PdfWriter = new PdfWriter(OutputStream);
         PdfDocument PdfDocument = new PdfDocument(PdfWriter);

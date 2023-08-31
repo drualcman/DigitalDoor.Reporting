@@ -35,7 +35,8 @@
 	<ItemGroup>
 	  <PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.13.44" />
 	  <PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.12.43" />
-    <PackageReference Include="itext7" Version="7.2.5" />
+    <PackageReference Include="itext7" Version="8.0.1" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.1" />
 	</ItemGroup>
 
 	
