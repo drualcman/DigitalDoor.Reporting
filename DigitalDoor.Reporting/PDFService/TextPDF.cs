@@ -72,6 +72,7 @@ internal class TextPDF
         decimal ColumnWeight = 0;
         for(int i = 0; i < Pages.Count; i++)
         {
+            int CounterColumn = 0;
             if(i > 0)
             {
                 PageNumber += 1;
@@ -84,8 +85,9 @@ internal class TextPDF
             HeaderElements?.ForEach(async Element => await DrawContent(page, Element, HeightHeader, PageNumber, 0, HeightBody));
             FooterElements?.ForEach(async Element => await DrawContent(page, Element, HeightFooter, PageNumber, 0, 0));
             await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight, HeightFooter);
-            while(ColumnsNumber > i + 1 && i + 1 < Pages.Count)
+            while(ColumnsNumber > CounterColumn + 1 && i + 1 < Pages.Count)
             {
+                CounterColumn += 1;
                 i += 1;
                 HeightBodyElement = HeightBody;
                 ColumnWeight += (decimal)(ReportViewModel.Body.Row.Dimension.Width + ReportViewModel.Body.ColumnsSpace);
