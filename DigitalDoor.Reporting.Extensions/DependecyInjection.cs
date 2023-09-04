@@ -1,8 +1,4 @@
-﻿using DigitalDoor.Reporting.Entities.Interfaces;
-using DigitalDoor.Reporting.Presenters;
-using DigitalDoor.Reporting.Controllers;
-
-namespace Microsoft.Extensions.DependencyInjection;
+﻿namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServicesDependency
 {
