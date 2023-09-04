@@ -22,6 +22,11 @@ internal class TextMapperBase : TextHelper
         return new DeviceRgb(Color);
     }
 
+    public double ConvertAngleToRadian(double angle)
+    {
+        return angle *(Math.PI/-180.0);
+    }
+
     public void DrawBackground(Document page, string color, int positionPage, double heightBackground, decimal top)
     {
         Div Background = new Div();

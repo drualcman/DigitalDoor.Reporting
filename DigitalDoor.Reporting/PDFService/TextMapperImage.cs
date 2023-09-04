@@ -43,18 +43,12 @@ internal class TextMapperImage : TextMapperBase
             {
                 Image.SetBorderRight(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Right.Width), item.Column.Format.Borders.Right.Colour));
             }
-            int Angle = item.Column.Format.Angle switch
-            {
-                -90 => 2,
-                90 => -2,
-                _ => 0
-            };
-            if(Angle != 0)
+            if(item.Column.Format.Angle != 0)
             {
                 if(item.Column.Format.Position.Left <= 0)
                 {
                     Image.SetMaxHeight(MillimeterToPixel(item.Column.Format.Dimension.Height / 1.88));
-                    if(Angle == 2)
+                    if(item.Column.Format.Angle <= -90)
                     {
                         Image.SetFixedPosition(MillimeterToPixel(weight), MillimeterToPixel(height - (item.Column.Format.Position.Top + 1)));
                     }
@@ -62,13 +56,13 @@ internal class TextMapperImage : TextMapperBase
                     {
                         Image.SetFixedPosition(MillimeterToPixel(weight), MillimeterToPixel(height - (item.Column.Format.Position.Top - 1)));
                     }
-                    Image.SetRotationAngle(Math.PI / Angle);
+                    Image.SetRotationAngle(ConvertAngleToRadian(item.Column.Format.Angle));
                     Image.SetMarginTop(7);
                 }
                 else
                 {
                     Image.SetMaxHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
-                    if(Angle == 2)
+                    if(item.Column.Format.Angle <= -90 )
                     {
                         Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight), MillimeterToPixel(height - (item.Column.Format.Position.Top + 1)));
                     }
@@ -76,7 +70,7 @@ internal class TextMapperImage : TextMapperBase
                     {
                         Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight), MillimeterToPixel(height - (item.Column.Format.Position.Top - 1)));
                     }
-                    Image.SetRotationAngle(Math.PI / Angle);
+                    Image.SetRotationAngle(ConvertAngleToRadian(item.Column.Format.Angle));
                 }
                 Image.SetMaxWidth(MillimeterToPixel((item.Column.Format.Dimension.Width) + 2));
             }

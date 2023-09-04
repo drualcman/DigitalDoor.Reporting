@@ -69,18 +69,12 @@ internal class TextMapperParagraph : TextMapperBase
             Report.TextAlignment.Justify => TextAlignment.JUSTIFIED,
         };
         Text.SetTextAlignment(Aligment);
-        int Angle = item.Column.Format.Angle switch
-        {
-            -90 => 2,
-            90 => -2,
-            _ => 0
-        };
-        if (Angle != 0)
+        if (item.Column.Format.Angle != 0)
         {
             Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+weight)+MillimeterToPixel(item.Column.Format.Dimension.Width/1.49),
             MillimeterToPixel(height-(item.Column.Format.Position.Top+10)),
                                   MillimeterToPixel(item.Column.Format.Dimension.Width));
-            Text.SetRotationAngle(Math.PI/Angle);
+            Text.SetRotationAngle(ConvertAngleToRadian(item.Column.Format.Angle));
         }
         else
         {
