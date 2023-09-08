@@ -1,40 +1,19 @@
-﻿using iText.IO.Font;
-using iText.Kernel.Font;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DigitalDoor.Reporting.Interfaces;
 
 namespace DigitalDoor.Reporting.Utilities
 {
-    internal class FontService
+    internal static class FontService 
     {
-        readonly HttpClient HttpClient;
+        public static IReportFont  ReportFont { get; private set; }
 
-        public FontService(HttpClient httpClient)
+        public static void GetReportFont(IReportFont reportFont)
         {
-          HttpClient=httpClient;
+            ReportFont = reportFont;    
         }
 
-        ConcurrentDictionary<string,PdfFont> DictionaryFonts = new ConcurrentDictionary<string,PdfFont>();  
-        public async Task<PdfFont> GetFontByName(string name)
+        public static void DisposeFont()
         {
-            byte[] Result;
-            PdfFont Font = null; 
-            if (DictionaryFonts.ContainsKey(name))
-            {
-                Font = DictionaryFonts[name];   
-            }
-            else
-            {
-                Result =  await HttpClient.GetFromJsonAsync<byte[]>($"https://localhost:7167/Fonts/{name}");
-                Font = PdfFontFactory.CreateFont(Result, PdfEncodings.WINANSI, PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
-                DictionaryFonts.TryAdd(name, Font);
-            }
-            return Font;
+            ReportFont = null;
         }
     }
 }

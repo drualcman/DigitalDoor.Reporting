@@ -1,4 +1,5 @@
 ﻿using DigitalDoor.Reporting.PDF;
+using DigitalDoor.Reporting.Utilities;
 using iText.IO.Font;
 using iText.IO.Font.Constants;
 using iText.Kernel.Colors;
@@ -62,13 +63,17 @@ internal class TextMapperParagraph : TextMapperBase
                     "Arial" => PdfFontFactory.CreateFont(StandardFonts.HELVETICA),
                     _ => PdfFontFactory.CreateFont(FontName)
                 };
+                Text.SetFont(Font);
             }
             else
             {
-                //Get from FontService
-                Font = PdfFontFactory.CreateRegisteredFont(FontName, PdfEncodings.WINANSI, PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
+                if(FontService.ReportFont !=  null)
+                {
+                    byte[] BytesFont = FontService.ReportFont.GetFontBytesArray(FontName);
+                    Font = PdfFontFactory.CreateFont(BytesFont, PdfEncodings.WINANSI, PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
+                    Text.SetFont(Font);
+                }
             }
-            Text.SetFont(Font);
         }
         catch { }
         TextAlignment Aligment = item.Column.Format.TextAlignment switch
