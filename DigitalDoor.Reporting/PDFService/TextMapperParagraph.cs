@@ -1,5 +1,6 @@
 ﻿using DigitalDoor.Reporting.PDF;
 using iText.IO.Font;
+using iText.IO.Font.Constants;
 using iText.Kernel.Colors;
 using iText.Kernel.Font;
 using iText.Layout.Element;
@@ -51,13 +52,22 @@ internal class TextMapperParagraph : TextMapperBase
         }
         try
         {
+
+            PdfFont Font;
             string FontName = item.Column.Format.FontDetails.FontName;
-            if (!PdfFontFactory.IsRegistered(FontName))
+            if (StandardFonts.IsStandardFont(FontName) || FontName == "Arial")
             {
-                string Path = $@"C:\\Windows\\Fonts\{FontName}.TTF";
-                PdfFontFactory.Register(Path, FontName);
+                Font = FontName switch
+                {
+                    "Arial" => PdfFontFactory.CreateFont(StandardFonts.HELVETICA),
+                    _ => PdfFontFactory.CreateFont(FontName)
+                };
             }
-            var Font = PdfFontFactory.CreateRegisteredFont(FontName, PdfEncodings.WINANSI,PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
+            else
+            {
+                //Get from FontService
+                Font = PdfFontFactory.CreateRegisteredFont(FontName, PdfEncodings.WINANSI, PdfFontFactory.EmbeddingStrategy.FORCE_NOT_EMBEDDED);
+            }
             Text.SetFont(Font);
         }
         catch { }
