@@ -40,7 +40,9 @@ public class Format
 
     public Format(double width, double height) :
         this(new Dimension(width, height))
-    { }
+    {
+        Background = "transparent";
+    }
 
     public Format(Dimension dimension)
     {

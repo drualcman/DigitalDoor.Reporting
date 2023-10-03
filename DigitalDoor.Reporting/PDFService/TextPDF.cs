@@ -109,11 +109,11 @@ internal class TextPDF
                 setup.Format.Dimension.Width = ReportViewModel.Body.Row.Dimension.Width;
                 setup.Format.Dimension.Height = ReportViewModel.Body.Row.Dimension.Height;
                 setup.Format.Position = ReportViewModel.Body.Format.Position;
-                Div BorderBody = MapperBorder.SetBorder(setup, (heightBodyElement - (decimal)ReportViewModel.Body.Format.Position.Top), columnWeight);
+                Div BorderBody = MapperBorder.SetBorder(setup, (heightBodyElement - ReportViewModel.Body.Format.Position.Top), columnWeight);
                 BorderBody.SetPageNumber(numberPage);
                 page.Add(BorderBody);
             }
-            await DrawContent(page, Element, heightBodyElement, numberPage, columnWeight, heightBackground);
+            await DrawContent(page, Element, heightBodyElement, numberPage, columnWeight + (decimal)ReportViewModel.Body.Format.Position.Left, heightBackground);
             heightBodyElement -= (decimal)ReportViewModel.Body.Row.Dimension.Height;
         }
     }
