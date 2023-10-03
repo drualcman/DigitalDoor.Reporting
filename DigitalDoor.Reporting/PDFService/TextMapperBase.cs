@@ -29,12 +29,15 @@ internal class TextMapperBase : TextHelper
 
     public void DrawBackground(Document page, string color, int positionPage, double heightBackground, decimal top)
     {
-        Div Background = new Div();
-        Background.SetBackgroundColor(GetColor(color));
-        Background.SetHeight(MillimeterToPixel(heightBackground));
-        Background.SetPageNumber(positionPage);
-        Background.SetFixedPosition(0, MillimeterToPixel(top), page.GetPdfDocument().GetDefaultPageSize().GetWidth());
-        page.Add(Background);
+        if (color.ToLower() != "transparent" && color != "")
+        {
+            Div Background = new Div();
+            Background.SetBackgroundColor(GetColor(color));
+            Background.SetHeight(MillimeterToPixel(heightBackground));
+            Background.SetPageNumber(positionPage);
+            Background.SetFixedPosition(0, MillimeterToPixel(top), page.GetPdfDocument().GetDefaultPageSize().GetWidth());
+            page.Add(Background);
+        }
     }
 
     public iText.Layout.Borders.Border GetBorder(BorderStyle style, double width, string color)

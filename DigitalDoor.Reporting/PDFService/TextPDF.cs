@@ -107,7 +107,9 @@ internal class TextPDF
                 ColumnSetup setup = new ColumnSetup();
                 setup.Format.Borders = ReportViewModel.Body.Row.Borders;
                 setup.Format.Dimension.Width = ReportViewModel.Body.Row.Dimension.Width;
-                Div BorderBody = MapperBorder.SetBorder(setup, heightBodyElement - (decimal)ReportViewModel.Body.Row.Dimension.Height, columnWeight);
+                setup.Format.Dimension.Height = ReportViewModel.Body.Row.Dimension.Height;
+                setup.Format.Position = ReportViewModel.Body.Format.Position;
+                Div BorderBody = MapperBorder.SetBorder(setup, (heightBodyElement - (decimal)ReportViewModel.Body.Format.Position.Top), columnWeight);
                 BorderBody.SetPageNumber(numberPage);
                 page.Add(BorderBody);
             }
