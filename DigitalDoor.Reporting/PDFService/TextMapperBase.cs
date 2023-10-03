@@ -29,7 +29,7 @@ internal class TextMapperBase : TextHelper
 
     public void DrawBackground(Document page, string color, int positionPage, double heightBackground, decimal top)
     {
-        if (color.ToLower() != "transparent" && color != "")
+        if (color.ToLower() != "transparent" &&  !string.IsNullOrEmpty(color))
         {
             Div Background = new Div();
             Background.SetBackgroundColor(GetColor(color));
