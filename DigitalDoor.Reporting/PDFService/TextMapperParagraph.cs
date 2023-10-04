@@ -97,6 +97,7 @@ internal class TextMapperParagraph : TextMapperBase
                                   MillimeterToPixel(height-(item.Column.Format.Position.Top+(decimal)(item.Column.Format.FontDetails.ColorSize.Width*0.53))),
                                   MillimeterToPixel(item.Column.Format.Dimension.Width));
         }
+        Text.SetBackgroundColor(GetColor(item.Column.Format.Background));
         Text.Add(textValue);
         return Text;
     }
