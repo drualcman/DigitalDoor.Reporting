@@ -13,8 +13,11 @@
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
-	  <PackageReleaseNotes>Add new interface IReportAsBytes fo can generate directly the PDF bytes in only one injection. Cleanup unnecesary commented files.</PackageReleaseNotes>
-	  <Version>1.13.44</Version>
+	  <PackageReleaseNotes>
+		  [2023-10-04] Change Section constructor to add new can set the orientation. Fixed when orientation is set, setup correctly the dimensions for the row and body from Page constructor.
+		  [2023-08-27] Add new interface IReportAsBytes fo can generate directly the PDF bytes in only one injection. Cleanup unnecesary commented files.
+	  </PackageReleaseNotes>
+	  <Version>1.13.45</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 

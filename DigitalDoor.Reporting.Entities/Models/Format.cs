@@ -18,7 +18,9 @@ public class Format
 
     public Format() :
         this(0, 0)
-    { }
+    {  
+        Background = "transparent";
+    }
 
     public Format(Format setup)
     {

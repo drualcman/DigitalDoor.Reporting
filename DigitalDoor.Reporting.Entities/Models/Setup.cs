@@ -22,8 +22,12 @@ public class Setup
     }
     public Setup(double height, double width) : this(new Dimension(height, width)) { }
     public Setup(string backgroundColor, Dimension pageSize) : this(pageSize) { Page.Background = backgroundColor; }
-    public Setup(Dimension pageSize, Orientation orientation) : this(pageSize) { Page.Orientation = orientation; }
-    public Setup(string backgroundColor, Dimension pageSize, Orientation orientation) : this(pageSize) { Page.Background = backgroundColor; Page.Orientation = orientation; }
+    public Setup(Dimension pageSize, Orientation orientation) : this(pageSize) 
+    { 
+        Page.Orientation = orientation;
+        Body = new Section(pageSize, orientation);
+    }
+    public Setup(string backgroundColor, Dimension pageSize, Orientation orientation) : this(pageSize, orientation) { Page.Background = backgroundColor; }
     public Setup(Dimension pageSize, Kernel padding) : this(pageSize) { Page.Padding = padding; }
 
 }

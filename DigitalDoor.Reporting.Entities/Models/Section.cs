@@ -30,6 +30,13 @@ public class Section //no rowlist no addorw
 
     public Section(Dimension dimension) : this(new Format(dimension)) { }
     public Section(Dimension dimension, SectionType section) : this(new Format(dimension) { Section = section }) { }
+    public Section(Dimension dimension, Orientation orientation) : this(new Format(dimension))
+    {
+        if(orientation == Orientation.Landscape)
+        {
+            Row = new Row(Format.Dimension.Height, Format.Dimension.Width);
+        }
+    }
 
     public void AddColumn(ColumnSetup column)
     {
