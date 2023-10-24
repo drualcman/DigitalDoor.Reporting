@@ -79,6 +79,16 @@ internal class TextPDF
                 ColumnWeight = 0;
                 HeightBodyElement = HeightBody;
             }
+            //if (Element.Column.DataColumn?.PropertyName == "TotalPages")
+            //{
+            //    Element.Value = PageElements.Count.ToString();
+            //}
+            //if (Element.Column.DataColumn.PropertyName == "CurrentPage")
+            //{
+            //    Element.Value = numberPage.ToString();
+            //}
+            //var TotalPages =  FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
+            //TotalPages.Value = Pages.Count.ToString();
             MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height, HeightBody);
             MapperBase.DrawBackground(page, ReportViewModel.Body.Format.Background, PageNumber, ReportViewModel.Body.Format.Dimension.Height, HeightFooter);
             MapperBase.DrawBackground(page, ReportViewModel.Footer.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
@@ -120,6 +130,7 @@ internal class TextPDF
 
     private Task DrawContent(Document page, ColumnContent format, decimal height, int PositionPage, decimal weight, decimal heightBackground)
     {
+        format.Columns = format.Columns.OrderBy(d => d.Column.Format.Foreground).ToList();
         foreach(var item in format.Columns)
         {
             string Content = item.Value;
