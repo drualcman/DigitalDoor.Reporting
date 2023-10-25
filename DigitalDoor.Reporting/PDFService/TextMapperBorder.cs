@@ -38,6 +38,10 @@ internal class TextMapperBorder : TextMapperBase
         if(item.Format.Borders.Left.Width > 0)
         {
             Div.SetBorderLeft(GetBorder(Style, MillimeterToPixel(item.Format.Borders.Left.Width), item.Format.Borders.Left.Colour));
+        }   
+        if(item.Format.Background.ToLower() != "transparent")
+        {
+            Div.SetBackgroundColor(GetColor(item.Format.Background));
         }
         return Div;
     }
