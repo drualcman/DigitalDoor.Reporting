@@ -80,8 +80,8 @@ internal class TextMapperParagraph : TextMapperBase
         {
             Report.TextAlignment.Right => TextAlignment.RIGHT,
             Report.TextAlignment.Center => TextAlignment.CENTER,
-            Report.TextAlignment.Left => TextAlignment.LEFT,
             Report.TextAlignment.Justify => TextAlignment.JUSTIFIED,
+            _ => TextAlignment.LEFT,
         };
         Text.SetTextAlignment(Aligment);
         if (item.Column.Format.Angle != 0)
