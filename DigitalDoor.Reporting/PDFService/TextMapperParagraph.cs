@@ -85,7 +85,6 @@ internal class TextMapperParagraph : TextMapperBase
         };
         
         Text.SetHeight(MillimeterToPixel(height));
-        Text.SetWidth(MillimeterToPixel(width));
 
         Text.SetTextAlignment(Aligment);
         if (item.Column.Format.Angle != 0)
