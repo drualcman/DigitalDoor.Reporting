@@ -25,6 +25,9 @@ public class ReportViewModel : Setup
     }
     public ReportViewModel(Setup setup, IEnumerable<ColumnData> data) : this(setup) => Data = data;
 
-
+    public ColumnData GetColumnData(Item item) =>
+        Data.FirstOrDefault(c => c.Column.ObjectName.ToLower() == item.ObjectName.ToLower() && c.Column.PropertyName.ToLower() == item.PropertyName.ToLower());
+    public ColumnData GetColumn(string objectName, string propertyName) =>
+        GetColumnData(new Item(objectName, propertyName));
     #endregion 
 }

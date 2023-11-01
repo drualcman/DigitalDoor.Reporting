@@ -31,12 +31,12 @@ public class ReportFunctions
         data.Add(new ColumnData
         {
             Value = "",
-            Section = section,
             Column = new Item
             {
                 PropertyName = "TotalPages",
                 ObjectName = "FreeText"
-            }
+            },
+            Section = section
         });
         data.Add(new ColumnData
         {
