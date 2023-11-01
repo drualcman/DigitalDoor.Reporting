@@ -337,13 +337,16 @@ public partial class ReportView : IAsyncDisposable
         {
             if(HasColumn(columns, item.Column))
             {
+                var Item = GetColumnFormat(columns, item.Column);
                 string styleCol;
                 if(item.Format is not null)
                 {
                     styleCol = GetStyle(item.Format);
+                    Console.WriteLine("if");
                 }
                 else
-                {
+                {      
+                    Console.WriteLine("Else");
                     styleCol = GetStyle(GetColumnFormat(columns, item.Column));
                 }
 
@@ -351,9 +354,32 @@ public partial class ReportView : IAsyncDisposable
                 string base64 = GetBase64(item);
                 if(!string.IsNullOrEmpty(base64))
                 {
+                    if(item is not null && item.Format is not null)
+                    {
+                        Console.WriteLine(item.Format.Angle);
+                    }
                     string result = $"data:image/png;base64,{base64}";
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
+                    var itemFormat = GetColumnFormat(columns, item.Column);
+                    if (itemFormat.Angle != 0)
+                    {
+                        if(itemFormat.Angle < 0)
+                        {
+                            styleCol += $"top: {itemFormat.Position.Top - (decimal)itemFormat.Dimension.Height*0.6m}mm;" +
+                                $"right: {itemFormat.Position.Right}mm;" +
+                                $"bottom: {itemFormat.Position.Bottom}mm;" +
+                                $"left: {itemFormat.Position.Left - (decimal)itemFormat.Dimension.Height}mm;";
+                        }
+                        else
+                        {
+                            styleCol += $"top: {itemFormat.Position.Top + (decimal)itemFormat.Dimension.Height * 1.9m}mm;" +
+                                        $"right: {itemFormat.Position.Right}mm;" +
+                                        $"bottom: {itemFormat.Position.Bottom}mm;" +
+                                        $"left: {itemFormat.Position.Left - (decimal)itemFormat.Dimension.Height/1.6m}mm;";
+                        }
+
+                    }
                     builder.AddAttribute(CurrentDivId, "style", styleCol);
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "img");
@@ -417,7 +443,7 @@ public partial class ReportView : IAsyncDisposable
     string GetStyle(Format format)
     {
         string styleContainer = string.Empty;
-        if(format is not null)
+        if (format is not null)
         {
             styleContainer =
                 $"width:{format.Dimension.Width}mm;" +
@@ -426,12 +452,33 @@ public partial class ReportView : IAsyncDisposable
                 $"padding-top: {format.Padding.Top}mm; " +
                 $"padding-right: {format.Padding.Right}mm; " +
                 $"padding-left: {format.Padding.Left}mm; " +
-                $"padding-bottom: {format.Padding.Bottom}mm;" +
-                $"top: {format.Position.Top}mm;" +
+                $"padding-bottom: {format.Padding.Bottom}mm;";
+            if (format.Angle == 0)
+            {
+                styleContainer += $"top: {format.Position.Top}mm;" +
                 $"right: {format.Position.Right}mm;" +
                 $"bottom: {format.Position.Bottom}mm;" +
-                $"left: {format.Position.Left}mm;" +
-                $"margin-top: {format.Margin.Top}mm;" +
+                $"left: {format.Position.Left}mm;";
+            }
+            else
+            {
+                if (format.Angle > 0)
+                {
+                    styleContainer += $"top: {format.Position.Top + ((decimal)format.Dimension.Height)}mm;" +
+                    $"right: {format.Position.Right}mm;" +
+                    $"bottom: {format.Position.Bottom}mm;" +
+                    $"left: {format.Position.Left-(decimal)format.Dimension.Height}mm;";
+                }
+                else
+                {
+                    styleContainer += $"top: {format.Position.Top - ((decimal)format.Dimension.Height*1.5m)}mm;" +
+                    $"right: {format.Position.Right}mm;" +
+                    $"bottom: {format.Position.Bottom}mm;" +
+                    $"left: {format.Position.Left - (decimal)format.Dimension.Width/2}mm;";
+                }
+              
+            }
+            styleContainer +=  $"margin-top: {format.Margin.Top}mm;" +
                 $"margin-right: {format.Margin.Right}mm;" +
                 $"margin-bottom: {format.Margin.Bottom}mm;" +
                 $"margin-left: {format.Margin.Left}mm;" +
