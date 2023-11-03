@@ -226,7 +226,6 @@ public partial class ReportView : IAsyncDisposable
         }
         catch
         {
-            Console.WriteLine("error");
             result = false;
         }
         return result;
@@ -342,11 +341,9 @@ public partial class ReportView : IAsyncDisposable
                 if(item.Format is not null)
                 {
                     styleCol = GetStyle(item.Format);
-                    Console.WriteLine("if");
                 }
                 else
                 {      
-                    Console.WriteLine("Else");
                     styleCol = GetStyle(GetColumnFormat(columns, item.Column));
                 }
 
@@ -354,10 +351,6 @@ public partial class ReportView : IAsyncDisposable
                 string base64 = GetBase64(item);
                 if(!string.IsNullOrEmpty(base64))
                 {
-                    if(item is not null && item.Format is not null)
-                    {
-                        Console.WriteLine(item.Format.Angle);
-                    }
                     string result = $"data:image/png;base64,{base64}";
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
@@ -525,8 +518,8 @@ public partial class ReportView : IAsyncDisposable
                 await module.InvokeVoidAsync("PrintReports.SaveAsFile", pdfName, response.Base64String);
             }
             catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+            {                                 
+                await Console.Out.WriteLineAsync(ex.Message);
             }
         }
         response.Html = await GetHtml();
@@ -544,7 +537,7 @@ public partial class ReportView : IAsyncDisposable
         }
         catch(Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            await Console.Out.WriteLineAsync(ex.Message);
             result = string.Empty;
         }
         if(OnGetHtml.HasDelegate)
@@ -565,7 +558,7 @@ public partial class ReportView : IAsyncDisposable
         }
         catch(Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            await Console.Out.WriteLineAsync(ex.Message);
         }
     }
     #endregion
