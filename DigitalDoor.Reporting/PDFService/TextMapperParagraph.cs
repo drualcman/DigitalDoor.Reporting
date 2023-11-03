@@ -87,16 +87,6 @@ internal class TextMapperParagraph : TextMapperBase
         Text.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
 
         Text.SetTextAlignment(Aligment);
-        //if (item.Column.Format.Angle != 0)
-        //{
-        //    Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left+width)+MillimeterToPixel(item.Column.Format.Dimension.Width/1.49),
-        //    MillimeterToPixel(height-(item.Column.Format.Position.Top+10)),
-        //                          MillimeterToPixel(item.Column.Format.Dimension.Width));
-        //}
-        //else
-        //{
-
-        //}
         Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + width),
                       MillimeterToPixel(height - (item.Column.Format.Position.Top + (decimal)(item.Column.Format.FontDetails.ColorSize.Width * 0.53))),
                       MillimeterToPixel(item.Column.Format.Dimension.Width));
