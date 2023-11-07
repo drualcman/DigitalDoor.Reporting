@@ -84,7 +84,7 @@ internal class TextMapperParagraph : TextMapperBase
             _ => TextAlignment.LEFT,
         };
         
-        Text.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
+        Text.SetMinHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
 
         Text.SetTextAlignment(Aligment);
         Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + width),
