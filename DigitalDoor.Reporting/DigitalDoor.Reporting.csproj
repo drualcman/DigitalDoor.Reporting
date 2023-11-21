@@ -15,6 +15,7 @@
 	  <PackageTags>reporting; pdf, blazor; blazor webaassembly; blazor server; MVC; webapi</PackageTags>
 	  <PackageReleaseNotes>
 		  2023-11-07: Improved height management in text.
+22Add pagination in the PDF. Update nugets last versionDigitalDoor.Reporting to version 1.13.51.DigitalDoor.Reporting.Entities46. Uptdate nugets  and iText 80.2.		  2023-11-07: Improved height management in text.
 		  2023-11-03: Fixed image positions when has rotation.
 		  2023-10-24: Fix Z-Index and Background Transparent
 		  2023-10-04: Fixed issue with borders, background colour and left position. Update nuget dependencies.
@@ -23,7 +24,7 @@
 		  2023-08-28: Add Register services extension method. Hide implementation to outside. Implement IReportAsBytes in a controller PDFReportController to get directly the PDF Bytes in only one injection.
 		  2023-08-10: Add Create PDF Using IText7 C#
 	  </PackageReleaseNotes>
-	  <Version>1.13.51</Version>
+	  <Version>1.13.52</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
 	  <Title>Generate reports from code using clean architecture</Title>
 	  <RepositoryType>git</RepositoryType>
@@ -46,10 +47,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.13.45" />
+	  <PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.13.46" />
 	  <PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.12.43" />
-    <PackageReference Include="itext7" Version="8.0.1" />
-    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.1" />
+    <PackageReference Include="itext7" Version="8.0.2" />
+    <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.2" />
 	</ItemGroup>
 
 	
