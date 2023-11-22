@@ -10,7 +10,7 @@ dotnet add package DigitalDoor.Reporting.Blazor --version 1.13.51
 
 Register the services
 ``` csharp
-    services.AddReportingPdfServices();
+    services.AddReportsServices();
 ```
 
 ## Create a report ViewModel
