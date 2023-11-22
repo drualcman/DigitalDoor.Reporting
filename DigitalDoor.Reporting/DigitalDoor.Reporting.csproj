@@ -14,7 +14,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting; pdf, blazor; blazor webaassembly; blazor server; MVC; webapi</PackageTags>
 	  <PackageReleaseNotes>
-		  2023-11-22: Add pagination in the PDF. Update nugets to last version => DigitalDoor.Reporting.Entities 1.13.46 and iText 8.0.2.
+		  2023-11-22: Add pagination in the PDF. Update nugets to last version =&gt; DigitalDoor.Reporting.Entities 1.13.46 and iText 8.0.2.
 		  2023-11-07: Improved height management in text.
 		  2023-11-03: Fixed image positions when has rotation.
 		  2023-10-24: Fix Z-Index and Background Transparent
@@ -36,9 +36,9 @@
 		  <PackagePath>\</PackagePath>
 		  <Pack>True</Pack>
 		</None>
-		<None Include="..\README.md">
+		<None Include="README.md">
 			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+			<PackagePath></PackagePath>
 		</None>
 		<None Include="..\License.txt">
 			<Pack>True</Pack>

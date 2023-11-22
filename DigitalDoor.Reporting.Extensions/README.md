@@ -3,13 +3,9 @@ Using DigitalDoor Reporting to create ViewModel and use to export in PDF or use 
 
 ## How to use:
 Install nuget
-### reporting services (backend and/or frond end)
+
 ```
 dotnet add package DigitalDoor.Reporting.Extensions --version 1.13.51
-```
-### front end
-```
-dotnet add package DigitalDoor.Reporting.Blazor --version 1.13.51
 ```
 
 Register the services
@@ -142,8 +138,10 @@ Full class example
     }
 ```
 
-## Using report component
-``` razor
-<ReportView ReportModel=ReportModel ShowPreview=true />
+## Create a PDF
+To create a PDF need to manage the report ViewModel using a Handler and then use with the abtractions
+``` csharp
+    byte[] pdf = await IReportAsBytes.GenerateReport(reportModel);
 ```
+IReportAsBytes it's registered by services.AddReportsServices();
 

@@ -3,11 +3,7 @@ Using DigitalDoor Reporting to create ViewModel and use to export in PDF or use 
 
 ## How to use:
 Install nuget
-### reporting services (backend and/or frond end)
-```
-dotnet add package DigitalDoor.Reporting.Extensions --version 1.13.51
-```
-### front end
+
 ```
 dotnet add package DigitalDoor.Reporting.Blazor --version 1.13.51
 ```
