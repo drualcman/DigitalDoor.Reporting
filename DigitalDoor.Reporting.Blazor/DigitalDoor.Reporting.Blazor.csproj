@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+	  <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+	  <LangVersion>12</LangVersion>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -48,11 +49,15 @@
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DigitalDoor.Reporting" Version="1.13.51" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.25" />
-  </ItemGroup>
+	
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.25" Condition="'$(TargetFramework)' == 'net6.0'" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\DigitalDoor.Reporting\DigitalDoor.Reporting.csproj" />
+	</ItemGroup>
 
 
 </Project>

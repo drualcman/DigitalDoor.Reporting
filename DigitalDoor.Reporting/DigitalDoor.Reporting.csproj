@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+	  <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+	  <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -47,10 +48,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.13.46" />
-	  <PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.12.43" />
     <PackageReference Include="itext7" Version="8.0.2" />
     <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DigitalDoor.Reporting.Entities\DigitalDoor.Reporting.Entities.csproj" />
+	  <ProjectReference Include="..\DigitalDoor.Reporting.Helpers\DigitalDoor.Reporting.Helpers.csproj" />
 	</ItemGroup>
 
 	
