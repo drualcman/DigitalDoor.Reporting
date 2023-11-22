@@ -15,6 +15,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting; extensions;</PackageTags>
 	  <PackageReleaseNotes>
+		  2023-11-22: Update DigitalDoor.Reporting to version 1.13.52.
 		  2023-11-07: Update DigitalDoor.Reporting to version 1.13.51.
 		  2023-11-03: Update DigitalDoor.Reporting to version 1.13.50.
 		  2023-10-24: Update DigitalDoor.Reporting to version 1.13.49.
@@ -22,7 +23,7 @@
 		  2023-09-08: Update DigitalDoor.Reporting to version 1.13.47.
 		  2023-09-04: Update DigitalDoor.Reporting to version 1.13.46.
 		  2023-08-28: Using register container from DigitalDoor.Reporting. Change name space in the dependency container to avid need to add a new namespace reference when want to use the helper to add Services.AddReportingPdfServices().</PackageReleaseNotes>
-	  <Version>1.13.50</Version>
+	  <Version>1.13.51</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 
@@ -32,9 +33,9 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<None Include="..\README.md">
+		<None Include="README.md">
 			<Pack>True</Pack>
-			<PackagePath>\</PackagePath>
+			<PackagePath></PackagePath>
 		</None>
 		<None Include="..\License.txt">
 			<Pack>True</Pack>
