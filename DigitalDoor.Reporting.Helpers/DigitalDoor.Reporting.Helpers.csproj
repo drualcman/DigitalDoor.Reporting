@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 	  <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
@@ -15,8 +15,10 @@
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
-	  <PackageReleaseNotes>Release first stable version</PackageReleaseNotes>
-	  <Version>1.12.43</Version>
+	  <PackageReleaseNotes>
+		  [2023-11-22] Update frameworks target to NET 6 and NET 8.
+	  </PackageReleaseNotes>
+	  <Version>1.14.50</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 

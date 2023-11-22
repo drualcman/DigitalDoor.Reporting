@@ -5,6 +5,12 @@ namespace DigitalDoor.Reporting.Helpers
 {
     public class Images
     {
+        public Images()
+        {
+            if (!(Environment.OSVersion.Platform is PlatformID.Win32NT or PlatformID.Win32Windows))
+                AppContext.SetSwitch("System.Drawing.EnableUnixSupport", true);
+        }
+
         public bool TryGetImageBytes(object img, out byte[] bytes)
         {
             bool result;
@@ -21,7 +27,7 @@ namespace DigitalDoor.Reporting.Helpers
                     result = true;
                 }
                 else
-                {                       
+                {
                     bytes = default!;
                     result = false;
                 }
@@ -64,11 +70,9 @@ namespace DigitalDoor.Reporting.Helpers
         /// <returns></returns>
         public byte[] ImageToByteArray(Bitmap imageIn)
         {
-            using(var ms = new MemoryStream())
-            {
-                imageIn.Save(ms, ImageFormat.Png);
-                return ms.ToArray();
-            }
+            using MemoryStream ms = new MemoryStream();
+            imageIn.Save(ms, ImageFormat.Png);
+            return ms.ToArray();
         }
 
         /// <summary>
