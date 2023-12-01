@@ -95,6 +95,7 @@ internal class TextMapperParagraph : TextMapperBase
         {
             Text.SetBackgroundColor(GetColor(item.Column.Format.Background));
         }
+        Text.SetOpacity(item.Column.Format.FontDetails.ColorSize.Opacity);
         Text.Add(textValue);
         return Text;
     }
