@@ -70,6 +70,7 @@ internal class TextPDF
         List<List<ColumnContent>> Pages = Helper.Split(BodyRows, RowsByPages);
         int PageNumber = 1;
         decimal ColumnWeight = 0;
+        decimal TotalPages = Math.Ceiling(Convert.ToDecimal(Pages.Count) / Convert.ToDecimal(ColumnsNumber)); 
         for(int i = 0; i < Pages.Count; i++)
         {
             int CounterColumn = 0;
@@ -79,30 +80,30 @@ internal class TextPDF
                 ColumnWeight = 0;
                 HeightBodyElement = HeightBody;
             }
-            if(HeaderElements != null)
+            if (HeaderElements != null)
             {
                 ColumnContent CurrentPageHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
                 if (CurrentPageHeader != null)
                 {
-                    CurrentPageHeader.Value = $"{i + 1}";
+                    CurrentPageHeader.Value = PageNumber.ToString();
                 }
                 ColumnContent TotalPagesHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
                 if (CurrentPageHeader != null)
                 {
-                    TotalPagesHeader.Value = Pages.Count.ToString();
+                    TotalPagesHeader.Value = TotalPages.ToString();
                 }
             }
-            if(FooterElements != null)
+            if (FooterElements != null)
             {
                 ColumnContent CurrentPageFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
                 if (CurrentPageFooter != null)
                 {
-                    CurrentPageFooter.Value = $"{i + 1}";
+                    CurrentPageFooter.Value = PageNumber.ToString();
                 }
                 ColumnContent TotalPagesFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
                 if (CurrentPageFooter != null)
                 {
-                    TotalPagesFooter.Value = Pages.Count.ToString();
+                    TotalPagesFooter.Value = TotalPages.ToString();
                 }
             }
             MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height, HeightBody);
