@@ -20,6 +20,7 @@ internal class TextPDF
     readonly decimal HeightHeader;
     readonly decimal HeightFooter;
     readonly decimal HeightBody;
+    readonly int TotalPages;
 
     public TextPDF(ReportViewModel reportViewModel)
     {
@@ -32,6 +33,7 @@ internal class TextPDF
         HeightHeader = (decimal)(ReportViewModel.Header.Format.Dimension.Height + ReportViewModel.Body.Format.Dimension.Height + ReportViewModel.Footer.Format.Dimension.Height);
         HeightBody = (decimal)(ReportViewModel.Body.Format.Dimension.Height + ReportViewModel.Footer.Format.Dimension.Height);
         HeightFooter = (decimal)ReportViewModel.Footer.Format.Dimension.Height;
+        TotalPages = reportViewModel.Pages;
     }
 
     public async Task<byte[]> CreatePDFReport()
@@ -70,7 +72,6 @@ internal class TextPDF
         List<List<ColumnContent>> Pages = Helper.Split(BodyRows, RowsByPages);
         int PageNumber = 1;
         decimal ColumnWeight = 0;
-        decimal TotalPages = Math.Ceiling(Convert.ToDecimal(Pages.Count) / Convert.ToDecimal(ColumnsNumber)); 
         for(int i = 0; i < Pages.Count; i++)
         {
             int CounterColumn = 0;
