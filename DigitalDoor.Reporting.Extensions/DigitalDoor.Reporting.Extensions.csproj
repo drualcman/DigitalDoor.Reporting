@@ -15,6 +15,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting; extensions;</PackageTags>
 	  <PackageReleaseNotes>
+		  2023-12-11: Update DigitalDoor.Reporting to version 1.14.51.
 		  2023-11-22: Update frameworks target to NET 6 and NET 8. Update DigitalDoor.Reporting to version 1.14.50.
 		  2023-11-07: Update DigitalDoor.Reporting to version 1.13.51.
 		  2023-11-03: Update DigitalDoor.Reporting to version 1.13.50.
@@ -23,12 +24,12 @@
 		  2023-09-08: Update DigitalDoor.Reporting to version 1.13.47.
 		  2023-09-04: Update DigitalDoor.Reporting to version 1.13.46.
 		  2023-08-28: Using register container from DigitalDoor.Reporting. Change name space in the dependency container to avid need to add a new namespace reference when want to use the helper to add Services.AddReportingPdfServices().</PackageReleaseNotes>
-	  <Version>1.14.50</Version>
+	  <Version>1.14.52</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.14.50" />
+		<PackageReference Include="DigitalDoor.Reporting" Version="1.14.51" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
 	</ItemGroup>

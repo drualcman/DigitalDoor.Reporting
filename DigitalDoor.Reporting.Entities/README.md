@@ -1,6 +1,13 @@
 # DigitalDoor.Reporting.Entities
 Object and abstraction for can create a report using DigitalDoor.Reporting
 
+## How to use:
+Install nuget
+
+```
+dotnet add package DigitalDoor.Reporting --version 1.14.52
+```
+
 ## Interfaces
 ``` csharp
 IPDFReportOutputPort;
