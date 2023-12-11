@@ -37,7 +37,7 @@ internal class TextPDF
     }
 
     public async Task<byte[]> CreatePDFReport()
-     {
+    {
         using MemoryStream OutputStream = new MemoryStream();
         PdfWriter PdfWriter = new PdfWriter(OutputStream);
         PdfDocument PdfDocument = new PdfDocument(PdfWriter);
@@ -61,7 +61,7 @@ internal class TextPDF
         Document.Close();
     }
 
-    private async Task SetContentDocument(Document page)
+    private async Task SetContentDocument(Document document)
     {
         List<ColumnContent> HeaderElements = Helper.GetElements(ReportViewModel.Header.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Header).ToList());
         List<ColumnContent> FooterElements = Helper.GetElements(ReportViewModel.Footer.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Footer).ToList());
@@ -72,57 +72,99 @@ internal class TextPDF
         List<List<ColumnContent>> Pages = Helper.Split(BodyRows, RowsByPages);
         int PageNumber = 1;
         decimal ColumnWeight = 0;
-        for(int i = 0; i < Pages.Count; i++)
+        int page = 0;
+        do
         {
+            List<Task> columnWorker = new List<Task>();
             int CounterColumn = 0;
-            if(i > 0)
+            if(page > 0)
             {
                 PageNumber += 1;
                 ColumnWeight = 0;
                 HeightBodyElement = HeightBody;
             }
-            if (HeaderElements != null)
+            columnWorker.Add(DrawBackground(document, PageNumber));
+            columnWorker.Add(DrawHeader(document, HeaderElements, PageNumber));
+            DrawBody(document, ColumnsNumber, Pages, ref PageNumber, ref ColumnWeight, ref page, columnWorker, ref CounterColumn);
+            columnWorker.Add(DrawFooter(document, FooterElements, PageNumber));
+            await Task.WhenAll(columnWorker);
+            page++;
+        } while(page < Pages.Count);
+    }
+
+    private Task DrawBackground(Document page, int PageNumber)
+    {
+        MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height, HeightBody);
+        MapperBase.DrawBackground(page, ReportViewModel.Body.Format.Background, PageNumber, ReportViewModel.Body.Format.Dimension.Height, HeightFooter);
+        MapperBase.DrawBackground(page, ReportViewModel.Footer.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
+        return Task.CompletedTask;
+    }
+
+    private async Task DrawHeader(Document page, List<ColumnContent> HeaderElements, int PageNumber)
+    {
+        if(HeaderElements != null)
+        {
+            ColumnContent CurrentPageHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
+            if(CurrentPageHeader != null)
             {
-                ColumnContent CurrentPageHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
-                if (CurrentPageHeader != null)
-                {
-                    CurrentPageHeader.Value = PageNumber.ToString();
-                }
-                ColumnContent TotalPagesHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
-                if (CurrentPageHeader != null)
-                {
-                    TotalPagesHeader.Value = TotalPages.ToString();
-                }
+                CurrentPageHeader.Value = PageNumber.ToString();
             }
-            if (FooterElements != null)
+            ColumnContent TotalPagesHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
+            if(CurrentPageHeader != null)
             {
-                ColumnContent CurrentPageFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
-                if (CurrentPageFooter != null)
-                {
-                    CurrentPageFooter.Value = PageNumber.ToString();
-                }
-                ColumnContent TotalPagesFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
-                if (CurrentPageFooter != null)
-                {
-                    TotalPagesFooter.Value = TotalPages.ToString();
-                }
+                TotalPagesHeader.Value = TotalPages.ToString();
             }
-            MapperBase.DrawBackground(page, ReportViewModel.Header.Format.Background, PageNumber, ReportViewModel.Header.Format.Dimension.Height, HeightBody);
-            MapperBase.DrawBackground(page, ReportViewModel.Body.Format.Background, PageNumber, ReportViewModel.Body.Format.Dimension.Height, HeightFooter);
-            MapperBase.DrawBackground(page, ReportViewModel.Footer.Format.Background, PageNumber, ReportViewModel.Footer.Format.Dimension.Height, 0);
-            HeaderElements?.ForEach(async Element => await DrawContent(page, Element, HeightHeader, PageNumber, 0, HeightBody));
-            FooterElements?.ForEach(async Element => await DrawContent(page, Element, HeightFooter, PageNumber, 0, 0));
-            await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight, HeightFooter);
-            while(ColumnsNumber > CounterColumn + 1 && i + 1 < Pages.Count)
+            int header_lines = HeaderElements.Count;
+            for(int h = 0; h < header_lines; h++)
             {
-                CounterColumn += 1;
-                i += 1;
-                HeightBodyElement = HeightBody;
-                ColumnWeight += (decimal)(ReportViewModel.Body.Row.Dimension.Width + ReportViewModel.Body.ColumnsSpace);
-                await CreateBodyElements(page, Pages[i], HeightBodyElement, PageNumber, ColumnWeight, HeightFooter);
+                await DrawContent(page, HeaderElements[h], HeightHeader, PageNumber, 0, HeightBody);
             }
         }
     }
+
+    private void DrawBody(Document page,int ColumnsNumber, List<List<ColumnContent>> Pages, ref int PageNumber, ref decimal ColumnWeight, ref int i, 
+        List<Task> columnWorker, ref int CounterColumn)
+    {
+        if(Pages.Any())
+        {
+            columnWorker.Add(CreateBodyElements(page, Pages[i], HeightBody, PageNumber, ColumnWeight, HeightFooter));
+
+            while(CanContinueNextColumn(ColumnsNumber, Pages.Count, i, CounterColumn))
+            {
+                CounterColumn += 1;
+                i += 1;
+                ColumnWeight += (decimal)(ReportViewModel.Body.Row.Dimension.Width + ReportViewModel.Body.ColumnsSpace);
+                columnWorker.Add(CreateBodyElements(page, Pages[i], HeightBody, PageNumber, ColumnWeight, HeightFooter));
+            }
+        }
+    }
+                
+
+    private async Task DrawFooter(Document page, List<ColumnContent> FooterElements, int PageNumber)
+    {
+        if(FooterElements != null)
+        {
+            ColumnContent CurrentPageFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
+            if(CurrentPageFooter != null)
+            {
+                CurrentPageFooter.Value = PageNumber.ToString();
+            }
+            ColumnContent TotalPagesFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
+            if(CurrentPageFooter != null)
+            {
+                TotalPagesFooter.Value = TotalPages.ToString();
+            }
+
+            int footer_lines = FooterElements.Count;
+            for(int f = 0; f < footer_lines; f++)
+            {
+                await DrawContent(page, FooterElements[f], HeightFooter, PageNumber, 0, 0);
+            }
+        }
+    }
+
+    private static bool CanContinueNextColumn(int columnsNumber, int pages, int i, int counterColumn) =>
+        columnsNumber > counterColumn + 1 && i + 1 < pages;
 
     private async Task CreateBodyElements(Document page, List<ColumnContent> pagesElements, decimal heightBodyElement, int numberPage, decimal columnWeight, decimal heightBackground)
     {
@@ -133,17 +175,17 @@ internal class TextPDF
             if(Element != null)
             {
                 ColumnContent TotalPagesBody = Element.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
-                if (TotalPagesBody != null)
+                if(TotalPagesBody != null)
                 {
                     TotalPagesBody.Value = PageElements.Count.ToString();
                 }
                 ColumnContent CurrentPagesBody = Element.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
-                if (CurrentPagesBody != null)
+                if(CurrentPagesBody != null)
                 {
                     CurrentPagesBody.Value = numberPage.ToString();
                 }
             }
-            if (ReportViewModel.Body.Row.Borders != null)
+            if(ReportViewModel.Body.Row.Borders != null)
             {
                 ColumnSetup setup = new ColumnSetup();
                 setup.Format.Borders = ReportViewModel.Body.Row.Borders;
