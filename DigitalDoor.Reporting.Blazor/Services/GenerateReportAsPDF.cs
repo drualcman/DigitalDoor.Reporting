@@ -39,6 +39,24 @@ public class GenerateReportAsPDF : IAsyncDisposable
         }
         return response;
     }
+
+    public async Task<string> GetHtml(string WrapperId)
+    {
+        string result;
+        try
+        {
+            IJSObjectReference module = await ModuleTask.Value;
+            PdfResponse response = await module.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
+            result = response.Html;
+        }
+        catch(Exception ex)
+        {
+            await Console.Out.WriteLineAsync(ex.Message);
+            result = string.Empty;
+        }
+        return result;
+    }
+
     public async ValueTask DisposeAsync()
     {
         try
