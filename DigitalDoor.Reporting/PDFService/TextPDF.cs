@@ -63,9 +63,14 @@ internal class TextPDF
 
     private async Task SetContentDocument(Document document)
     {
-        List<ColumnContent> HeaderElements = Helper.GetElements(ReportViewModel.Header.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Header).ToList());
-        List<ColumnContent> FooterElements = Helper.GetElements(ReportViewModel.Footer.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Footer).ToList());
-        List<ColumnContent> BodyRows = Helper.GetElements(ReportViewModel.Body.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Body).ToList());
+        List<Task> elementsWorker = new List<Task>();
+        List<ColumnContent> HeaderElements = default;
+        List<ColumnContent> FooterElements = default;
+        List<ColumnContent> BodyRows = default;
+        elementsWorker.Add(Task.Run(() => HeaderElements = Helper.GetElements(ReportViewModel.Header.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Header).ToList())));
+        elementsWorker.Add(Task.Run(() => FooterElements = Helper.GetElements(ReportViewModel.Footer.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Footer).ToList())));
+        elementsWorker.Add(Task.Run(() => BodyRows = Helper.GetElements(ReportViewModel.Body.Items, ReportViewModel.Data.Where(d => d.Section == Report.SectionType.Body).ToList())));
+        await Task.WhenAll(elementsWorker);
         int RowsByPages = (int)(ReportViewModel.Body.Format.Dimension.Height / ReportViewModel.Body.Row.Dimension.Height);
         decimal HeightBodyElement = HeightBody;
         int ColumnsNumber = ReportViewModel.Body.ColumnsNumber;
@@ -122,7 +127,7 @@ internal class TextPDF
         }
     }
 
-    private void DrawBody(Document page,int ColumnsNumber, List<List<ColumnContent>> Pages, ref int PageNumber, ref decimal ColumnWeight, ref int i, 
+    private void DrawBody(Document page, int ColumnsNumber, List<List<ColumnContent>> Pages, ref int PageNumber, ref decimal ColumnWeight, ref int i,
         List<Task> columnWorker, ref int CounterColumn)
     {
         if(Pages.Any())
@@ -138,7 +143,7 @@ internal class TextPDF
             }
         }
     }
-                
+
 
     private async Task DrawFooter(Document page, List<ColumnContent> FooterElements, int PageNumber)
     {
