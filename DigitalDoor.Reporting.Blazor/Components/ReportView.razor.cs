@@ -1,11 +1,8 @@
-﻿using DigitalDoor.Reporting.Entities.Interfaces;
+﻿namespace DigitalDoor.Reporting.Blazor.Components;
 
-namespace DigitalDoor.Reporting.Blazor.Components;
-
-public partial class ReportView : IAsyncDisposable
+public partial class ReportView
 {
-    [Inject] public IJSRuntime JSRuntime { get; set; }
-    [Inject] public IReportAsBytes ReportPdf { get; set; }
+    [Inject] public GenerateReportAsPDF GeneratePDF { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
@@ -21,24 +18,10 @@ public partial class ReportView : IAsyncDisposable
     int CurrentPage;
     int CurrentDivId;
 
-
-    readonly Lazy<Task<IJSObjectReference>> ModuleTask;
-
     protected override void OnParametersSet()
     {
         RenderReport();
     }
-
-    public ReportView()
-    {
-        base.OnInitialized();
-        ModuleTask = new Lazy<Task<IJSObjectReference>>(() => GetJSObjectReference(JSRuntime));
-    }
-
-    private Task<IJSObjectReference> GetJSObjectReference(IJSRuntime jsRuntime) =>
-        jsRuntime.InvokeAsync<IJSObjectReference>(
-            "import", $"./{ContentHelper.ContentPath}/ReportTools.js?v={DateTime.Today.ToFileTimeUtc()}").AsTask();
-
 
     #region render page
     void RenderReport()
@@ -343,7 +326,7 @@ public partial class ReportView : IAsyncDisposable
                     styleCol = GetStyle(item.Format);
                 }
                 else
-                {      
+                {
                     styleCol = GetStyle(GetColumnFormat(columns, item.Column));
                 }
 
@@ -355,11 +338,11 @@ public partial class ReportView : IAsyncDisposable
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
                     var itemFormat = GetColumnFormat(columns, item.Column);
-                    if (itemFormat.Angle != 0)
+                    if(itemFormat.Angle != 0)
                     {
                         if(itemFormat.Angle < 0)
                         {
-                            styleCol += $"top: {itemFormat.Position.Top - (decimal)itemFormat.Dimension.Height*0.6m}mm;" +
+                            styleCol += $"top: {itemFormat.Position.Top - (decimal)itemFormat.Dimension.Height * 0.6m}mm;" +
                                 $"right: {itemFormat.Position.Right}mm;" +
                                 $"bottom: {itemFormat.Position.Bottom}mm;" +
                                 $"left: {itemFormat.Position.Left - (decimal)itemFormat.Dimension.Height}mm;";
@@ -369,7 +352,7 @@ public partial class ReportView : IAsyncDisposable
                             styleCol += $"top: {itemFormat.Position.Top + (decimal)itemFormat.Dimension.Height * 1.9m}mm;" +
                                         $"right: {itemFormat.Position.Right}mm;" +
                                         $"bottom: {itemFormat.Position.Bottom}mm;" +
-                                        $"left: {itemFormat.Position.Left - (decimal)itemFormat.Dimension.Height/1.6m}mm;";
+                                        $"left: {itemFormat.Position.Left - (decimal)itemFormat.Dimension.Height / 1.6m}mm;";
                         }
 
                     }
@@ -401,7 +384,7 @@ public partial class ReportView : IAsyncDisposable
     {
         string base64 = string.Empty;
         if(item.Value is not null)
-        {  
+        {
             if(item.Value.GetType() == typeof(byte[]))
             {
                 base64 = SetBase64Image((byte[])item.Value);
@@ -416,7 +399,7 @@ public partial class ReportView : IAsyncDisposable
                         base64 = SetBase64Image(bytes);
                     }
                 }
-                else 
+                else
                 {
                     base64 = item.Value.ToString();
                 }
@@ -436,7 +419,7 @@ public partial class ReportView : IAsyncDisposable
     string GetStyle(Format format)
     {
         string styleContainer = string.Empty;
-        if (format is not null)
+        if(format is not null)
         {
             styleContainer =
                 $"width:{format.Dimension.Width}mm;" +
@@ -446,7 +429,7 @@ public partial class ReportView : IAsyncDisposable
                 $"padding-right: {format.Padding.Right}mm; " +
                 $"padding-left: {format.Padding.Left}mm; " +
                 $"padding-bottom: {format.Padding.Bottom}mm;";
-            if (format.Angle == 0)
+            if(format.Angle == 0)
             {
                 styleContainer += $"top: {format.Position.Top}mm;" +
                 $"right: {format.Position.Right}mm;" +
@@ -455,23 +438,23 @@ public partial class ReportView : IAsyncDisposable
             }
             else
             {
-                if (format.Angle > 0)
+                if(format.Angle > 0)
                 {
                     styleContainer += $"top: {format.Position.Top + ((decimal)format.Dimension.Height)}mm;" +
                     $"right: {format.Position.Right}mm;" +
                     $"bottom: {format.Position.Bottom}mm;" +
-                    $"left: {format.Position.Left-(decimal)format.Dimension.Height}mm;";
+                    $"left: {format.Position.Left - (decimal)format.Dimension.Height}mm;";
                 }
                 else
                 {
-                    styleContainer += $"top: {format.Position.Top - ((decimal)format.Dimension.Height*1.5m)}mm;" +
+                    styleContainer += $"top: {format.Position.Top - ((decimal)format.Dimension.Height * 1.5m)}mm;" +
                     $"right: {format.Position.Right}mm;" +
                     $"bottom: {format.Position.Bottom}mm;" +
-                    $"left: {format.Position.Left - (decimal)format.Dimension.Width/2}mm;";
+                    $"left: {format.Position.Left - (decimal)format.Dimension.Width / 2}mm;";
                 }
-              
+
             }
-            styleContainer +=  $"margin-top: {format.Margin.Top}mm;" +
+            styleContainer += $"margin-top: {format.Margin.Top}mm;" +
                 $"margin-right: {format.Margin.Right}mm;" +
                 $"margin-bottom: {format.Margin.Bottom}mm;" +
                 $"margin-left: {format.Margin.Left}mm;" +
@@ -502,64 +485,14 @@ public partial class ReportView : IAsyncDisposable
     }
     #endregion
 
-
     #region methods
-    public async Task<PdfResponse> SaveAsFile(string pdfName)
-    {
-        PdfResponse response = new();
-        byte[] report = await ReportPdf.GenerateReport(ReportModel);
-        if(report.Length > 0)
-        {
-            response.Result = true;
-            response.Base64String = Convert.ToBase64String(report);
-            try
-            {
-                IJSObjectReference module = await ModuleTask.Value;
-                await module.InvokeVoidAsync("PrintReports.SaveAsFile", pdfName, response.Base64String);
-            }
-            catch(Exception ex)
-            {                                 
-                await Console.Out.WriteLineAsync(ex.Message);
-            }
-        }
-        response.Html = await GetHtml();
-        return response;
-    }
 
-    async public Task<string> GetHtml()
+    public async Task<string> GetHtml()
     {
-        string result;
-        try
-        {
-            IJSObjectReference module = await ModuleTask.Value;
-            PdfResponse response = await module.InvokeAsync<PdfResponse>("PrintReports.GetHtml", WrapperId);
-            result = response.Html;
-        }
-        catch(Exception ex)
-        {
-            await Console.Out.WriteLineAsync(ex.Message);
-            result = string.Empty;
-        }
+        string result = await GeneratePDF.GetHtml(WrapperId);
         if(OnGetHtml.HasDelegate)
             await OnGetHtml.InvokeAsync(result);
         return result;
-    }
-
-
-    public async ValueTask DisposeAsync()
-    {
-        try
-        {
-            if(ModuleTask.IsValueCreated)
-            {
-                IJSObjectReference module = await ModuleTask.Value;
-                await module.DisposeAsync();
-            }
-        }
-        catch(Exception ex)
-        {
-            await Console.Out.WriteLineAsync(ex.Message);
-        }
     }
     #endregion
 }

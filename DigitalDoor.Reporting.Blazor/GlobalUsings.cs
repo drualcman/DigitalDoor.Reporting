@@ -1,5 +1,8 @@
+global using DigitalDoor.Reporting.Blazor.Helpers;
 global using DigitalDoor.Reporting.Blazor.Models;
+global using DigitalDoor.Reporting.Blazor.Services;
 global using DigitalDoor.Reporting.Entities.Helpers;
+global using DigitalDoor.Reporting.Entities.Interfaces;
 global using DigitalDoor.Reporting.Entities.Models;
 global using DigitalDoor.Reporting.Entities.ValueObjects;
 global using DigitalDoor.Reporting.Entities.ViewModels;
@@ -8,5 +11,3 @@ global using Microsoft.AspNetCore.Components.Rendering;
 global using Microsoft.JSInterop;
 global using System.Text;
 global using System.Text.Json;
-global using DigitalDoor.Reporting.Blazor.Helpers;
-global using System.Reflection;
