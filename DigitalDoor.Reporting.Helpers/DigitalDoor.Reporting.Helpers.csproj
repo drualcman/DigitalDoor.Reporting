@@ -16,9 +16,10 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
+		  [2023-12-12] Change version to keep same versin in all nugets.
 		  [2023-11-22] Update frameworks target to NET 6 and NET 8.
 	  </PackageReleaseNotes>
-	  <Version>1.14.50</Version>
+	  <Version>1.14.52</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 

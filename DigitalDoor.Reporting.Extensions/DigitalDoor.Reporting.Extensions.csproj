@@ -30,9 +30,9 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.14.51" />
+		<PackageReference Include="DigitalDoor.Reporting" Version="1.14.52" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" Condition="'$(TargetFramework)' == 'net8.0'" />
 	</ItemGroup>
 	
 	<ItemGroup>
