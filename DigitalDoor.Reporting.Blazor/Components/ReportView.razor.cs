@@ -359,7 +359,7 @@ public partial class ReportView
                     builder.AddAttribute(CurrentDivId, "style", styleCol);
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "img");
-                    string style = "display: block; width: inherit;";
+                    string style = $"display: block;width:{itemFormat.Dimension.Width}mm;height:{itemFormat.Dimension.Height}mm;";
                     builder.AddAttribute(CurrentDivId, "style", style);
                     builder.AddAttribute(CurrentDivId, "src", result);
                     builder.CloseElement();
