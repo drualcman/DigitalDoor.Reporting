@@ -5,7 +5,7 @@ Object and abstraction for can create a report using DigitalDoor.Reporting
 Install nuget
 
 ```
-dotnet add package DigitalDoor.Reporting --version 1.14.52
+dotnet add package DigitalDoor.Reporting --version 1.15.53
 ```
 
 ## Interfaces
