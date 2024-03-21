@@ -51,8 +51,7 @@ internal class TextMapperBase : TextHelper
             BorderStyle.outset => new OutsetBorder((DeviceRgb)GetColor(color), (float)width),
             BorderStyle.inset => new InsetBorder((DeviceRgb)GetColor(color), (float)width),
             BorderStyle.ridge => new RidgeBorder((DeviceRgb)GetColor(color), (float)width),
-            BorderStyle.solid => new SolidBorder(GetColor(color), (float)width),
-            _ => new SolidBorder(GetColor(color), 0)
+            _ => new SolidBorder(GetColor(color), (float)width)
         };
     }
 }

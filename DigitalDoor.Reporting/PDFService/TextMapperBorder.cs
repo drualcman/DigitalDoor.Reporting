@@ -11,17 +11,7 @@ internal class TextMapperBorder : TextMapperBase
         Div Div = new Div();
         Div.SetWidth(MillimeterToPixel(item.Format.Dimension.Width));
         Div.SetHeight(MillimeterToPixel(item.Format.Dimension.Height));
-        Div.SetFixedPosition(MillimeterToPixel(item.Format.Position.Left + weight),
-                      MillimeterToPixel(height - item.Format.Position.Top), MillimeterToPixel(item.Format.Dimension.Width));
-        if(item.Format.Borders.Bottom.Width > 0 &&
-            item.Format.Borders.Top.Width > 0 &&
-            item.Format.Borders.Left.Width > 0 &&
-            item.Format.Borders.Right.Width > 0)
-        {
-            Div.SetFixedPosition(MillimeterToPixel(item.Format.Position.Left + weight),
-                      MillimeterToPixel((height - (decimal)item.Format.Dimension.Height) - item.Format.Position.Top),
-                      MillimeterToPixel(item.Format.Dimension.Width));
-        }
+        
         BorderStyle Style = item.Format.Borders.Style;
         if(item.Format.Borders.Bottom.Width > 0)
         {
@@ -43,6 +33,18 @@ internal class TextMapperBorder : TextMapperBase
         {
             Div.SetBackgroundColor(GetColor(item.Format.Background));
         }
+        Div.SetFixedPosition(MillimeterToPixel(item.Format.Position.Left + weight),
+                      MillimeterToPixel(height - item.Format.Position.Top), MillimeterToPixel(item.Format.Dimension.Width));
+        if (item.Format.Borders.Bottom.Width > 0 ||
+            item.Format.Borders.Top.Width > 0 ||
+            item.Format.Borders.Left.Width > 0 ||
+            item.Format.Borders.Right.Width > 0)
+        {
+            Div.SetFixedPosition(MillimeterToPixel(item.Format.Position.Left + weight),
+                      MillimeterToPixel((height - (decimal)item.Format.Dimension.Height) - item.Format.Position.Top),
+                      MillimeterToPixel(item.Format.Dimension.Width));
+        }
+        Div.SetRotationAngle(ConvertAngleToRadian(item.Format.Angle));
         return Div;
     }
 }

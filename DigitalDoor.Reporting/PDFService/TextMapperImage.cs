@@ -25,24 +25,8 @@ internal class TextMapperImage : TextMapperBase
             Image.SetHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
             Image.SetWidth(MillimeterToPixel(item.Column.Format.Dimension.Width));
             Image.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + weight),
-                    MillimeterToPixel(height - item.Column.Format.Position.Top - (decimal)item.Column.Format.Dimension.Height));
-            BorderStyle Style = item.Column.Format.Borders.Style;
-            if(item.Column.Format.Borders.Top.Width > 0)
-            {
-                Image.SetBorderTop(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Top.Width), item.Column.Format.Borders.Top.Colour));
-            }
-            if(item.Column.Format.Borders.Bottom.Width > 0)
-            {
-                Image.SetBorderBottom(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Bottom.Width), item.Column.Format.Borders.Bottom.Colour));
-            }
-            if(item.Column.Format.Borders.Left.Width > 0)
-            {
-                Image.SetBorderLeft(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Left.Width), item.Column.Format.Borders.Left.Colour));
-            }
-            if(item.Column.Format.Borders.Right.Width > 0)
-            {
-                Image.SetBorderRight(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Right.Width), item.Column.Format.Borders.Right.Colour));
-            }
+                    MillimeterToPixel(height - item.Column.Format.Position.Top - (decimal)item.Column.Format.Dimension.Height),
+                    MillimeterToPixel(item.Column.Format.Dimension.Width));
             Image.SetRotationAngle(ConvertAngleToRadian(item.Column.Format.Angle));             
         }
         catch { }

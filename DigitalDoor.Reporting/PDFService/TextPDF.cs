@@ -212,16 +212,13 @@ internal class TextPDF
         foreach(var item in format.Columns)
         {
             string Content = item.Value;
-            if(Content != null)
+            if (Content != null)
             {
-                if(Content == " ")
+                if (string.IsNullOrWhiteSpace(Content))
                 {
                     Div BorderSpaceWhite = MapperBorder.SetBorder(item.Column, height, weight);
                     BorderSpaceWhite.SetPageNumber(PositionPage);
                     page.Add(BorderSpaceWhite);
-                }
-                else if(Content == "")
-                {
                     MapperBase.DrawBackground(page, item.Column.Format.Background, PositionPage, item.Column.Format.Dimension.Height, heightBackground);
                 }
                 else
@@ -231,11 +228,17 @@ internal class TextPDF
                     page.Add(Text);
                 }
             }
-            if(item.Image != null && item.Image.Length > 0)
+            else
             {
-                Image Image = MapperImage.SetImage(item.Image, item, height, weight);
-                Image.SetPageNumber(PositionPage);
-                page.Add(Image);
+                if (item.Image != null && item.Image.Length > 0)
+                {
+                    Image Image = MapperImage.SetImage(item.Image, item, height, weight);
+                    Image.SetPageNumber(PositionPage);
+                    page.Add(Image);
+                    Div BorderSpaceWhite = MapperBorder.SetBorder(item.Column, height, weight);
+                    BorderSpaceWhite.SetPageNumber(PositionPage);
+                    page.Add(BorderSpaceWhite);
+                }
             }
         }
         return Task.CompletedTask;
