@@ -13,8 +13,6 @@ public class Border
     private Shade LeftBK;
     public BorderStyle Style { get { return StyleBK; } set { StyleBK = value; } }
     private BorderStyle StyleBK; 
-    public Kernel Radius { get { return RadiusBK; } set { RadiusBK = value; } }
-    private Kernel RadiusBK;
 
     public Border()
     {
@@ -23,18 +21,13 @@ public class Border
         BottomBK = new Shade();
         LeftBK = new Shade();
         StyleBK = BorderStyle.none;
-        Radius = new Kernel();
     }
 
-    public Border(Kernel radius) : this() { Radius = radius; }
-    public Border(BorderStyle style, Kernel radius) : this(new Shade(1), style, radius) { }
-    public Border(BorderStyle style) : this(new Shade(1), style) { }
     public Border(Shade top, Shade right, Shade bottom, Shade left, BorderStyle style) : this() =>
         (TopBK, RightBK, BottomBK, LeftBK, StyleBK) = (top, right, bottom, left, style);
     public Border(Shade top, Shade right, Shade bottom, Shade left) : this(top, right, bottom, left, BorderStyle.none) { }
     public Border(Shade all) : this(all, all, all, all) { }
     public Border(Shade all, BorderStyle style) : this(all, all, all, all, style) { }
-    public Border(Shade all, Kernel radius) : this(all) { Radius = radius; }
-    public Border(Shade all, BorderStyle style, Kernel radius) : this(all, style) { Radius = radius; }
+    public Border(BorderStyle style) : this(new Shade(1), style) { }
 
 }
