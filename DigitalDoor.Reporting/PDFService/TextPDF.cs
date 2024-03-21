@@ -43,7 +43,7 @@ internal class TextPDF
         PdfDocument PdfDocument = new PdfDocument(PdfWriter);
         PageSize Size = new PageSize(Helper.MillimeterToPixel(ReportViewModel.Page.Dimension.Width),
             Helper.MillimeterToPixel(ReportViewModel.Page.Dimension.Height));
-        if(ReportViewModel.Page.Orientation == Report.Orientation.Landscape)
+        if (ReportViewModel.Page.Orientation == Report.Orientation.Landscape)
         {
             Size = Size.Rotate();
         }
@@ -82,7 +82,7 @@ internal class TextPDF
         {
             List<Task> columnWorker = new List<Task>();
             int CounterColumn = 0;
-            if(page > 0)
+            if (page > 0)
             {
                 PageNumber += 1;
                 ColumnWeight = 0;
@@ -94,7 +94,7 @@ internal class TextPDF
             columnWorker.Add(DrawFooter(document, FooterElements, PageNumber));
             await Task.WhenAll(columnWorker);
             page++;
-        } while(page < Pages.Count);
+        } while (page < Pages.Count);
     }
 
     private Task DrawBackground(Document page, int PageNumber)
@@ -107,20 +107,20 @@ internal class TextPDF
 
     private async Task DrawHeader(Document page, List<ColumnContent> HeaderElements, int PageNumber)
     {
-        if(HeaderElements != null)
+        if (HeaderElements != null)
         {
             ColumnContent CurrentPageHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
-            if(CurrentPageHeader != null)
+            if (CurrentPageHeader != null)
             {
                 CurrentPageHeader.Value = PageNumber.ToString();
             }
             ColumnContent TotalPagesHeader = HeaderElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
-            if(CurrentPageHeader != null)
+            if (CurrentPageHeader != null)
             {
                 TotalPagesHeader.Value = TotalPages.ToString();
             }
             int header_lines = HeaderElements.Count;
-            for(int h = 0; h < header_lines; h++)
+            for (int h = 0; h < header_lines; h++)
             {
                 await DrawContent(page, HeaderElements[h], HeightHeader, PageNumber, 0, HeightBody);
             }
@@ -130,11 +130,11 @@ internal class TextPDF
     private void DrawBody(Document page, int ColumnsNumber, List<List<ColumnContent>> Pages, ref int PageNumber, ref decimal ColumnWeight, ref int i,
         List<Task> columnWorker, ref int CounterColumn)
     {
-        if(Pages.Any())
+        if (Pages.Any())
         {
             columnWorker.Add(CreateBodyElements(page, Pages[i], HeightBody, PageNumber, ColumnWeight, HeightFooter));
 
-            while(CanContinueNextColumn(ColumnsNumber, Pages.Count, i, CounterColumn))
+            while (CanContinueNextColumn(ColumnsNumber, Pages.Count, i, CounterColumn))
             {
                 CounterColumn += 1;
                 i += 1;
@@ -147,21 +147,21 @@ internal class TextPDF
 
     private async Task DrawFooter(Document page, List<ColumnContent> FooterElements, int PageNumber)
     {
-        if(FooterElements != null)
+        if (FooterElements != null)
         {
             ColumnContent CurrentPageFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
-            if(CurrentPageFooter != null)
+            if (CurrentPageFooter != null)
             {
                 CurrentPageFooter.Value = PageNumber.ToString();
             }
             ColumnContent TotalPagesFooter = FooterElements[0]?.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
-            if(CurrentPageFooter != null)
+            if (CurrentPageFooter != null)
             {
                 TotalPagesFooter.Value = TotalPages.ToString();
             }
 
             int footer_lines = FooterElements.Count;
-            for(int f = 0; f < footer_lines; f++)
+            for (int f = 0; f < footer_lines; f++)
             {
                 await DrawContent(page, FooterElements[f], HeightFooter, PageNumber, 0, 0);
             }
@@ -174,23 +174,23 @@ internal class TextPDF
     private async Task CreateBodyElements(Document page, List<ColumnContent> pagesElements, decimal heightBodyElement, int numberPage, decimal columnWeight, decimal heightBackground)
     {
         List<ColumnContent> PageElements = pagesElements;
-        for(int r = 0; r < PageElements.Count; r++)
+        for (int r = 0; r < PageElements.Count; r++)
         {
             ColumnContent Element = PageElements[r];
-            if(Element != null)
+            if (Element != null)
             {
                 ColumnContent TotalPagesBody = Element.Columns.Where(d => d.Column.DataColumn.PropertyName == "TotalPages").FirstOrDefault();
-                if(TotalPagesBody != null)
+                if (TotalPagesBody != null)
                 {
                     TotalPagesBody.Value = PageElements.Count.ToString();
                 }
                 ColumnContent CurrentPagesBody = Element.Columns.Where(d => d.Column.DataColumn.PropertyName == "CurrentPage").FirstOrDefault();
-                if(CurrentPagesBody != null)
+                if (CurrentPagesBody != null)
                 {
                     CurrentPagesBody.Value = numberPage.ToString();
                 }
             }
-            if(ReportViewModel.Body.Row.Borders != null)
+            if (ReportViewModel.Body.Row.Borders != null)
             {
                 ColumnSetup setup = new ColumnSetup();
                 setup.Format.Borders = ReportViewModel.Body.Row.Borders;
@@ -209,7 +209,7 @@ internal class TextPDF
     private Task DrawContent(Document page, ColumnContent format, decimal height, int PositionPage, decimal weight, decimal heightBackground)
     {
         format.Columns = format.Columns.OrderBy(d => d.Column.Format.Foreground).ToList();
-        foreach(var item in format.Columns)
+        foreach (var item in format.Columns)
         {
             string Content = item.Value;
             if (Content != null)

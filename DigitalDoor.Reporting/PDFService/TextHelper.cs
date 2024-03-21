@@ -1,6 +1,12 @@
 ﻿using DigitalDoor.Reporting.Entities.Helpers;
 using DigitalDoor.Reporting.Entities.Models;
+using DigitalDoor.Reporting.Entities.ValueObjects;
 using DigitalDoor.Reporting.PDF;
+using iText.Kernel.Colors;
+using iText.Layout;
+using iText.Layout.Borders;
+using iText.Layout.Element;
+using iText.Layout.Tagging;
 using System.Text.Json;
 
 namespace DigitalDoor.Reporting.PDFService;
@@ -101,4 +107,32 @@ internal class TextHelper
         }
         return ColumnsContent;
     }
+
+    protected void SetRadius<T>(AbstractElement<T> element, Format format) where T : AbstractElement<T>
+    {
+        element.SetBorderTopLeftRadius(new iText.Layout.Properties.BorderRadius(MillimeterToPixel(format.Borders.Top.Radius.Left)));
+        element.SetBorderTopRightRadius(new iText.Layout.Properties.BorderRadius(MillimeterToPixel(format.Borders.Top.Radius.Right)));
+        element.SetBorderBottomLeftRadius(new iText.Layout.Properties.BorderRadius(MillimeterToPixel(format.Borders.Bottom.Radius.Left)));
+        element.SetBorderBottomRightRadius(new iText.Layout.Properties.BorderRadius(MillimeterToPixel(format.Borders.Bottom.Radius.Right)));
+    }
+
+    protected void SetDimensions<T>(BlockElement<T> element, Format format) where T : BlockElement<T>
+    {
+        element.SetWidth(MillimeterToPixel(format.Dimension.Width));
+        element.SetHeight(MillimeterToPixel(format.Dimension.Height));
+    }
+    protected void SetMargins<T>(BlockElement<T> element, Format format) where T : BlockElement<T>
+    {
+        element.SetMarginTop(MillimeterToPixel(format.Margin.Top));
+        element.SetMarginBottom(MillimeterToPixel(format.Margin.Bottom));
+        element.SetMarginLeft(MillimeterToPixel(format.Margin.Left));
+        element.SetMarginRight(MillimeterToPixel(format.Margin.Right));
+    }  
+    protected void SetPaddings<T>(BlockElement<T> element, Format format) where T : BlockElement<T>
+    {
+        element.SetPaddingTop(MillimeterToPixel(format.Padding.Top));
+        element.SetPaddingBottom(MillimeterToPixel(format.Padding.Bottom));
+        element.SetPaddingLeft(MillimeterToPixel(format.Padding.Left));
+        element.SetPaddingRight(MillimeterToPixel(format.Padding.Right));
+    } 
 }

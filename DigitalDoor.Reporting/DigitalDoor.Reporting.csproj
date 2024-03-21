@@ -52,10 +52,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.14.52" />
+    
     <PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.14.52" />
     <PackageReference Include="itext7" Version="8.0.3" />
     <PackageReference Include="itext7.bouncy-castle-adapter" Version="8.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\DigitalDoor.Reporting.Entities\DigitalDoor.Reporting.Entities.csproj" />
 	</ItemGroup>
 	
 </Project>

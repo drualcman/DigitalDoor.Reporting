@@ -15,7 +15,12 @@ internal class TextMapperParagraph : TextMapperBase
     public Paragraph SetParagraph(string textValue, ColumnContent item, decimal height, decimal width)
     {
         Paragraph Text = new Paragraph();
-        Text.SetFontSize((float)(item.Column.Format.FontDetails.ColorSize.Width));
+        Text.SetMinHeight(MillimeterToPixel(item.Column.Format.Dimension.Height + 1));
+        Text.SetMinWidth(MillimeterToPixel(item.Column.Format.Dimension.Width + 1));
+        SetDimensions(Text, item.Column.Format);
+        SetMargins(Text, item.Column.Format);
+        SetPaddings(Text, item.Column.Format);
+        SetBorders(Text, item.Column.Format);
         Color Color = GetColor(item.Column.Format.FontDetails.ColorSize.Colour.ToLower());
         if (item.Column.Format.FontDetails.FontStyle.Bold > 599)
         {
@@ -25,32 +30,8 @@ internal class TextMapperParagraph : TextMapperBase
         {
             Text.SetItalic();
         }
-        Text.SetPaddingTop(MillimeterToPixel(item.Column.Format.Padding.Top));
-        Text.SetPaddingBottom(MillimeterToPixel(item.Column.Format.Padding.Bottom));
-        Text.SetPaddingLeft(MillimeterToPixel(item.Column.Format.Padding.Left));
-        Text.SetPaddingRight(MillimeterToPixel(item.Column.Format.Padding.Right));
-        Text.SetMarginTop(MillimeterToPixel(item.Column.Format.Margin.Top));
-        Text.SetMarginBottom(MillimeterToPixel(item.Column.Format.Margin.Bottom));
-        Text.SetMarginLeft(MillimeterToPixel(item.Column.Format.Margin.Left));
-        Text.SetMarginRight(MillimeterToPixel(item.Column.Format.Margin.Right));
         Text.SetFontColor(Color);
-        Report.BorderStyle Style = item.Column.Format.Borders.Style;
-        if (item.Column.Format.Borders.Top.Width > 0)
-        {
-            Text.SetBorderTop(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Top.Width), item.Column.Format.Borders.Top.Colour));
-        }
-        if (item.Column.Format.Borders.Bottom.Width > 0)
-        {
-            Text.SetBorderBottom(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Bottom.Width), item.Column.Format.Borders.Bottom.Colour));
-        }
-        if (item.Column.Format.Borders.Left.Width > 0)
-        {
-            Text.SetBorderLeft(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Left.Width), item.Column.Format.Borders.Left.Colour));
-        }
-        if (item.Column.Format.Borders.Right.Width > 0)
-        {
-            Text.SetBorderRight(GetBorder(Style, MillimeterToPixel(item.Column.Format.Borders.Right.Width), item.Column.Format.Borders.Right.Colour));
-        }
+        Text.SetFontSize((float)(item.Column.Format.FontDetails.ColorSize.Width));
         try
         {
 
@@ -83,9 +64,6 @@ internal class TextMapperParagraph : TextMapperBase
             Report.TextAlignment.Justify => TextAlignment.JUSTIFIED,
             _ => TextAlignment.LEFT,
         };
-        
-        Text.SetMinHeight(MillimeterToPixel(item.Column.Format.Dimension.Height));
-
         Text.SetTextAlignment(Aligment);
         Text.SetFixedPosition(MillimeterToPixel(item.Column.Format.Position.Left + width),
                       MillimeterToPixel(height - (item.Column.Format.Position.Top + (decimal)(item.Column.Format.FontDetails.ColorSize.Width * 0.53))),

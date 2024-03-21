@@ -14,6 +14,7 @@ internal class TextMapperImage : TextMapperBase
         {
             ImageData imageData = ImageDataFactory.Create(bytes);
             Image = new Image(imageData);
+            SetRadius(Image, item.Column.Format);
             Image.SetPaddingTop(MillimeterToPixel(item.Column.Format.Padding.Top));
             Image.SetPaddingBottom(MillimeterToPixel(item.Column.Format.Padding.Bottom));
             Image.SetPaddingLeft(MillimeterToPixel(item.Column.Format.Padding.Left));

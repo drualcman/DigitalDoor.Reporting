@@ -467,6 +467,10 @@ public partial class ReportView
                 $"border-right-color: {format.Borders.Right.Colour};" +
                 $"border-bottom-color: {format.Borders.Bottom.Colour};" +
                 $"border-bottom-width: {format.Borders.Bottom.Width}mm;" +
+                $"border-top-left-radius: {format.Borders.Top.Radius.Left}mm;" +
+                $"border-top-right-radius: {format.Borders.Top.Radius.Right}mm;" +
+                $"border-bottom-right-radius: {format.Borders.Bottom.Radius.Right}mm;" +
+                $"border-bottom-left-radius: {format.Borders.Bottom.Radius.Left}mm;" +
                 $"transform:rotate({format.Angle}deg);" +
                 $"color: {format.FontDetails.ColorSize.Colour};" +
                 $"font-family: {format.FontDetails.FontName}, Helvetica, sans-serif;" +

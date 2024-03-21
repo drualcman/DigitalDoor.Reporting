@@ -56,9 +56,12 @@
   </ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.14.52" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.25" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.3" Condition="'$(TargetFramework)' == 'net8.0'" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <ProjectReference Include="..\DigitalDoor.Reporting\DigitalDoor.Reporting.csproj" />
 	</ItemGroup>
 
 </Project>
