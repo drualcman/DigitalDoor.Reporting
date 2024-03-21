@@ -14,6 +14,13 @@ public partial class PrintReport
     [Parameter] public EventCallback<string> OnGetHtml { get; set; }
 
     string WrapperId = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
+    string WrapperCss = "button is-primary btn btn-primary";
+
+    protected override void OnParametersSet()
+    {
+        if (AdditionalAttributes is not null && AdditionalAttributes.TryGetValue("class", out object css)) WrapperCss = css.ToString();
+        base.OnParametersSet();
+    }
 
     async Task GeneratePdf(string pdfName)
     {

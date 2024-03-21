@@ -1,13 +1,14 @@
 ﻿@if(ReportModel is not null)
 {
-    <button type="button" @onclick=GeneratePdf @attributes="AdditionalAttributes">
+    <button type="button" @onclick=GeneratePdf class="@WrapperCss" 
+        @attributes="AdditionalAttributes">
         @if(ChildContent is not null)
         {
             @ChildContent
         }
         else
         {
-            <span class="button is-link btn btn-primary">Generate PDF</span>
+            <span>Generate PDF</span>
         }
     </button>
     <ReportView ReportModel=ReportModel 
