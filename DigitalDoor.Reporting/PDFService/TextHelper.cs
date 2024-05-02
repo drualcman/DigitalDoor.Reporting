@@ -1,12 +1,7 @@
 ﻿using DigitalDoor.Reporting.Entities.Helpers;
 using DigitalDoor.Reporting.Entities.Models;
-using DigitalDoor.Reporting.Entities.ValueObjects;
 using DigitalDoor.Reporting.PDF;
-using iText.Kernel.Colors;
-using iText.Layout;
-using iText.Layout.Borders;
 using iText.Layout.Element;
-using iText.Layout.Tagging;
 using System.Text.Json;
 
 namespace DigitalDoor.Reporting.PDFService;
@@ -27,9 +22,9 @@ internal class TextHelper
     {
         List<List<ColumnContent>> Result = new List<List<ColumnContent>>();
         int Index = 0;
-        if(original is not null)
+        if (original is not null)
         {
-            while(Index < original.Count)
+            while (Index < original.Count)
             {
                 List<ColumnContent> List = original.GetRange(Index, Math.Min(sizeList, original.Count - Index));
                 Result.Add(List);
@@ -47,7 +42,7 @@ internal class TextHelper
     public List<ColumnContent> GetElements(List<ColumnSetup> setups, List<ColumnData> data)
     {
         List<ColumnContent> Elements = default;
-        if(data.Count > 0)
+        if (data.Count > 0)
         {
             Elements = GetColumnsContent(setups, data);
         }
@@ -58,20 +53,20 @@ internal class TextHelper
     {
         List<ColumnContent> ColumnsContent = new();
         int TotalRows = data.Max(d => d.Row) + 1;
-        for(int Counter = 0; Counter < TotalRows; Counter++)
+        for (int Counter = 0; Counter < TotalRows; Counter++)
         {
             ColumnContent Content = new ColumnContent();
             Content.Columns = new List<ColumnContent>();
-            for(int i = 0; i < setups.Count; i++)
+            for (int i = 0; i < setups.Count; i++)
             {
                 List<ColumnData> RowData = data.Where(d => d.Column.Equals(setups[i].DataColumn)).ToList();
                 ColumnData Data = RowData.FirstOrDefault(r => r.Row == Counter);
-                if(Data != null)
+                if (Data != null)
                 {
-                    if(Data.Value != null)
+                    if (Data.Value != null)
                     {
 
-                        if(ImageValidator.IsLikelyImage(Data.Value.ToString()))
+                        if (ImageValidator.IsLikelyImage(Data.Value.ToString()))
                         {
                             JsonElement JsonValue = (JsonElement)Data.Value;
                             JsonValue.TryGetBytesFromBase64(out byte[] image);
@@ -81,7 +76,7 @@ internal class TextHelper
                                 Image = image
                             });
                         }
-                        else if(Data?.Value.GetType() == typeof(byte[]))
+                        else if (Data?.Value.GetType() == typeof(byte[]))
                         {
                             Content.Columns.Add(new ColumnContent()
                             {
@@ -100,7 +95,7 @@ internal class TextHelper
                     }
                 }
             }
-            if(Content.Columns.Count > 0)
+            if (Content.Columns.Count > 0)
             {
                 ColumnsContent.Add(Content);
             }
@@ -127,12 +122,12 @@ internal class TextHelper
         element.SetMarginBottom(MillimeterToPixel(format.Margin.Bottom));
         element.SetMarginLeft(MillimeterToPixel(format.Margin.Left));
         element.SetMarginRight(MillimeterToPixel(format.Margin.Right));
-    }  
+    }
     protected void SetPaddings<T>(BlockElement<T> element, Format format) where T : BlockElement<T>
     {
         element.SetPaddingTop(MillimeterToPixel(format.Padding.Top));
         element.SetPaddingBottom(MillimeterToPixel(format.Padding.Bottom));
         element.SetPaddingLeft(MillimeterToPixel(format.Padding.Left));
         element.SetPaddingRight(MillimeterToPixel(format.Padding.Right));
-    } 
+    }
 }
