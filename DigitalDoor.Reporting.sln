@@ -21,8 +21,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalDoor.Reporting.Exten
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalDoor.Reporting.Blazor", "DigitalDoor.Reporting.Blazor\DigitalDoor.Reporting.Blazor.csproj", "{B9BB3D44-BA7D-4BFD-BDEB-9F2FBBEB8655}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DigitalDoor.Reporting.Website", "DigitalDoor.Reporting.Website\DigitalDoor.Reporting.Website.csproj", "{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,10 +47,6 @@ Global
 		{B9BB3D44-BA7D-4BFD-BDEB-9F2FBBEB8655}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B9BB3D44-BA7D-4BFD-BDEB-9F2FBBEB8655}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B9BB3D44-BA7D-4BFD-BDEB-9F2FBBEB8655}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,7 +57,6 @@ Global
 		{9A0E0FC7-A887-4CB8-8933-FA8D9C7F0D88} = {FC7D9C43-4C68-455A-B143-61CAB23D73B2}
 		{CB910ED0-AE69-4512-B37B-280346F02C4A} = {ADC792B4-1543-4BEE-84F7-8C117AA965E4}
 		{B9BB3D44-BA7D-4BFD-BDEB-9F2FBBEB8655} = {8EF2C610-24D6-4EA5-88BF-E35EC1BCA804}
-		{BA7CB4FE-3EE6-4589-8127-E447CD2BFCAF} = {8EF2C610-24D6-4EA5-88BF-E35EC1BCA804}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3524D4F-1322-4CE1-A6F2-A33153082F7F}
