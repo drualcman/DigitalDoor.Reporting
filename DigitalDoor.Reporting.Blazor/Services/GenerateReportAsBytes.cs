@@ -2,18 +2,18 @@
 internal class GenerateReportAsBytes : IAsyncDisposable
 {
     readonly Lazy<Task<IJSObjectReference>> ModuleTask;
-    readonly IReportAsBytes ReportPdf;
+    readonly IReportAsBytes ReportBytes;
 
     public GenerateReportAsBytes(IJSRuntime JsRuntime, IReportAsBytes reportPdf)
     {
         ModuleTask = new Lazy<Task<IJSObjectReference>>(() => LoadJsModuleHelper.GetJSObjectReference(JsRuntime, "ReportTools.js"));
-        ReportPdf = reportPdf;
+        ReportBytes = reportPdf;
     }
 
     public async Task<PdfResponse> GenerateReportAync(ReportViewModel reportModel)
     {
         PdfResponse response = new();
-        byte[] report = await ReportPdf.GenerateReport(reportModel);
+        byte[] report = await ReportBytes.GenerateReport(reportModel);
         if(report.Length > 0)
         {
             response.Result = true;
