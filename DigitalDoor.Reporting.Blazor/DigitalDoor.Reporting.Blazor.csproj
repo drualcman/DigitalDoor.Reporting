@@ -17,7 +17,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; pdf, blazor; blazor webaassembly; blazor server;</PackageTags>
     <PackageReleaseNotes>
-		2024-05-11: Update nugets.
+		2024-05-11: Update DigitalDoor.Reporting to version 1.16.54 and nugets.
 		2024-03-21: Add radius property for the borders. Fixed image dimensions. Fixed button report style. Update nugets.
 		2024-03-20: Removed double possible button in PrintReportComponent and change default colour button in Bulma CSS in the component PrintReport to is-primary
 		2023-12-12: Refactor to avoid duplicate code and create new service to manage create pdf. Add Dependency container to add reporting services and new service.
@@ -57,7 +57,7 @@
   </ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.15.53" />
+		<PackageReference Include="DigitalDoor.Reporting" Version="1.16.54" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.29" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.4" Condition="'$(TargetFramework)' == 'net8.0'" />
 	</ItemGroup>

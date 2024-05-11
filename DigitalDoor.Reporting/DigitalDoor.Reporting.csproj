@@ -14,7 +14,7 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>reporting; pdf, blazor; blazor webaassembly; blazor server; MVC; webapi</PackageTags>
 		<PackageReleaseNotes>
-			2024-05-11: Removed dependency from iTextSharp and moved to DigitalDoor.Presenters.PDF nuget.
+			2024-05-11: Removed dependency from iTextSharp and moved to DigitalDoor.Presenters.PDF nuget. Remind now to use interface IReportAsBytes must be have DigitalDoor.Reporting.Presenters.PDF 1.16.54. Update nugets last version.
 			2024-03-21: Add radius property for the borders. Fixed image borders. Fixed angle in empty containers. Improve generate PDF speed.
 			2024-03-19: Update nugets.
 			2023-12-12: More improvement PDF creation time.
@@ -52,8 +52,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.15.53" />
-		<PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.14.52" />
+		<PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.16.54" />
+		<PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.14.53" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" Condition="'$(TargetFramework)' == 'net8.0'" />
 	</ItemGroup>

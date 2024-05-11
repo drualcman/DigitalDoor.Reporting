@@ -5,14 +5,15 @@ Object and abstraction for can create a report using DigitalDoor.Reporting
 Install nuget
 
 ```
-dotnet add package DigitalDoor.Reporting --version 1.15.53
+dotnet add package DigitalDoor.Reporting --version 1.16.54
 ```
 
 ## Interfaces
 ``` csharp
 IPDFReportOutputPort;
 IPDFReportPresenter;
-IReportAsBytes;
+IReportAsBytes<TImplementation>;    //specific implementation => class PDFReport: IReportAsBytes<PDFReport> or class JPGReport: IReportAsBytes<JPGReport>
+IReportAsBytes;                     //default implementation to get the bytes, usually as PDF
 IReportDataRepository;
 IReportsOutputPort;
 IReportsPresenter;
