@@ -2,7 +2,7 @@
 
 public partial class ReportView
 {
-    [Inject] public GenerateReportAsPDF GeneratePDF { get; set; }
+    [Inject] GenerateReportAsBytes GenerateBytes { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
@@ -493,7 +493,7 @@ public partial class ReportView
 
     public async Task<string> GetHtml()
     {
-        string result = await GeneratePDF.GetHtml(WrapperId);
+        string result = await GenerateBytes.GetHtml(WrapperId);
         if(OnGetHtml.HasDelegate)
             await OnGetHtml.InvokeAsync(result);
         return result;

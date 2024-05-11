@@ -1,10 +1,10 @@
 ﻿namespace DigitalDoor.Reporting.Blazor.Services;
-public class GenerateReportAsPDF : IAsyncDisposable
+internal class GenerateReportAsBytes : IAsyncDisposable
 {
     readonly Lazy<Task<IJSObjectReference>> ModuleTask;
     readonly IReportAsBytes ReportPdf;
 
-    public GenerateReportAsPDF(IJSRuntime JsRuntime, IReportAsBytes reportPdf)
+    public GenerateReportAsBytes(IJSRuntime JsRuntime, IReportAsBytes reportPdf)
     {
         ModuleTask = new Lazy<Task<IJSObjectReference>>(() => LoadJsModuleHelper.GetJSObjectReference(JsRuntime, "ReportTools.js"));
         ReportPdf = reportPdf;

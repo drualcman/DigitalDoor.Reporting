@@ -2,7 +2,7 @@
 
 public partial class PrintReport
 {
-    [Inject] public GenerateReportAsPDF GeneratePDF { get; set; }
+    [Inject] GenerateReportAsBytes GenerateBytes { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool DirectDownload { get; set; } = true;
     [Parameter] public string PdfName { get; set; } = "document.pdf";
@@ -22,27 +22,30 @@ public partial class PrintReport
         base.OnParametersSet();
     }
 
-    async Task GeneratePdf(string pdfName)
+    async Task GenerateBytesData(string pdfName)
     {
         if(BeginInvoke.HasDelegate)
             await BeginInvoke.InvokeAsync();
+        await Task.Delay(1);
 
         PdfResponse response = new();
         response.Result = true;
         if(DirectDownload)
-            response = await GeneratePDF.SaveAsFile(ReportModel, pdfName);
+            response = await GenerateBytes.SaveAsFile(ReportModel, pdfName);
         else
-            response = await GeneratePDF.GenerateReportAync(ReportModel);
+            response = await GenerateBytes.GenerateReportAync(ReportModel);
 
-        response.Html = await GeneratePDF.GetHtml(WrapperId);
+        response.Html = await GenerateBytes.GetHtml(WrapperId);
 
         if(OnCreate.HasDelegate)
             await OnCreate.InvokeAsync(response);
+        await Task.Delay(1);
 
-        if(EndInvoke.HasDelegate)
+        if (EndInvoke.HasDelegate)
             await EndInvoke.InvokeAsync();
+        await Task.Delay(1);
     }
 
-    Task GeneratePdf() =>
-        GeneratePdf(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);
+    Task GenerateBytesData() =>
+        GenerateBytesData(string.IsNullOrEmpty(PdfName) ? "document.pdf" : PdfName);
 }
