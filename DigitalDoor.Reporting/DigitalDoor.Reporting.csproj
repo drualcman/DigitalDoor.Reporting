@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
 	<PropertyGroup>
 		<TargetFrameworks>net6.0;net8.0</TargetFrameworks>
 		<LangVersion>12</LangVersion>
@@ -7,7 +6,7 @@
 		<Nullable>disable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
-		<Authors>Sergi Ortiz Gomez, Angel Guiao, Daniel Rosas Mialma</Authors>
+		<Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
 		<Company>DIGITAL DOOR Pty Ltd</Company>
 		<Description>Generate reports from code using clean architecture. Can be used in backend API, in Blazor Server, Blazor Web Assembly, MVC and any .NET Core application.</Description>
 		<Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
@@ -55,7 +54,8 @@
 	<ItemGroup>
 		<PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.15.53" />
 		<PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.14.52" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" Condition="'$(TargetFramework)' == 'net8.0'" />
 	</ItemGroup>
 
 </Project>

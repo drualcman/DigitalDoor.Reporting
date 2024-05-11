@@ -16,16 +16,17 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
-		  [2023-12-12] Change version to keep same versin in all nugets.
+		  [2024-11-05] Update version in all nugets.
+		  [2023-12-12] Change version to keep same version in all nugets.
 		  [2023-11-22] Update frameworks target to NET 6 and NET 8.
 	  </PackageReleaseNotes>
-	  <Version>1.14.52</Version>
+	  <Version>1.14.53</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Drawing.Common" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'"/>
-		<PackageReference Include="System.Drawing.Common" Version="8.0.0" Condition="'$(TargetFramework)' == 'net8.0'" />
+		<PackageReference Include="System.Drawing.Common" Version="8.0.4" Condition="'$(TargetFramework)' == 'net8.0'" />
       </ItemGroup>
 
 	<ItemGroup>
