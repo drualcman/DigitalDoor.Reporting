@@ -1,6 +1,6 @@
 ﻿namespace DigitalDoor.Reporting.Entities.Helpers;
 
-internal class ReportFunctions
+public class ReportFunctions
 {
     public object SetValue(Item column, object data)
     {
