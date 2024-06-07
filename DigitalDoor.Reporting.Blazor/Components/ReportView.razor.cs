@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-
-namespace DigitalDoor.Reporting.Blazor.Components;
+﻿namespace DigitalDoor.Reporting.Blazor.Components;
 
 public partial class ReportView
 {
@@ -44,22 +42,16 @@ public partial class ReportView
             CreateHeader(builder, ReportModel, grouped);
 
             //body
-            grouped = ReportModel.Data.Where(d => d.Section == SectionType.Body)
-                .GroupBy(r => r.Row);
+            grouped = ReportModel.Data.Where(d => d.Section == SectionType.Body).GroupBy(r => r.Row);
 
             StartBody(builder, ReportModel);                 //start body
-
             StartColumnSection(builder);       //start first column
-
             CreateRow(builder, grouped, ReportModel, ReportModel.Body.Items);
-
             EndSection(builder);                            //end column
             EndSection(builder);                            //end body
 
             //footer
-            grouped = ReportModel.Data.Where(d => d.Section == SectionType.Footer)
-                .GroupBy(r => r.Row);
-
+            grouped = ReportModel.Data.Where(d => d.Section == SectionType.Footer).GroupBy(r => r.Row);
             CreateFooter(builder, ReportModel, grouped);
 
             EndSection(builder);
@@ -72,7 +64,7 @@ public partial class ReportView
         builder.OpenElement(CurrentDivId, "div");
 
         Format format = new Format(data.Page);
-        if(ReportModel.Page.Orientation == Orientation.Landscape)
+        if (ReportModel.Page.Orientation == Orientation.Landscape)
         {
             format.Dimension = new Dimension(ReportModel.Page.Dimension.Height, ReportModel.Page.Dimension.Width);
         }
@@ -94,7 +86,7 @@ public partial class ReportView
         SectionColumns = data.Header.ColumnsNumber;
         SectionDimension = data.Header.Format.Dimension;
         RowDimension = data.Header.Row.Dimension;
-        if(data.Header.Format.Orientation == Orientation.Landscape)
+        if (data.Header.Format.Orientation == Orientation.Landscape)
         {
             RowDimension = new Dimension(data.Header.Row.Dimension.Height, data.Header.Row.Dimension.Width);
         }
@@ -102,8 +94,7 @@ public partial class ReportView
 
         StartColumnSection(builder);       //start first column
         CreateRow(builder, grouped, data, data.Header.Items);
-
-        builder.CloseElement();
+        EndSection(builder);            //end column
         builder.CloseElement();
         CurrentDivId--;
     }
@@ -113,10 +104,10 @@ public partial class ReportView
         string styleBody;
         SectionColumns = data.Body.ColumnsNumber;
 
-        if(SectionColumns > 1)
+        if (SectionColumns > 1)
         {
             StringBuilder frString = new StringBuilder();
-            for(int i = 0; i < SectionColumns; i++)
+            for (int i = 0; i < SectionColumns; i++)
             {
                 frString.Append("1fr ");
             }
@@ -133,7 +124,7 @@ public partial class ReportView
 
         SectionDimension = data.Body.Format.Dimension;
         RowDimension = data.Body.Row.Dimension;
-        if(data.Body.Format.Orientation == Orientation.Landscape)
+        if (data.Body.Format.Orientation == Orientation.Landscape)
         {
             RowDimension = new Dimension(data.Body.Row.Dimension.Height, data.Body.Row.Dimension.Width);
         }
@@ -159,7 +150,7 @@ public partial class ReportView
         SectionColumns = data.Footer.ColumnsNumber;
         SectionDimension = data.Footer.Format.Dimension;
         RowDimension = data.Footer.Row.Dimension;
-        if(data.Footer.Format.Orientation == Orientation.Landscape)
+        if (data.Footer.Format.Orientation == Orientation.Landscape)
         {
             RowDimension = new Dimension(data.Footer.Row.Dimension.Height, data.Footer.Row.Dimension.Width);
         }
@@ -167,8 +158,7 @@ public partial class ReportView
 
         StartColumnSection(builder);       //start first column
         CreateRow(builder, grouped, data, data.Footer.Items);
-
-        builder.CloseElement();
+        EndSection(builder);            //end column
         builder.CloseElement();
         CurrentDivId--;
     }
@@ -177,36 +167,6 @@ public partial class ReportView
     {
         builder.CloseElement();
         CurrentDivId--;
-    }
-
-    Format GetColumnFormat(List<ColumnSetup> columns, Item item)
-    {
-        Format format;
-        try
-        {
-            ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
-            format = column.Format;
-        }
-        catch
-        {
-            format = null;
-        }
-        return format;
-    }
-
-    bool HasColumn(List<ColumnSetup> columns, Item item)
-    {
-        bool result;
-        try
-        {
-            ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
-            result = column is not null;
-        }
-        catch
-        {
-            result = false;
-        }
-        return result;
     }
 
     void CreateRow(RenderTreeBuilder builder,
@@ -219,7 +179,7 @@ public partial class ReportView
         int rowNo = 1;
         int myColumn = 1;
         bool newPage = false;
-        foreach(IGrouping<int, ColumnData> group in grouped)
+        foreach (IGrouping<int, ColumnData> group in grouped)
         {
             ColumnData row = group.FirstOrDefault();
             CurrentDivId++;
@@ -241,7 +201,7 @@ public partial class ReportView
 
             builder.AddAttribute(CurrentDivId, "style", styleRow);
 
-            if(item != null)
+            if (item != null)
             {
                 CreateColumns(builder, group, columns);
             }
@@ -255,11 +215,11 @@ public partial class ReportView
             newPage = heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows;
 
             //if(heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows)
-            if(newPage)
+            if (newPage)
             {
-                if(SectionColumns > 1)
+                if (SectionColumns > 1)
                 {
-                    if(myColumn < SectionColumns)
+                    if (myColumn < SectionColumns)
                     {
                         heightRow = 1;
                         myColumn++;
@@ -289,20 +249,16 @@ public partial class ReportView
         EndSection(builder);            //end column
         EndSection(builder);            //end body
 
-        IEnumerable<IGrouping<int, ColumnData>> newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
-            .GroupBy(r => r.Row);
+        IEnumerable<IGrouping<int, ColumnData>> newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer).GroupBy(r => r.Row);
 
         CreateFooter(builder, data, newGroupedFooter);
-
         EndSection(builder);
 
         CurrentPage++;
 
         StartPage(builder, data);
-        IEnumerable<IGrouping<int, ColumnData>> newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
-             .GroupBy(r => r.Row);
+        IEnumerable<IGrouping<int, ColumnData>> newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header).GroupBy(r => r.Row);
         CreateHeader(builder, data, newGroupedHeader);
-
         StartBody(builder, data);
         StartColumnSection(builder);       //start first column
     }
@@ -310,24 +266,24 @@ public partial class ReportView
     void CreateColumns(RenderTreeBuilder builder, IGrouping<int, ColumnData> group,
         List<ColumnSetup> columns)
     {
-        foreach(ColumnData item in group)
+        foreach (ColumnData item in group)
         {
-            if(HasColumn(columns, item.Column))
+            if (HasColumn(columns, item.Column))
             {
                 Format columnFormat = GetColumnFormat(columns, item.Column);
                 string styleCol = $"{GetStyle(item.Format ?? columnFormat)}position: absolute;";
 
                 styleCol += "position: absolute;";
                 string base64 = GetBase64(item);
-                if(!string.IsNullOrEmpty(base64))
+                if (!string.IsNullOrEmpty(base64))
                 {
                     string result = $"data:image/png;base64,{base64}";
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
                     Format itemFormat = GetColumnFormat(columns, item.Column);
-                    if(itemFormat.Angle != 0)
+                    if (itemFormat.Angle != 0)
                     {
-                        if(itemFormat.Angle < 0)
+                        if (itemFormat.Angle < 0)
                         {
                             styleCol += $"top: {itemFormat.Position.Top - (decimal)itemFormat.Dimension.Height * 0.6m}mm;" +
                                 $"right: {itemFormat.Position.Right}mm;" +
@@ -357,8 +313,8 @@ public partial class ReportView
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
                     builder.AddAttribute(CurrentDivId, "style", styleCol);
-                    if(item.Column.PropertyName == "TotalPages") builder.AddContent(4, Totalpages);
-                    else if(item.Column.PropertyName == "CurrentPage") builder.AddContent(4, CurrentPage);
+                    if (item.Column.PropertyName == "TotalPages") builder.AddContent(4, Totalpages);
+                    else if (item.Column.PropertyName == "CurrentPage") builder.AddContent(4, CurrentPage);
                     else builder.AddContent(CurrentDivId, item.Value);
                 }
                 builder.CloseElement();
@@ -367,21 +323,52 @@ public partial class ReportView
         }
     }
 
+    bool HasColumn(List<ColumnSetup> columns, Item item)
+    {
+        bool result;
+        try
+        {
+            ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
+            result = column is not null;
+        }
+        catch
+        {
+            result = false;
+        }
+        return result;
+    }
+
+    Format GetColumnFormat(List<ColumnSetup> columns, Item item)
+    {
+        Format format;
+        try
+        {
+            ColumnSetup column = columns.First(c => c.DataColumn.Equals(item));
+            format = column.Format;
+        }
+        catch
+        {
+            format = null;
+        }
+        return format;
+    }
+
+
     string GetBase64(ColumnData item)
     {
         string base64 = string.Empty;
-        if(item.Value is not null)
+        if (item.Value is not null)
         {
-            if(item.Value.GetType() == typeof(byte[]))
+            if (item.Value.GetType() == typeof(byte[]))
             {
                 base64 = SetBase64Image((byte[])item.Value);
             }
-            else if(ImageValidator.IsLikelyImage(item.Value.ToString()))
+            else if (ImageValidator.IsLikelyImage(item.Value.ToString()))
             {
-                if(item.Value.GetType() == typeof(JsonElement))
+                if (item.Value.GetType() == typeof(JsonElement))
                 {
                     JsonElement data = (JsonElement)item.Value;
-                    if(data.TryGetBytesFromBase64(out byte[] bytes))
+                    if (data.TryGetBytesFromBase64(out byte[] bytes))
                     {
                         base64 = SetBase64Image(bytes);
                     }
@@ -405,7 +392,7 @@ public partial class ReportView
     string GetStyle(Format format)
     {
         StringBuilder styleBuilder = new();
-        if(format is not null)
+        if (format is not null)
         {
             styleBuilder.Append($"width:{format.Dimension.Width}mm;")
                 .Append($"height:{format.Dimension.Height}mm;")
@@ -479,8 +466,7 @@ public partial class ReportView
     #region methods
 
     public async Task<string> GetHtml()
-    {
-        //string result = await GenerateBytes.GetHtml(WrapperId);          
+    {          
         if (OnGetHtml.HasDelegate)
             await OnGetHtml.InvokeAsync(Content.Value);
         return Content.Value;

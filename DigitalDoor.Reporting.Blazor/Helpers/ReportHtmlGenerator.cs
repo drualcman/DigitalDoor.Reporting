@@ -29,20 +29,17 @@ public class ReportHtmlGenerator
         StartPage(reportModel);
         CurrentPage = reportModel.CurrentPage;
 
-        IEnumerable<IGrouping<int, ColumnData>> grouped = reportModel.Data.Where(d => d.Section == SectionType.Header)
-                                            .GroupBy(r => r.Row);
+        IEnumerable<IGrouping<int, ColumnData>> grouped = reportModel.Data.Where(d => d.Section == SectionType.Header).GroupBy(r => r.Row);
         CreateHeader(reportModel, grouped);
 
-        grouped = reportModel.Data.Where(d => d.Section == SectionType.Body)
-                                          .GroupBy(r => r.Row);
-        StartBody(reportModel);
-        StartColumnSection();
+        grouped = reportModel.Data.Where(d => d.Section == SectionType.Body).GroupBy(r => r.Row);
+        StartBody(reportModel);                  //start body
+        StartColumnSection();        //start first column
         CreateRow(grouped, reportModel, reportModel.Body.Items);
-        EndSection();
-        EndSection();
+        EndSection();                            //end column
+        EndSection();                            //end body
 
-        grouped = reportModel.Data.Where(d => d.Section == SectionType.Footer)
-                                            .GroupBy(r => r.Row);
+        grouped = reportModel.Data.Where(d => d.Section == SectionType.Footer).GroupBy(r => r.Row);
         CreateFooter(reportModel, grouped);
 
         EndSection();
@@ -56,7 +53,7 @@ public class ReportHtmlGenerator
             format.Dimension = new Dimension(data.Page.Dimension.Height, data.Page.Dimension.Width);
         }
 
-        string styleContainer = $"{GetStyle(format)}";
+        string styleContainer = GetStyle(format);
         HtmlBuilder.Append($"<div style='{styleContainer}'>");
     }
 
@@ -77,15 +74,15 @@ public class ReportHtmlGenerator
 
         StartColumnSection();
         CreateRow(grouped, data, data.Header.Items);
-
-        HtmlBuilder.Append("</div></div>");
+        EndSection();   //end column
+        HtmlBuilder.Append("</div>");
     }
 
     private void StartBody(ReportViewModel data)
     {
-        string styleBody;
         SectionColumns = data.Body.ColumnsNumber;
 
+        string styleBody;
         if (SectionColumns > 1)
         {
             StringBuilder frString = new StringBuilder();
@@ -99,6 +96,7 @@ public class ReportHtmlGenerator
         {
             styleBody = $"{GetStyle(data.Body.Format)}position:relative;";
         }
+
         HtmlBuilder.Append($"<div style='{styleBody}'>");
 
         SectionDimension = data.Body.Format.Dimension;
@@ -131,9 +129,9 @@ public class ReportHtmlGenerator
         }
         RowBorders = data.Footer.Row.Borders;
 
-        StartColumnSection();
+        StartColumnSection();       //start first column
         CreateRow(grouped, data, data.Footer.Items);
-
+        EndSection();   //end column
         HtmlBuilder.Append("</div>");
     }
 
@@ -150,48 +148,60 @@ public class ReportHtmlGenerator
         int myColumn = 1;
         bool newPage = false;
 
-        foreach (IGrouping<int, ColumnData> group in grouped)
+        Parallel.ForEach(grouped, group =>
         {
-            ColumnData row = group.FirstOrDefault();
-            ColumnSetup item = columns.FirstOrDefault(c => c.DataColumn.Equals(row.Column));
-
-            string styleRow = $"position:relative;overflow: hidden;height:{RowDimension.Height}mm; width:{RowDimension.Width}mm;" +
-                              $"border-style: {RowBorders.Style};" +
-                              $"border-top-width: {RowBorders.Top.Width}mm;" +
-                              $"border-top-color: {RowBorders.Top.Colour};" +
-                              $"border-left-width: {RowBorders.Left.Width}mm;" +
-                              $"border-left-color: {RowBorders.Left.Colour};" +
-                              $"border-right-width: {RowBorders.Right.Width}mm;" +
-                              $"border-right-color: {RowBorders.Right.Colour};" +
-                              $"border-bottom-color: {RowBorders.Bottom.Colour};" +
-                              $"border-bottom-width: {RowBorders.Bottom.Width}mm;";
-
-            HtmlBuilder.Append($"<div style='{styleRow}'>");
-
-            if (item != null)
+            lock (HtmlBuilder)
             {
-                CreateColumns(group, columns);
-            }
-            else
-            {
-                HtmlBuilder.Append("style='display:none'");
-            }
+                ColumnData row = group.FirstOrDefault();
+                ColumnSetup item = columns.FirstOrDefault(c => c.DataColumn.Equals(row.Column));
 
-            heightRow++;
-            EndSection();
+                StringBuilder styleRowBuilder = new StringBuilder();
+                styleRowBuilder.Append("position:relative;overflow: hidden;")
+                               .Append($"height:{RowDimension.Height}mm; ")
+                               .Append($"width:{RowDimension.Width}mm; ")
+                               .Append($"border-style: {RowBorders.Style}; ")
+                               .Append($"border-top-width: {RowBorders.Top.Width}mm; ")
+                               .Append($"border-top-color: {RowBorders.Top.Colour}; ")
+                               .Append($"border-left-width: {RowBorders.Left.Width}mm; ")
+                               .Append($"border-left-color: {RowBorders.Left.Colour}; ")
+                               .Append($"border-right-width: {RowBorders.Right.Width}mm; ")
+                               .Append($"border-right-color: {RowBorders.Right.Colour}; ")
+                               .Append($"border-bottom-color: {RowBorders.Bottom.Colour}; ")
+                               .Append($"border-bottom-width: {RowBorders.Bottom.Width}mm;");
 
-            newPage = heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows;
+                HtmlBuilder.Append($"<div style='{styleRowBuilder}'>");
 
-            if (newPage)
-            {
-                if (SectionColumns > 1)
+                if (item != null)
                 {
-                    if (myColumn < SectionColumns)
+                    CreateColumns(group, columns);
+                }
+                else
+                {
+                    HtmlBuilder.Append("style='display:none'");
+                }
+
+                heightRow++;
+                EndSection();               //end element
+
+                newPage = heightRow > (SectionDimension.Height / RowDimension.Height) && item.Format.Section == SectionType.Body && rowNo < totalRows;
+
+                if (newPage)
+                {
+                    if (SectionColumns > 1)
                     {
-                        heightRow = 1;
-                        myColumn++;
-                        EndSection();
-                        StartColumnSection();
+                        if (myColumn < SectionColumns)
+                        {
+                            heightRow = 1;
+                            myColumn++;
+                            EndSection();
+                            StartColumnSection();
+                        }
+                        else
+                        {
+                            NewPage(data);
+                            heightRow = 1;
+                            myColumn = 1;
+                        }
                     }
                     else
                     {
@@ -199,16 +209,10 @@ public class ReportHtmlGenerator
                         heightRow = 1;
                         myColumn = 1;
                     }
+                    rowNo++;
                 }
-                else
-                {
-                    NewPage(data);
-                    heightRow = 1;
-                    myColumn = 1;
-                }
-                rowNo++;
             }
-        }
+        });
     }
 
     private void NewPage(ReportViewModel data)
@@ -216,16 +220,14 @@ public class ReportHtmlGenerator
         EndSection();            //end column
         EndSection();            //end body
 
-        IEnumerable<IGrouping<int, ColumnData>> newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer)
-                                         .GroupBy(r => r.Row);
+        IEnumerable<IGrouping<int, ColumnData>> newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer).GroupBy(r => r.Row);
         CreateFooter(data, newGroupedFooter);
         EndSection();
 
         CurrentPage++;
 
         StartPage(data);
-        IEnumerable<IGrouping<int, ColumnData>> newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)
-                                         .GroupBy(r => r.Row);
+        IEnumerable<IGrouping<int, ColumnData>> newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header).GroupBy(r => r.Row);
         CreateHeader(data, newGroupedHeader);
         StartBody(data);
         StartColumnSection();       //start first column
@@ -292,7 +294,7 @@ public class ReportHtmlGenerator
         bool result;
         try
         {
-            result = columns.Any(c => c.DataColumn.Equals(item)); 
+            result = columns.Any(c => c.DataColumn.Equals(item));
         }
         catch
         {
@@ -348,7 +350,7 @@ public class ReportHtmlGenerator
         return bytes.Length > 10 ? Convert.ToBase64String(bytes) : string.Empty;
     }
 
-    string GetStyle(Format format)
+    private string GetStyle(Format format)
     {
         StringBuilder styleBuilder = new();
         if (format is not null)
