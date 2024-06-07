@@ -1,11 +1,11 @@
 # DigitalDoor.Reporting.Entities
-Object and abstraction for can create a report using DigitalDoor.Reporting
+Objects and abstractions for can create a report using DigitalDoor.Reporting. Also can create HTML directly.
 
 ## How to use:
 Install nuget
 
 ```
-dotnet add package DigitalDoor.Reporting --version 1.16.54
+dotnet add package DigitalDoor.Reporting --version 1.16.57
 ```
 
 ## Interfaces
@@ -17,6 +17,42 @@ IReportAsBytes;                     //default implementation to get the bytes, u
 IReportDataRepository;
 IReportsOutputPort;
 IReportsPresenter;
+```
+
+## Models
+``` csharp
+Setup;
+Section;
+Row;
+Format;
+ColumnSetup;
+ColumnData;
+```
+
+## ValueObjects
+``` csharp
+Border;
+BorderStyle;
+Dimension;
+Font;
+FontStyle;
+Item;
+Kernel;
+Orientation;
+SectionType;
+Shade;
+```
+
+## Enum
+``` csharp
+TextAlignment;
+TextDecoration;
+ValueType;
+```
+
+## ViewModels
+``` csharp
+ReportViewModel : Setup;
 ```
 
 ## Helper Class
@@ -70,4 +106,16 @@ public static class ImageValidator
     public static bool IsLikelyBase64(string input);
 }
 
+public class ReportFunctions
+{
+    public object SetValue(Item column, object data);
+    public static void AddPagination(List<ColumnData> data, SectionType section);
+    public string GetPaperSizeName(Dimension size);
+}
+
+public class ReportHtmlGenerator
+{
+    public ReportHtmlGenerator(ReportViewModel reportModel);        //constructor
+    public string GenerateHtml();
+}
 ```

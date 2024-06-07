@@ -5,3 +5,5 @@ global using System.Reflection;
 global using System.Text.RegularExpressions;
 global using DigitalDoor.Reporting.Entities.ViewModels;
 global using DigitalDoor.Reporting.Entities.Helpers;
+global using System.Text;
+global using System.Text.Json;
