@@ -57,7 +57,7 @@
 	<ItemGroup>
 		<PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.16.57" />
 		<PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.16.57" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" Condition="'$(TargetFramework)' == 'net8.0'" />
 	</ItemGroup>
 
