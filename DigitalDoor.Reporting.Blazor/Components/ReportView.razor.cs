@@ -23,7 +23,7 @@ public partial class ReportView
     {
         ReportHtmlGenerator generator = new(ReportModel);
         Content = new MarkupString(generator.GenerateHtml());
-        RenderReport();
+        //RenderReport();
     }
 
     #region render page
