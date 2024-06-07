@@ -5,12 +5,12 @@ Using DigitalDoor Reporting to create ViewModel and use to export in PDF or use 
 Install nuget
 
 ```
-dotnet add package DigitalDoor.Reporting --version 1.15.53
+dotnet add package DigitalDoor.Reporting --version 1.16.57
 ```
 
 Register the services
 ``` csharp
-    services.AddReportsServices();
+    services.AddReportingServices();
 ```
 
 ## Create a report ViewModel
