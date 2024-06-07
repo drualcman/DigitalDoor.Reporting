@@ -1,4 +1,6 @@
-﻿namespace DigitalDoor.Reporting.Blazor.Components;
+﻿using System.Reflection.Emit;
+
+namespace DigitalDoor.Reporting.Blazor.Components;
 
 public partial class ReportView
 {
@@ -8,7 +10,8 @@ public partial class ReportView
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
     [Parameter] public EventCallback<string> OnGetHtml { get; set; }
 
-    RenderFragment Content;
+    RenderFragment ContentFragment;
+    MarkupString Content;
 
     double SectionColumns;
     Dimension SectionDimension;
@@ -20,6 +23,8 @@ public partial class ReportView
 
     protected override void OnParametersSet()
     {
+        ReportHtmlGenerator generator = new(ReportModel);
+        Content = new MarkupString(generator.GenerateHtml());
         RenderReport();
     }
 
@@ -28,12 +33,12 @@ public partial class ReportView
     {
         Totalpages = ReportModel.Pages;
 
-        Content = builder =>
+        ContentFragment = builder =>
         {
             //create a page
             StartPage(builder, ReportModel);
             CurrentPage = ReportModel.CurrentPage;
-            var grouped = ReportModel.Data.Where(d => d.Section == SectionType.Header)
+            IEnumerable<IGrouping<int, ColumnData>> grouped = ReportModel.Data.Where(d => d.Section == SectionType.Header)
                 .GroupBy(r => r.Row);
 
             CreateHeader(builder, ReportModel, grouped);
@@ -63,7 +68,6 @@ public partial class ReportView
 
     void StartPage(RenderTreeBuilder builder, ReportViewModel data)
     {
-        string pageSetUp = "main--container";
         CurrentDivId = 0;
         builder.OpenElement(CurrentDivId, "div");
 
@@ -76,19 +80,16 @@ public partial class ReportView
         string styleContainer = $"{GetStyle(format)}";
 
         builder.AddAttribute(CurrentDivId, "style", styleContainer);
-        builder.AddAttribute(CurrentDivId, "class", pageSetUp);
     }
 
     void CreateHeader(RenderTreeBuilder builder, ReportViewModel data, IEnumerable<IGrouping<int, ColumnData>> grouped)
     {
         CurrentDivId++;
         builder.OpenElement(CurrentDivId, "div");
-        string headerWp = "headerWp";
         string styleHeader = $"{GetStyle(data.Header.Format)}position: relative;";
         //$"border-bottom: {data.Header.PageSetup.Padding.Bottom}mm solid #000;" +
 
         builder.AddAttribute(CurrentDivId, "style", styleHeader);
-        builder.AddAttribute(CurrentDivId, "class", headerWp);
 
         SectionColumns = data.Header.ColumnsNumber;
         SectionDimension = data.Header.Format.Dimension;
@@ -109,7 +110,6 @@ public partial class ReportView
 
     void StartBody(RenderTreeBuilder builder, ReportViewModel data)
     {
-        string bodyWp = "body-wp";
         string styleBody;
         SectionColumns = data.Body.ColumnsNumber;
 
@@ -130,7 +130,6 @@ public partial class ReportView
         CurrentDivId++;
         builder.OpenElement(CurrentDivId, "div");
         builder.AddAttribute(CurrentDivId, "style", styleBody);
-        builder.AddAttribute(CurrentDivId, "class", bodyWp);
 
         SectionDimension = data.Body.Format.Dimension;
         RowDimension = data.Body.Row.Dimension;
@@ -143,23 +142,19 @@ public partial class ReportView
 
     void StartColumnSection(RenderTreeBuilder builder)
     {
-        string bodyWp = "body-wp";
         string styleColumn = $"position:relative;overflow: hidden;height:{SectionDimension.Height}mm; width:{RowDimension.Width}mm;";
         CurrentDivId++;
         builder.OpenElement(CurrentDivId, "div");
         builder.AddAttribute(CurrentDivId, "style", styleColumn);
-        builder.AddAttribute(CurrentDivId, "class", bodyWp);
     }
 
     void CreateFooter(RenderTreeBuilder builder, ReportViewModel data, IEnumerable<IGrouping<int, ColumnData>> grouped)
     {
-        string footerWp = "footerWp";
         string styleFooter = $"{GetStyle(data.Footer.Format)}position:relative;";
 
         CurrentDivId++;
         builder.OpenElement(CurrentDivId, "div");
         builder.AddAttribute(CurrentDivId, "style", styleFooter);
-        builder.AddAttribute(CurrentDivId, "class", footerWp);
 
         SectionColumns = data.Footer.ColumnsNumber;
         SectionDimension = data.Footer.Format.Dimension;
@@ -224,7 +219,7 @@ public partial class ReportView
         int rowNo = 1;
         int myColumn = 1;
         bool newPage = false;
-        foreach(var group in grouped)
+        foreach(IGrouping<int, ColumnData> group in grouped)
         {
             ColumnData row = group.FirstOrDefault();
             CurrentDivId++;
@@ -293,8 +288,8 @@ public partial class ReportView
     {
         EndSection(builder);            //end column
         EndSection(builder);            //end body
-                                        //footer
-        var newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
+
+        IEnumerable<IGrouping<int, ColumnData>> newGroupedFooter = data.Data.Where(d => d.Section == SectionType.Footer)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
             .GroupBy(r => r.Row);
 
         CreateFooter(builder, data, newGroupedFooter);
@@ -304,7 +299,7 @@ public partial class ReportView
         CurrentPage++;
 
         StartPage(builder, data);
-        var newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
+        IEnumerable<IGrouping<int, ColumnData>> newGroupedHeader = data.Data.Where(d => d.Section == SectionType.Header)//.OrderBy(d => new { d.Position.Top, d.Position.Left, d.Foreground })
              .GroupBy(r => r.Row);
         CreateHeader(builder, data, newGroupedHeader);
 
@@ -319,16 +314,8 @@ public partial class ReportView
         {
             if(HasColumn(columns, item.Column))
             {
-                var Item = GetColumnFormat(columns, item.Column);
-                string styleCol;
-                if(item.Format is not null)
-                {
-                    styleCol = GetStyle(item.Format);
-                }
-                else
-                {
-                    styleCol = GetStyle(GetColumnFormat(columns, item.Column));
-                }
+                Format columnFormat = GetColumnFormat(columns, item.Column);
+                string styleCol = $"{GetStyle(item.Format ?? columnFormat)}position: absolute;";
 
                 styleCol += "position: absolute;";
                 string base64 = GetBase64(item);
@@ -337,7 +324,7 @@ public partial class ReportView
                     string result = $"data:image/png;base64,{base64}";
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
-                    var itemFormat = GetColumnFormat(columns, item.Column);
+                    Format itemFormat = GetColumnFormat(columns, item.Column);
                     if(itemFormat.Angle != 0)
                     {
                         if(itemFormat.Angle < 0)
@@ -410,82 +397,82 @@ public partial class ReportView
 
     string SetBase64Image(byte[] bytes)
     {
-        if(bytes.Length > 10) return Convert.ToBase64String(bytes);
-        else return string.Empty;
+        return bytes.Length > 10 ? Convert.ToBase64String(bytes) : string.Empty;
     }
 
     int ActiveZindex = 10;
 
     string GetStyle(Format format)
     {
-        string styleContainer = string.Empty;
+        StringBuilder styleBuilder = new();
         if(format is not null)
         {
-            styleContainer =
-                $"width:{format.Dimension.Width}mm;" +
-                $"height:{format.Dimension.Height}mm;" +
-                $"background-color: {format.Background};" +
-                $"padding-top: {format.Padding.Top}mm; " +
-                $"padding-right: {format.Padding.Right}mm; " +
-                $"padding-left: {format.Padding.Left}mm; " +
-                $"padding-bottom: {format.Padding.Bottom}mm;";
-            if(format.Angle == 0)
+            styleBuilder.Append($"width:{format.Dimension.Width}mm;")
+                .Append($"height:{format.Dimension.Height}mm;")
+                .Append($"background-color: {format.Background};")
+                .Append($"padding-top: {format.Padding.Top}mm; ")
+                .Append($"padding-right: {format.Padding.Right}mm; ")
+                .Append($"padding-left: {format.Padding.Left}mm; ")
+                .Append($"padding-bottom: {format.Padding.Bottom}mm;");
+
+            if (format.Angle == 0)
             {
-                styleContainer += $"top: {format.Position.Top}mm;" +
-                $"right: {format.Position.Right}mm;" +
-                $"bottom: {format.Position.Bottom}mm;" +
-                $"left: {format.Position.Left}mm;";
+                styleBuilder.Append($"top: {format.Position.Top}mm;")
+                            .Append($"right: {format.Position.Right}mm;")
+                            .Append($"bottom: {format.Position.Bottom}mm;")
+                            .Append($"left: {format.Position.Left}mm;");
             }
             else
             {
-                if(format.Angle > 0)
+                if (format.Angle > 0)
                 {
-                    styleContainer += $"top: {format.Position.Top + ((decimal)format.Dimension.Height)}mm;" +
-                    $"right: {format.Position.Right}mm;" +
-                    $"bottom: {format.Position.Bottom}mm;" +
-                    $"left: {format.Position.Left - (decimal)format.Dimension.Height}mm;";
+                    styleBuilder.Append($"top: {format.Position.Top + ((decimal)format.Dimension.Height)}mm;")
+                                .Append($"right: {format.Position.Right}mm;")
+                                .Append($"bottom: {format.Position.Bottom}mm;")
+                                .Append($"left: {format.Position.Left - (decimal)format.Dimension.Height}mm;");
                 }
                 else
                 {
-                    styleContainer += $"top: {format.Position.Top - ((decimal)format.Dimension.Height * 1.5m)}mm;" +
-                    $"right: {format.Position.Right}mm;" +
-                    $"bottom: {format.Position.Bottom}mm;" +
-                    $"left: {format.Position.Left - (decimal)format.Dimension.Width / 2}mm;";
+                    styleBuilder.Append($"top: {format.Position.Top - ((decimal)format.Dimension.Height * 1.5m)}mm;")
+                                .Append($"right: {format.Position.Right}mm;")
+                                .Append($"bottom: {format.Position.Bottom}mm;")
+                                .Append($"left: {format.Position.Left - (decimal)format.Dimension.Width / 2}mm;");
                 }
-
             }
-            styleContainer += $"margin-top: {format.Margin.Top}mm;" +
-                $"margin-right: {format.Margin.Right}mm;" +
-                $"margin-bottom: {format.Margin.Bottom}mm;" +
-                $"margin-left: {format.Margin.Left}mm;" +
-                $"border-style: {format.Borders.Style};" +
-                $"border-top-width: {format.Borders.Top.Width}mm;" +
-                $"border-top-color: {format.Borders.Top.Colour};" +
-                $"border-left-width: {format.Borders.Left.Width}mm;" +
-                $"border-left-color: {format.Borders.Left.Colour};" +
-                $"border-right-width: {format.Borders.Right.Width}mm;" +
-                $"border-right-color: {format.Borders.Right.Colour};" +
-                $"border-bottom-color: {format.Borders.Bottom.Colour};" +
-                $"border-bottom-width: {format.Borders.Bottom.Width}mm;" +
-                $"border-top-left-radius: {format.Borders.Top.Radius.Left}mm;" +
-                $"border-top-right-radius: {format.Borders.Top.Radius.Right}mm;" +
-                $"border-bottom-right-radius: {format.Borders.Bottom.Radius.Right}mm;" +
-                $"border-bottom-left-radius: {format.Borders.Bottom.Radius.Left}mm;" +
-                $"transform:rotate({format.Angle}deg);" +
-                $"color: {format.FontDetails.ColorSize.Colour};" +
-                $"font-family: {format.FontDetails.FontName}, Helvetica, sans-serif;" +
-                $"font-weight: {format.FontDetails.FontStyle.Bold};" +
-                $"font-size: {format.FontDetails.ColorSize.Width}pt;" +
-                $"text-align: {format.TextAlignment};" +
-                $"text-decoration: {format.TextDecoration};" +
-                $"text-transform: none;" +
-                $"letter-spacing: 0;" +
-                $"z-index: {ActiveZindex};" +
-                $"overflow: hidden;visibility: visible; display: block;box-sizing: unset;";
-            styleContainer += format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "";
+
+            styleBuilder.Append($"margin-top: {format.Margin.Top}mm;")
+                        .Append($"margin-right: {format.Margin.Right}mm;")
+                        .Append($"margin-bottom: {format.Margin.Bottom}mm;")
+                        .Append($"margin-left: {format.Margin.Left}mm;")
+                        .Append($"border-style: {format.Borders.Style};")
+                        .Append($"border-top-width: {format.Borders.Top.Width}mm;")
+                        .Append($"border-top-color: {format.Borders.Top.Colour};")
+                        .Append($"border-left-width: {format.Borders.Left.Width}mm;")
+                        .Append($"border-left-color: {format.Borders.Left.Colour};")
+                        .Append($"border-right-width: {format.Borders.Right.Width}mm;")
+                        .Append($"border-right-color: {format.Borders.Right.Colour};")
+                        .Append($"border-bottom-color: {format.Borders.Bottom.Colour};")
+                        .Append($"border-bottom-width: {format.Borders.Bottom.Width}mm;")
+                        .Append($"border-top-left-radius: {format.Borders.Top.Radius.Left}mm;")
+                        .Append($"border-top-right-radius: {format.Borders.Top.Radius.Right}mm;")
+                        .Append($"border-bottom-right-radius: {format.Borders.Bottom.Radius.Right}mm;")
+                        .Append($"border-bottom-left-radius: {format.Borders.Bottom.Radius.Left}mm;")
+                        .Append($"transform:rotate({format.Angle}deg);")
+                        .Append($"color: {format.FontDetails.ColorSize.Colour};")
+                        .Append($"font-family: {format.FontDetails.FontName}, Helvetica, sans-serif;")
+                        .Append($"font-weight: {format.FontDetails.FontStyle.Bold};")
+                        .Append($"font-size: {format.FontDetails.ColorSize.Width}pt;")
+                        .Append($"text-align: {format.TextAlignment};")
+                        .Append($"text-decoration: {format.TextDecoration};")
+                        .Append($"text-transform: none;")
+                        .Append($"letter-spacing: 0;")
+                        .Append($"z-index: {ActiveZindex};")
+                        .Append($"overflow: hidden;visibility: visible; display: block;box-sizing: unset;");
+
+            styleBuilder.Append(format.FontDetails.FontStyle.Italic.Equals(true) ? $"font-style: italic;" : "");
         }
         ActiveZindex++;
-        return styleContainer;
+        return styleBuilder.ToString();
     }
     #endregion
 
@@ -493,10 +480,10 @@ public partial class ReportView
 
     public async Task<string> GetHtml()
     {
-        string result = await GenerateBytes.GetHtml(WrapperId);
-        if(OnGetHtml.HasDelegate)
-            await OnGetHtml.InvokeAsync(result);
-        return result;
+        //string result = await GenerateBytes.GetHtml(WrapperId);          
+        if (OnGetHtml.HasDelegate)
+            await OnGetHtml.InvokeAsync(Content.Value);
+        return Content.Value;
     }
     #endregion
 }
