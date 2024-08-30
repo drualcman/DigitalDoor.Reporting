@@ -42,7 +42,8 @@ public partial class ReportView
             CreateHeader(builder, ReportModel, grouped);
 
             //body
-            grouped = ReportModel.Data.Where(d => d.Section == SectionType.Body).GroupBy(r => r.Row);
+            grouped = ReportModel.Data.Where(d => d.Section == SectionType.Body)
+                .GroupBy(r => r.Row);
 
             StartBody(builder, ReportModel);                 //start body
             StartColumnSection(builder);       //start first column
