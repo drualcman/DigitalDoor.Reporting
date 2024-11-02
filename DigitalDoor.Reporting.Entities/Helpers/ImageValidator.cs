@@ -2,6 +2,21 @@
 
 public static class ImageValidator
 {
+    public static bool IsLikelyImage(object data)
+    {
+        bool result = false;
+        if (data is not null && data is byte[] bytes)
+        {
+            result = IsLikelyImage(bytes);
+        };
+        return result;
+    }
+
+    public static bool IsLikelyImage(byte[] bytes)
+    {
+        string base64 = Encoding.UTF8.GetString(bytes);
+        return IsLikelyImage(base64);
+    }
 
     public static bool IsLikelyImage(string base64String)
     {

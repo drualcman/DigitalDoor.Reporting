@@ -15,6 +15,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
+		  2024-11-01: Add new overload method for ImageValidator accepting a object and byte[].
 		  2024-07-06: Create a helper ReportHtmlGenerator to get a HTML version of the report to use anywhere you need.
 		  2024-05-26: Change to public class ReportFunctions because the static method AddPagination it's in use outside of the assembly.
 		  2024-05-11: Add new interface to follow OCP and give posibility to create different presenter implementations.
@@ -26,7 +27,7 @@
 		  2023-10-04: Change Section constructor to add new can set the orientation. Fixed when orientation is set, setup correctly the dimensions for the row and body from Page constructor.
 		  2023-08-27: Add new interface IReportAsBytes fo can generate directly the PDF bytes in only one injection. Cleanup unnecesary commented files.
 	  </PackageReleaseNotes>
-	  <Version>1.16.57</Version>
+	  <Version>1.16.58</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 

@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Imaging;
-
-namespace DigitalDoor.Reporting.Helpers
+﻿namespace DigitalDoor.Reporting.Helpers
 {
     public class Images
     {
@@ -16,29 +13,83 @@ namespace DigitalDoor.Reporting.Helpers
             bool result;
             try
             {
-                if(img != null && img.GetType() == typeof(Image))
+                if (img != null && img is SKImage skImage)
                 {
-                    bytes = ImageToByteArray((Image)img);
+                    bytes = ImageToByteArray(skImage);
                     result = true;
                 }
-                else if(img != null && img.GetType() == typeof(Bitmap))
+                else if (img != null && img is SKBitmap skBitmap)
                 {
-                    bytes = ImageToByteArray((Bitmap)img);
+                    bytes = ImageToByteArray(skBitmap);
                     result = true;
+                }
+                else if (img != null && img is Image systemImage)
+                {
+                    bytes = ImageToByteArray(systemImage);
+                    result = true;
+                }
+                else if (img != null && img is Bitmap systemBitmap)
+                {
+                    bytes = ImageToByteArray(systemBitmap);
+                    result = true;
+                }
+                else if (img != null && img is byte[] bytesArray)
+                {
+                    result = ImageValidator.IsLikelyImage(bytesArray);
+                    bytes = result ? bytesArray : null;
                 }
                 else
                 {
-                    bytes = default!;
+                    bytes = null!;
                     result = false;
                 }
             }
             catch
             {
-                bytes = default!;
+                bytes = null!;
                 result = false;
             }
             return result;
         }
+
+        /// <summary>
+        /// Convert SKImage to bytes[]
+        /// </summary>
+        /// <param name="imageIn"></param>
+        /// <param name="format">Formato de la imagen</param>
+        /// <returns></returns>
+        public byte[] ImageToByteArray(SKImage imageIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100)
+        {
+            using var ms = new MemoryStream();
+            imageIn.Encode(format, quality).SaveTo(ms);
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Convert SKBitmap to bytes[]
+        /// </summary>
+        /// <param name="bitmapIn"></param>
+        /// <param name="format">Formato de la imagen</param>
+        /// <returns></returns>
+        public byte[] ImageToByteArray(SKBitmap bitmapIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100)
+        {
+            using var ms = new MemoryStream();
+            using var image = SKImage.FromBitmap(bitmapIn);
+            image.Encode(format, quality).SaveTo(ms);
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Convert bytes[] to SKImage
+        /// </summary>
+        /// <param name="byteArrayIn"></param>
+        /// <returns></returns>
+        public SKImage ByteArrayToImage(byte[] byteArrayIn)
+        {
+            using var ms = new MemoryStream(byteArrayIn);
+            return SKImage.FromEncodedData(ms);
+        }
+
 
         /// <summary>
         /// Convert image to bytes[]
@@ -48,9 +99,9 @@ namespace DigitalDoor.Reporting.Helpers
         /// <returns></returns>
         public byte[] ImageToByteArray(Image imageIn, ImageFormat format)
         {
-            using MemoryStream ms = new MemoryStream();
+            using var ms = new MemoryStream();
             imageIn.Save(ms, format);
-            return ms.ToArray();
+            return ImageToByteArray(SKImage.FromBitmap(SKBitmap.Decode(ms.ToArray())));
         }
 
         /// <summary>
@@ -58,22 +109,7 @@ namespace DigitalDoor.Reporting.Helpers
         /// </summary>
         /// <param name="imageIn"></param>
         /// <returns></returns>
-        public byte[] ImageToByteArray(Image imageIn)
-        {
-            return ImageToByteArray(imageIn, imageIn.RawFormat);
-        }
-
-        /// <summary>
-        /// Convert image to bytes[]
-        /// </summary>
-        /// <param name="imageIn"></param>
-        /// <returns></returns>
-        public byte[] ImageToByteArray(Bitmap imageIn)
-        {
-            using MemoryStream ms = new MemoryStream();
-            imageIn.Save(ms, ImageFormat.Png);
-            return ms.ToArray();
-        }
+        public byte[] ImageToByteArray(Image imageIn) => ImageToByteArray(imageIn, imageIn.RawFormat);
 
         /// <summary>
         /// Convert image to bytes[]
@@ -85,19 +121,15 @@ namespace DigitalDoor.Reporting.Helpers
         {
             using MemoryStream ms = new MemoryStream();
             imageIn.Save(ms, format);
-            return ms.ToArray();
+            return ImageToByteArray(SKImage.FromBitmap(SKBitmap.Decode(ms.ToArray())));
         }
 
         /// <summary>
-        /// Convert bytes[] to image
+        /// Convert image to bytes[]
         /// </summary>
-        /// <param name="byteArrayIn"></param>
+        /// <param name="imageIn"></param>
         /// <returns></returns>
-        public Image ByteArrayToImage(byte[] byteArrayIn)
-        {
-            using MemoryStream ms = new MemoryStream(byteArrayIn);
-            Image returnImage = Image.FromStream(ms);
-            return returnImage;
-        }
+        public byte[] ImageToByteArray(Bitmap imageIn) => ImageToByteArray(imageIn, ImageFormat.Png);
+
     }
 }
