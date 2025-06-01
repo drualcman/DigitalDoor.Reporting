@@ -1,9 +1,4 @@
-﻿using DigitalDoor.Reporting.Entities.Interfaces;
-using DigitalDoor.Reporting.Entities.Models;
-using DigitalDoor.Reporting.Entities.ValueObjects;
-using DigitalDoor.Reporting.Entities.ViewModels;
-
-namespace DigitalDoor.Reporting.Presenters;
+﻿namespace DigitalDoor.Reporting.Presenters;
 
 internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 {
@@ -26,9 +21,10 @@ internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 
         double pages = (totalHeight / pageHeight);
 
-        if(pages % 2 > 0) pages++;
+        if(pages % 2 > 0)
+            pages++;
 
-        Content = new ReportViewModel(setup, data);        
+        Content = new ReportViewModel(setup, data);
 
         if(pages != 0)
             Content.Pages = (int)pages;
