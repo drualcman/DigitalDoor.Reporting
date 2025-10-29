@@ -1,6 +1,6 @@
 ﻿namespace DigitalDoor.Reporting.Entities.Models;
 
-public class Section //no rowlist no addorw
+public class Section
 {
     public Format Format { get; set; }
 
@@ -32,7 +32,7 @@ public class Section //no rowlist no addorw
     public Section(Dimension dimension, SectionType section) : this(new Format(dimension) { Section = section }) { }
     public Section(Dimension dimension, Orientation orientation) : this(new Format(dimension))
     {
-        if(orientation == Orientation.Landscape)
+        if (orientation == Orientation.Landscape)
         {
             Row = new Row(Format.Dimension.Height, Format.Dimension.Width);
         }
@@ -43,21 +43,21 @@ public class Section //no rowlist no addorw
         column.Format.Section = Format.Section;
         Items.Add(column);
     }
-    public void AddColumn(string value, Dimension dimension)
+    public void AddColumn(string name, Dimension dimension)
     {
         ColumnSetup column = new ColumnSetup
         {
-            DataColumn = new Item(value),
+            DataColumn = new Item(name),
             Format = new Format(dimension) { Section = this.Format.Section }
         };
         Items.Add(column);
     }
-    public void AddColumn(string value, Format format)
+    public void AddColumn(string name, Format format)
     {
         format.Section = Format.Section;
         ColumnSetup column = new ColumnSetup
         {
-            DataColumn = new Item(value),
+            DataColumn = new Item(name),
             Format = format
         };
         Items.Add(column);
@@ -111,7 +111,6 @@ public class Section //no rowlist no addorw
     private readonly Dimension DefaultDimensions = new Dimension(5, 10);
     private readonly Font DefaultFontDetails = new Font("Arial", 13, "Black");
 
-    private readonly FontStyle DefaultFontStyle = new FontStyle(400);
     private Kernel DefaultPosition()
     {
         double top = Format.Dimension.Height - 5;
