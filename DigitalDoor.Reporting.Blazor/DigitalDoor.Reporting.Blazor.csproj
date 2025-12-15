@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-	  <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+	  <TargetFrameworks>net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
 	  <LangVersion>12</LangVersion>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -17,6 +17,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageTags>reporting; pdf, blazor; blazor webaassembly; blazor server;</PackageTags>
     <PackageReleaseNotes>
+		2025-12-15: Add support Net 10. Update dependencies.
 		2025-10-22: Update dependencies.
 		2025-06-01: Update license. Add NET 9 support. Update dependencies.
 		2024-11-02: Update nugets.
@@ -38,7 +39,7 @@
 		2023-09-01: Fixed in Blazor Server how to detect a image. Update DigitalDorr.Reporting to version 1.13.46.
 		2023-08-28: Using IReportAsBytes to generate the pdf direct. Changes in PrintReport component about how events are working. GetHtml return directly a HTML and fire OnGetHTML but also GeneratePDF fire OnGetHTML. Removed Showbutton because now can use directly the IReportAsBytes if don't like show a button.
 	</PackageReleaseNotes>
-    <Version>1.16.62</Version>
+    <Version>1.17.70</Version>
     <Title>Reporting Viewer for Blazor from DigitalDoor.Reporting. Also can generate reports from code using clean architecture.</Title>
     <PackageIcon>DRIcon.png</PackageIcon>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
@@ -64,10 +65,11 @@
   </ItemGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.16.61" />
+		<PackageReference Include="DigitalDoor.Reporting" Version="1.17.70" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.36" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.21" Condition="'$(TargetFramework)' == 'net8.0'" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.10" Condition="'$(TargetFramework)' == 'net9.0'" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.11" Condition="'$(TargetFramework)' == 'net9.0'" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.1" Condition="'$(TargetFramework)' == 'net10.0'" />
 	</ItemGroup>
 	
 

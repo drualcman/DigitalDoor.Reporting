@@ -134,7 +134,7 @@ public static class CssColors
         }
         else
         {
-            if (ColorNames.TryGetValue(color.ToLower(System.Globalization.CultureInfo.InvariantCulture), out string hexFromName))
+            if (ColorNames.TryGetValue(color.ToLower(CultureInfo.InvariantCulture), out string hexFromName))
             {
                 result = hexFromName;
             }

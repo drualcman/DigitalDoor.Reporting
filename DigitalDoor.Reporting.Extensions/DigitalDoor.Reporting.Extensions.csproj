@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+	  <TargetFrameworks>net6.0;net8.0;net9.0;net10.0</TargetFrameworks>
 	  <LangVersion>12</LangVersion>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>disable</Nullable>
@@ -15,6 +15,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting; extensions;</PackageTags>
 	  <PackageReleaseNotes>
+		  2025-12-15: Add support Net 10. Update dependencies.
 		  2025-10-22: Update dependencies.
 		  2025-03-01: Update license. Add support to NET 9. Update dependencies.
 		  2024-11-02: Update nugets.
@@ -31,15 +32,12 @@
 		  2023-09-08: Update DigitalDoor.Reporting to version 1.13.47.
 		  2023-09-04: Update DigitalDoor.Reporting to version 1.13.46.
 		  2023-08-28: Using register container from DigitalDoor.Reporting. Change name space in the dependency container to avid need to add a new namespace reference when want to use the helper to add Services.AddReportingPdfServices().</PackageReleaseNotes>
-	  <Version>1.16.61</Version>
+	  <Version>1.17.70</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.16.61" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" Condition="'$(TargetFramework)' == 'net8.0'" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" Condition="'$(TargetFramework)' == 'net9.0'" />
+		<PackageReference Include="DigitalDoor.Reporting" Version="1.17.70" />
 	</ItemGroup>
 	
 	<ItemGroup>
