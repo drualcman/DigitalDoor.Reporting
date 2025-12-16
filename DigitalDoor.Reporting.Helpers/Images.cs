@@ -7,20 +7,59 @@ public class Images
         bool result;
         try
         {
-            if(img != null && img is SKImage skImage)
+            if (img is not null)
             {
-                bytes = ImageToByteArray(skImage);
-                result = true;
-            }
-            else if(img != null && img is SKBitmap skBitmap)
-            {
-                bytes = ImageToByteArray(skBitmap);
-                result = true;
-            }
-            else if(img != null && img is byte[] bytesArray)
-            {
-                result = ImageValidator.IsLikelyImage(bytesArray);
-                bytes = result ? bytesArray : null;
+                if (img is SKImage skImage)
+                {
+                    bytes = ImageToByteArray(skImage);
+                    result = true;
+                }
+                else if (img is SKBitmap skBitmap)
+                {
+                    bytes = ImageToByteArray(skBitmap);
+                    result = true;
+                }
+                else if (img is SKPicture skPicture)
+                {
+                    bytes = ImageToByteArray(skPicture);
+                    result = true;
+                }
+                else if (img is byte[] bytesArray)
+                {
+                    result = ImageValidator.IsLikelyImage(bytesArray);
+                    bytes = result ? bytesArray : null;
+                }
+                else if (img is string stringImage)
+                {
+                    bool isSvg = stringImage.TrimStart().StartsWith("<svg", StringComparison.OrdinalIgnoreCase) ||
+                                 stringImage.Contains("<svg", StringComparison.OrdinalIgnoreCase);
+                    if (isSvg)
+                    {
+                        string escapedSvg = stringImage.Replace("&lt;", "&amp;lt;");
+                        using var skSvg = new SKSvg();
+                        skSvg.FromSvg(escapedSvg);
+                        if (skSvg.Picture is not null)
+                        {
+                            bytes = ImageToByteArray(skSvg.Picture);
+                            result = true;
+                        }
+                        else
+                        {
+                            result = false;
+                            bytes = null;
+                        }
+                    }
+                    else
+                    {
+                        bytes = null!;
+                        result = false;
+                    }
+                }
+                else
+                {
+                    bytes = null!;
+                    result = false;
+                }
             }
             else
             {
@@ -36,29 +75,18 @@ public class Images
         return result;
     }
 
-    public byte[] ImageToByteArray(SKImage imageIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100)
-    {
-        using var ms = new MemoryStream();
-        imageIn.Encode(format, quality).SaveTo(ms);
-        return ms.ToArray();
-    }
+    public byte[] ImageToByteArray(SKImage imageIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100) =>
+        ImageHandler.ImageToByteArray(imageIn, format, quality);
 
-    public byte[] ImageToByteArray(SKBitmap bitmapIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100)
-    {
-        using var ms = new MemoryStream();
-        using var image = SKImage.FromBitmap(bitmapIn);
-        image.Encode(format, quality).SaveTo(ms);
-        return ms.ToArray();
-    }
+    public byte[] ImageToByteArray(SKBitmap bitmapIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100) =>
+        ImageHandler.ImageToByteArray(bitmapIn, format, quality);
 
-    public SKImage ByteArrayToImage(byte[] byteArrayIn)
-    {
-        using var ms = new MemoryStream(byteArrayIn);
-        return SKImage.FromEncodedData(ms);
-    }
+    public byte[] ImageToByteArray(SKPicture bitmapIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100, int? overrideWidth = null, int? overrideHeight = null, SKColor backgroundColor = default) =>
+        SKPictureHandler.PictureToByteArray(bitmapIn, format, quality, overrideWidth, overrideHeight, backgroundColor);
 
-    public SKImage StreamToImage(Stream stream)
-    {
-        return SKImage.FromEncodedData(stream);
-    }
+    public SKImage ByteArrayToImage(byte[] byteArrayIn) =>
+                ImageHandler.ByteArrayToImage(byteArrayIn);
+
+    public SKImage StreamToImage(Stream stream) =>
+        ImageHandler.StreamToImage(stream);
 }
