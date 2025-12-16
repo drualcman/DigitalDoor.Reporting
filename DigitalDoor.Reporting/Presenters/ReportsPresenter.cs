@@ -21,16 +21,39 @@ internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 
         double pages = (totalHeight / pageHeight);
 
-        if(pages % 2 > 0)
+        if (pages % 2 > 0)
             pages++;
+
+        bool hasTotalPages = false;
+        bool hasCurrentPage = false;
+
+        if (setup.Header.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("TotalPages")) is not null)
+            hasTotalPages = true;
+        if (setup.Body.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("TotalPages")) is not null)
+            hasTotalPages = true;
+        if (setup.Footer.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("TotalPages")) is not null)
+            hasTotalPages = true;
+
+        if (setup.Header.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("CurrentPage")) is not null)
+            hasCurrentPage = true;
+        if (setup.Body.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("CurrentPage")) is not null)
+            hasCurrentPage = true;
+        if (setup.Footer.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("CurrentPage")) is not null)
+            hasCurrentPage = true;
+
+        if (hasTotalPages)
+            data.Add(new ColumnData { Section = SectionType.Footer, Column = new Item("TotalPages"), Value = 1 });
+        if ((hasCurrentPage))
+            data.Add(new ColumnData { Section = SectionType.Footer, Column = new Item("CurrentPage"), Value = 1 });
 
         Content = new ReportViewModel(setup, data);
 
-        if(pages != 0)
+        if (pages != 0)
             Content.Pages = (int)pages;
         else
             Content.Pages = 1;
         LookForImages();
+
 
         return Task.CompletedTask;
     }
@@ -38,9 +61,9 @@ internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
     void LookForImages()
     {
         Helpers.Images i = new Helpers.Images();
-        foreach(ColumnData item in Content.Data)
+        foreach (ColumnData item in Content.Data)
         {
-            if(i.TryGetImageBytes(item.Value, out byte[] image))
+            if (i.TryGetImageBytes(item.Value, out byte[] image))
                 item.Value = image;
         }
     }
