@@ -2,7 +2,6 @@
 
 public partial class ReportView
 {
-    [Inject] GenerateReportAsBytes GenerateBytes { get; set; }
     [Parameter][EditorRequired] public ReportViewModel ReportModel { get; set; }
     [Parameter] public bool ShowPreview { get; set; } = true;
     [Parameter] public string WrapperId { get; set; } = $"doc{Guid.NewGuid().ToString().Replace("-", "")}";
@@ -314,9 +313,12 @@ public partial class ReportView
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
                     builder.AddAttribute(CurrentDivId, "style", styleCol);
-                    if (item.Column.PropertyName == "TotalPages") builder.AddContent(4, Totalpages);
-                    else if (item.Column.PropertyName == "CurrentPage") builder.AddContent(4, CurrentPage);
-                    else builder.AddContent(CurrentDivId, item.Value);
+                    if (item.Column.PropertyName == "TotalPages")
+                        builder.AddContent(4, Totalpages);
+                    else if (item.Column.PropertyName == "CurrentPage")
+                        builder.AddContent(4, CurrentPage);
+                    else
+                        builder.AddContent(CurrentDivId, item.Value);
                 }
                 builder.CloseElement();
                 CurrentDivId--;
@@ -467,7 +469,7 @@ public partial class ReportView
     #region methods
 
     public async Task<string> GetHtml()
-    {          
+    {
         if (OnGetHtml.HasDelegate)
             await OnGetHtml.InvokeAsync(Content.Value);
         return Content.Value;
