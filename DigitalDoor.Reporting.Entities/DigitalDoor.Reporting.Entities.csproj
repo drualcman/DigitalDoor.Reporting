@@ -10,12 +10,12 @@
 	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
 	  <Company>DIGITAL DOOR Pty Ltd</Company>
 	  <Description>Entities for can create a report using DigitalDoor.Reporting. Also can create HTML directly.</Description>
-	  <Copyright>DIGITAL DOOR Pty Ltd 2022-2025</Copyright>
+	  <Copyright>DrUalcman Programacion-2025</Copyright>
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
-		  2026-04-05: Avoid possible null reference.
+		  2026-09-29: BREAKING VISUAL CHANGES in the HTML. ReportHtmlGenerator rewritten to render exactly like the PDF presenter: shared layout (DigitalDoor.Reporting.Entities.Layout), rows in order, columns with Row.Width and ColumnsSpace, border-box sizing, page margins and paddings, rotation around the centre, opacity, text decoration, invariant CSS numbers and HTML encoded text. Add SvgValidator and ReportPagination helpers. ImageValidator detects raw image bytes. HTML generator renders SVG values as vector images.
 		  2025-12-15: Add support Net 10.
 		  2025-09-13: Improved method params names to clarify functionality.
 		  2025-06-01: Update licence. Add support Net 9.
@@ -31,7 +31,7 @@
 		  2023-10-04: Change Section constructor to add new can set the orientation. Fixed when orientation is set, setup correctly the dimensions for the row and body from Page constructor.
 		  2023-08-27: Add new interface IReportAsBytes fo can generate directly the PDF bytes in only one injection. Cleanup unnecesary commented files.
 	  </PackageReleaseNotes>
-	  <Version>1.17.71</Version>
+	  <Version>1.18.0</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 

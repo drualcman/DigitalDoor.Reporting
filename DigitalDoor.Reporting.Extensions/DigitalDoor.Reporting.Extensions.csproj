@@ -10,11 +10,12 @@
 	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
 	  <Company>DIGITAL DOOR Pty Ltd</Company>
 	  <Description>Extension to simplify the Presenter Injection when use Digital Reporting.</Description>
-	  <Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
+	  <Copyright>DrUalcman Programacion</Copyright>
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting; extensions;</PackageTags>
 	  <PackageReleaseNotes>
+		  2026-09-29: Update dependencies.
 		  2025-12-15: Add support Net 10. Update dependencies.
 		  2025-10-22: Update dependencies.
 		  2025-03-01: Update license. Add support to NET 9. Update dependencies.
@@ -32,12 +33,12 @@
 		  2023-09-08: Update DigitalDoor.Reporting to version 1.13.47.
 		  2023-09-04: Update DigitalDoor.Reporting to version 1.13.46.
 		  2023-08-28: Using register container from DigitalDoor.Reporting. Change name space in the dependency container to avid need to add a new namespace reference when want to use the helper to add Services.AddReportingPdfServices().</PackageReleaseNotes>
-	  <Version>1.17.70</Version>
+	  <Version>1.18.0</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting" Version="1.17.70" />
+		<PackageReference Include="DigitalDoor.Reporting" Version="1.18.0" />
 	</ItemGroup>
 	
 	<ItemGroup>

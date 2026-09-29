@@ -1,4 +1,4 @@
-﻿namespace DigitalDoor.Reporting.Presenters;
+namespace DigitalDoor.Reporting.Presenters;
 
 internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 {
@@ -6,65 +6,54 @@ internal class ReportsPresenter : IReportsPresenter, IReportsOutputPort
 
     public Task Handle(Setup setup, List<ColumnData> data)
     {
-        int rows = data.FindAll
-            (x => x.Section == SectionType.Body).GroupBy(i => i.Row).Count();
-
-        //int rows = data.GroupBy(i => i.Row).Count();
-        int columns = setup.Body.ColumnsNumber;
-        int myRows = rows / columns;
-
-        double pageHeight = setup.Body.Format.Dimension.Height;
-
-        double rowHeight = setup.Body.Row?.Dimension.Height ?? setup.Body.Format.Dimension.Height;
-
-        double totalHeight = myRows * rowHeight;
-
-        double pages = (totalHeight / pageHeight);
-
-        if (pages % 2 > 0)
-            pages++;
-
-        bool hasTotalPages = false;
-        bool hasCurrentPage = false;
-
-        if (setup.Header.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("TotalPages")) is not null)
-            hasTotalPages = true;
-        if (setup.Body.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("TotalPages")) is not null)
-            hasTotalPages = true;
-        if (setup.Footer.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("TotalPages")) is not null)
-            hasTotalPages = true;
-
-        if (setup.Header.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("CurrentPage")) is not null)
-            hasCurrentPage = true;
-        if (setup.Body.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("CurrentPage")) is not null)
-            hasCurrentPage = true;
-        if (setup.Footer.Items.FirstOrDefault(p => p.DataColumn.PropertyName.Equals("CurrentPage")) is not null)
-            hasCurrentPage = true;
-
-        if (hasTotalPages)
-            data.Add(new ColumnData { Section = SectionType.Footer, Column = new Item("TotalPages"), Value = 1 });
-        if ((hasCurrentPage))
-            data.Add(new ColumnData { Section = SectionType.Footer, Column = new Item("CurrentPage"), Value = 1 });
-
+        int totalBodyRows = ReportPagination.CountBodyRows(data);
+        AddMissingPaginationData(setup.Header, SectionType.Header, data);
+        AddMissingPaginationData(setup.Footer, SectionType.Footer, data);
         Content = new ReportViewModel(setup, data);
-
-        if (pages != 0)
-            Content.Pages = (int)pages;
-        else
-            Content.Pages = 1;
+        Content.Pages = ReportPagination.GetTotalPages(Content.Body, totalBodyRows);
         LookForImages();
-
-
         return Task.CompletedTask;
     }
 
-    void LookForImages()
+    private static void AddMissingPaginationData(Section section, SectionType sectionType, List<ColumnData> data)
     {
-        Helpers.Images i = new Helpers.Images();
+        AddMissingPaginationItem(section, sectionType, ReportPagination.TotalPagesPropertyName, data);
+        AddMissingPaginationItem(section, sectionType, ReportPagination.CurrentPagePropertyName, data);
+    }
+
+    private static void AddMissingPaginationItem(Section section, SectionType sectionType, string propertyName, List<ColumnData> data)
+    {
+        ColumnSetup paginationSetup = section.Items.FirstOrDefault(item => item.DataColumn.PropertyName == propertyName);
+        bool alreadyHasData = data.Any(columnData => columnData.Section == sectionType &&
+            columnData.Column is not null && columnData.Column.PropertyName == propertyName);
+        if (paginationSetup is not null && !alreadyHasData)
+        {
+            List<int> sectionRows = data.Where(columnData => columnData.Section == sectionType)
+                .Select(columnData => columnData.Row)
+                .ToList();
+            data.Add(new ColumnData
+            {
+                Section = sectionType,
+                Column = paginationSetup.DataColumn,
+                Row = sectionRows.Count > 0 ? sectionRows.Min() : 1,
+                Value = 1
+            });
+        }
+    }
+
+    private void LookForImages()
+    {
+        Helpers.Images images = new Helpers.Images();
         foreach (ColumnData item in Content.Data)
         {
-            if (i.TryGetImageBytes(item.Value, out byte[] image))
+            if (images.TryGetSvg(item.Value, out string svg))
+            {
+                item.Value = svg;
+            }
+            else if (images.TryGetImageBytes(item.Value, out byte[] image))
+            {
                 item.Value = image;
+            }
         }
     }
 }

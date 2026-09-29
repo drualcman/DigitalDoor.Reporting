@@ -1,104 +1,108 @@
-﻿namespace DigitalDoor.Reporting.Entities.Helpers;
+namespace DigitalDoor.Reporting.Entities.Helpers;
 
 public static class ImageValidator
 {
+    private const int HeaderBytesToInspect = 12;
+
+    private static readonly string[] ImageHeadersHex =
+    {
+        "FFD8FF",
+        "89504E470D0A1A0A",
+        "474946383761",
+        "474946383961",
+        "424D",
+        "49492A00",
+        "4D4D002A",
+        "52494646",
+        "57454250",
+        "464C4946",
+        "000000667479704D534654",
+        "00000100",
+        "00000200"
+    };
+
     public static bool IsLikelyImage(object data)
     {
         bool result = false;
-        if (data is not null && data is byte[] bytes)
+        if (data is byte[] bytes)
         {
             result = IsLikelyImage(bytes);
-        };
+        }
         return result;
     }
 
     public static bool IsLikelyImage(byte[] bytes)
     {
-        string base64 = Encoding.UTF8.GetString(bytes);
-        return IsLikelyImage(base64);
+        bool result = false;
+        if (bytes is not null && bytes.Length > 0)
+        {
+            result = HasImageHeader(bytes) || IsLikelyImage(Encoding.UTF8.GetString(bytes));
+        }
+        return result;
     }
 
     public static bool IsLikelyImage(string base64String)
     {
-        if (!IsBase64String(base64String))
-        {
-            return false;
-        }
-        //Remove whitespace and carriage returns from string
-        if (!IsLikelyBase64(base64String))
-        {
-            return false;
-        }
-        string cleanBase64String = Regex.Replace(base64String, @"\s+", "");
-        // Decode the string in bytes
-        byte[] decodedBytes;
-        try
-        {
-            decodedBytes = Convert.FromBase64String(cleanBase64String);
-        }
-        catch (FormatException)
-        {
-            return false;
-        }
-        string decodedHeaderHex = BitConverter.ToString(decodedBytes, 0, Math.Min(8, decodedBytes.Length)).Replace("-", "");
-        //Image format headers
-        string[] imageHeaders = {
-        "FFD8FF",          // JPG (JPEG)
-        "89504E470D0A1A0A",// PNG
-        "474946383761",    // GIF87a
-        "474946383961",    // GIF89a
-        "424D",            // BMP
-        "49492A00",        // TIFF (Intel byte order)
-        "4D4D002A",        // TIFF (Motorola byte order)
-        "52494646",        // WebP (RIFF)
-        "57454250",        // WebP (VP8X)
-        "464C4946",        // WebP (VP8L)
-        "000000667479704D534654", //HEIF (High Efficiency Image File Format)
-        "49492A00",        //JXR (JPEG XR)
-        "4D4D002A",        //JXR (JPEG XR)
-        "00000100",        //ICO (Icon)      
-        "00000200"         //ICO (Icon)
-        };
+        return TryDecodeBase64Image(base64String, out byte[] _);
+    }
 
-        foreach (string header in imageHeaders)
+    public static bool HasImageHeader(byte[] bytes)
+    {
+        bool result = false;
+        if (bytes is not null && bytes.Length > 0)
         {
-            if (decodedHeaderHex.StartsWith(header))
+            string headerHex = BitConverter.ToString(bytes, 0, Math.Min(HeaderBytesToInspect, bytes.Length)).Replace("-", "");
+            int index = 0;
+            while (index < ImageHeadersHex.Length && !result)
             {
-                return true;
+                result = headerHex.StartsWith(ImageHeadersHex[index], StringComparison.Ordinal);
+                index++;
             }
         }
-        return false;
+        return result;
+    }
+
+    public static bool TryDecodeBase64Image(string base64String, out byte[] imageBytes)
+    {
+        imageBytes = null;
+        bool result = false;
+        if (IsBase64String(base64String) && IsLikelyBase64(base64String))
+        {
+            byte[] decodedBytes = Convert.FromBase64String(Regex.Replace(base64String, @"\s+", ""));
+            result = HasImageHeader(decodedBytes);
+            imageBytes = result ? decodedBytes : null;
+        }
+        return result;
     }
 
     private static bool IsBase64String(string input)
     {
-        //Check if the length of the string is a multiple of 4
-        try
+        bool result = false;
+        if (!string.IsNullOrWhiteSpace(input) && input.Length % 4 == 0)
         {
-            if (string.IsNullOrWhiteSpace(input))
-                return false;
-            if (input.Length % 4 != 0)
+            try
             {
-                return false;
+                Convert.FromBase64String(input);
+                result = true;
             }
-            Convert.FromBase64String(input);
-            return true;
+            catch (FormatException)
+            {
+                result = false;
+            }
         }
-        catch (FormatException)
-        {
-            return false;
-        }
+        return result;
     }
 
     private static bool IsLikelyBase64(string input)
     {
-        foreach (char c in input)
+        bool result = true;
+        int index = 0;
+        while (index < input.Length && result)
         {
-            if (!char.IsLetterOrDigit(c) && c != '+' && c != '/' && c != '=')
-            {
-                return false;
-            }
+            char character = input[index];
+            result = char.IsLetterOrDigit(character) || character == '+' || character == '/' || character == '=';
+            index++;
         }
-        return true;
+        return result;
     }
 }

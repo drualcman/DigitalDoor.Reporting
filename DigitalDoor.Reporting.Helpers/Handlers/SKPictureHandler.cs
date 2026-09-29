@@ -1,7 +1,9 @@
-﻿namespace DigitalDoor.Reporting.Helpers.Handlers;
+namespace DigitalDoor.Reporting.Helpers.Handlers;
 
 internal static class SKPictureHandler
 {
+    private const int FallbackPictureSizeInPixels = 512;
+
     public static byte[] PictureToByteArray(
         SKPicture picture,
         SKEncodedImageFormat format = SKEncodedImageFormat.Png,
@@ -10,49 +12,41 @@ internal static class SKPictureHandler
         int? overrideHeight = null,
         SKColor backgroundColor = default)
     {
-        if (picture == null)
-            throw new ArgumentNullException(nameof(picture));
-
-        var bounds = picture.CullRect;
-
+        ArgumentNullException.ThrowIfNull(picture);
+        SKRect bounds = picture.CullRect;
         int width = overrideWidth ?? (int)Math.Ceiling(bounds.Width);
         int height = overrideHeight ?? (int)Math.Ceiling(bounds.Height);
-
-        // Fallback
         if (width <= 0 || height <= 0)
         {
-            width = overrideWidth ?? 512;
-            height = overrideHeight ?? 512;
+            width = overrideWidth ?? FallbackPictureSizeInPixels;
+            height = overrideHeight ?? FallbackPictureSizeInPixels;
         }
 
-        using var bitmap = new SKBitmap(width, height);
-        using var canvas = new SKCanvas(bitmap);
-
-        // Background Color: default transparent
-        SKColor clearColor = backgroundColor == default ? SKColors.Transparent : backgroundColor;
-        canvas.Clear(clearColor);
-
-        // Optional: scale when overwrite width or height
-        if (overrideWidth.HasValue || overrideHeight.HasValue)
+        using SKBitmap bitmap = new SKBitmap(width, height);
+        using (SKCanvas canvas = new SKCanvas(bitmap))
         {
-            var scaleX = (float)width / bounds.Width;
-            var scaleY = (float)height / bounds.Height;
-            var scale = Math.Min(scaleX, scaleY);
-
-            canvas.Save();
-            canvas.Translate(width / 2, height / 2);
-            canvas.Scale(scale);
-            canvas.Translate(-bounds.MidX, -bounds.MidY);
-            canvas.DrawPicture(picture);
-            canvas.Restore();
+            canvas.Clear(backgroundColor == default ? SKColors.Transparent : backgroundColor);
+            if (overrideWidth.HasValue || overrideHeight.HasValue)
+            {
+                DrawPictureScaledToFit(canvas, picture, bounds, width, height);
+            }
+            else
+            {
+                canvas.DrawPicture(picture);
+            }
+            canvas.Flush();
         }
-        else
-        {
-            canvas.DrawPicture(picture);
-        }
-
-        canvas.Flush();
-
         return ImageHandler.ImageToByteArray(bitmap, format, quality);
+    }
+
+    private static void DrawPictureScaledToFit(SKCanvas canvas, SKPicture picture, SKRect bounds, int width, int height)
+    {
+        float scale = Math.Min((float)width / bounds.Width, (float)height / bounds.Height);
+        canvas.Save();
+        canvas.Translate(width / 2, height / 2);
+        canvas.Scale(scale);
+        canvas.Translate(-bounds.MidX, -bounds.MidY);
+        canvas.DrawPicture(picture);
+        canvas.Restore();
     }
 }

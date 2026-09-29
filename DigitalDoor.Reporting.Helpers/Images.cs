@@ -1,78 +1,54 @@
-﻿namespace DigitalDoor.Reporting.Helpers;
+namespace DigitalDoor.Reporting.Helpers;
 
 public class Images
 {
     public bool TryGetImageBytes(object img, out byte[] bytes)
     {
-        bool result;
-        try
+        bytes = img switch
         {
-            if (img is not null)
-            {
-                if (img is SKImage skImage)
-                {
-                    bytes = ImageToByteArray(skImage);
-                    result = true;
-                }
-                else if (img is SKBitmap skBitmap)
-                {
-                    bytes = ImageToByteArray(skBitmap);
-                    result = true;
-                }
-                else if (img is SKPicture skPicture)
-                {
-                    bytes = ImageToByteArray(skPicture);
-                    result = true;
-                }
-                else if (img is byte[] bytesArray)
-                {
-                    result = ImageValidator.IsLikelyImage(bytesArray);
-                    bytes = result ? bytesArray : null;
-                }
-                else if (img is string stringImage)
-                {
-                    bool isSvg = stringImage.TrimStart().StartsWith("<svg", StringComparison.OrdinalIgnoreCase) ||
-                                 stringImage.Contains("<svg", StringComparison.OrdinalIgnoreCase);
-                    if (isSvg)
-                    {
-                        string escapedSvg = stringImage.Replace("&lt;", "&amp;lt;");
-                        using var skSvg = new SKSvg();
-                        skSvg.FromSvg(escapedSvg);
-                        if (skSvg.Picture is not null)
-                        {
-                            bytes = ImageToByteArray(skSvg.Picture);
-                            result = true;
-                        }
-                        else
-                        {
-                            result = false;
-                            bytes = null;
-                        }
-                    }
-                    else
-                    {
-                        bytes = null!;
-                        result = false;
-                    }
-                }
-                else
-                {
-                    bytes = null!;
-                    result = false;
-                }
-            }
-            else
-            {
-                bytes = null!;
-                result = false;
-            }
+            SKImage skImage => ImageToByteArray(skImage),
+            SKBitmap skBitmap => ImageToByteArray(skBitmap),
+            SKPicture skPicture => ImageToByteArray(skPicture),
+            byte[] bytesArray => GetImageBytesOrNull(bytesArray),
+            string svgText when SvgValidator.IsSvg(svgText) => SvgRasterHandler.SvgToPngOrNull(svgText),
+            _ => null
+        };
+        return bytes is not null;
+    }
+
+    public bool TryGetSvg(object img, out string svg)
+    {
+        svg = null;
+        if (img is SKPicture skPicture)
+        {
+            svg = SKPictureSvgHandler.PictureToSvg(skPicture);
         }
-        catch
+        else if (SvgValidator.TryGetSvg(img, out string svgText))
         {
-            bytes = null!;
-            result = false;
+            svg = svgText;
+        }
+        return svg is not null;
+    }
+
+    private static byte[] GetImageBytesOrNull(byte[] imageBytes)
+    {
+        byte[] result = null;
+        if (ImageValidator.IsLikelyImage(imageBytes))
+        {
+            result = NormalizeImageBytes(imageBytes);
         }
         return result;
+    }
+
+    private static byte[] NormalizeImageBytes(byte[] imageBytes)
+    {
+        byte[] normalizedBytes = imageBytes;
+        if (!ImageValidator.HasImageHeader(imageBytes) &&
+            ImageValidator.TryDecodeBase64Image(Encoding.UTF8.GetString(imageBytes), out byte[] decodedBytes))
+        {
+            normalizedBytes = decodedBytes;
+        }
+        return normalizedBytes;
     }
 
     public byte[] ImageToByteArray(SKImage imageIn, SKEncodedImageFormat format = SKEncodedImageFormat.Png, int quality = 100) =>
@@ -85,7 +61,7 @@ public class Images
         SKPictureHandler.PictureToByteArray(bitmapIn, format, quality, overrideWidth, overrideHeight, backgroundColor);
 
     public SKImage ByteArrayToImage(byte[] byteArrayIn) =>
-                ImageHandler.ByteArrayToImage(byteArrayIn);
+        ImageHandler.ByteArrayToImage(byteArrayIn);
 
     public SKImage StreamToImage(Stream stream) =>
         ImageHandler.StreamToImage(stream);

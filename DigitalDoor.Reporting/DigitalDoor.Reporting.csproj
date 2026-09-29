@@ -9,11 +9,12 @@
 		<Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
 		<Company>DIGITAL DOOR Pty Ltd</Company>
 		<Description>Generate reports from code using clean architecture. Can be used in .NET Core application like backend API, in Blazor Server, Blazor Web Assembly, MVC...</Description>
-		<Copyright>DIGITAL DOOR Pty Ltd 2022</Copyright>
+		<Copyright>DrUalcman Programacion</Copyright>
 		<PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageTags>reporting; pdf, blazor; blazor webaassembly; blazor server; MVC; webapi</PackageTags>
 		<PackageReleaseNotes>
+			2026-09-29: Fixed TotalPages calculation. Pagination values are added to the header when it uses TotalPages or CurrentPage. SVG images are kept as vector for the presenters.
 			2025-12-16: Fixed detect if use AddPageination and set correctly the values about TotalPages and CurrentPage. Update dependencies.
 			2025-12-15: Add support Net 10. Update dependencies.
 			2025-10-22: Fixed index out exception. Update dependencies.
@@ -38,7 +39,7 @@
 			2023-08-28: Add Register services extension method. Hide implementation to outside. Implement IReportAsBytes in a controller PDFReportController to get directly the PDF Bytes in only one injection.
 			2023-08-10: Add Create PDF Using IText7 C#
 		</PackageReleaseNotes>
-		<Version>1.17.71</Version>
+		<Version>1.18.0</Version>
 		<RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
 		<Title>Generate reports from code using clean architecture</Title>
 		<RepositoryType>git</RepositoryType>
@@ -61,11 +62,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.17.71" />
+		<PackageReference Include="DigitalDoor.Reporting.Helpers" Version="1.18.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" Condition="'$(TargetFramework)' == 'net6.0'" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" Condition="'$(TargetFramework)' == 'net8.0'" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.11" Condition="'$(TargetFramework)' == 'net9.0'" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" Condition="'$(TargetFramework)' == 'net10.0'" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.20" Condition="'$(TargetFramework)' == 'net9.0'" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.12" Condition="'$(TargetFramework)' == 'net10.0'" />
 	</ItemGroup>
 
 </Project>

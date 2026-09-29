@@ -4,3 +4,4 @@ global using SkiaSharp;
 global using Svg.Skia;
 global using System.Globalization;
 global using System.Text.RegularExpressions;
+global using System.Text;

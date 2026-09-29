@@ -274,10 +274,10 @@ public partial class ReportView
                 string styleCol = $"{GetStyle(item.Format ?? columnFormat)}position: absolute;";
 
                 styleCol += "position: absolute;";
-                string base64 = GetBase64(item);
-                if (!string.IsNullOrEmpty(base64))
+                string imageSource = GetImageSource(item);
+                if (!string.IsNullOrEmpty(imageSource))
                 {
-                    string result = $"data:image/png;base64,{base64}";
+                    string result = imageSource;
                     CurrentDivId++;
                     builder.OpenElement(CurrentDivId, "div");
                     Format itemFormat = GetColumnFormat(columns, item.Column);
@@ -356,6 +356,24 @@ public partial class ReportView
         return format;
     }
 
+
+    string GetImageSource(ColumnData item)
+    {
+        string imageSource = string.Empty;
+        if (SvgValidator.TryGetSvg(item.Value, out string svg))
+        {
+            imageSource = SvgValidator.ToDataUri(svg);
+        }
+        else
+        {
+            string base64 = GetBase64(item);
+            if (!string.IsNullOrEmpty(base64))
+            {
+                imageSource = $"data:image/png;base64,{base64}";
+            }
+        }
+        return imageSource;
+    }
 
     string GetBase64(ColumnData item)
     {
