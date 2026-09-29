@@ -9,7 +9,7 @@
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <PackageLicenseFile>License.txt</PackageLicenseFile>
 	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
-	  <Company>DIGITAL DOOR Pty Ltd</Company>
+	  <Company>DrUalcman Programacion</Company>
 	  <Description>Tools to use in DigitalDoor Reporting. Multiplatform Image management.</Description>
 	  <Copyright>DrUalcman Programacion</Copyright>
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>

@@ -8,7 +8,7 @@
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <PackageLicenseFile>License.txt</PackageLicenseFile>
 	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
-	  <Company>DIGITAL DOOR Pty Ltd</Company>
+	  <Company>DrUalcman Programacion</Company>
 	  <Description>Extension to simplify the Presenter Injection when use Digital Reporting.</Description>
 	  <Copyright>DrUalcman Programacion</Copyright>
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>

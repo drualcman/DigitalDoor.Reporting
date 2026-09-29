@@ -8,7 +8,7 @@
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <PackageLicenseFile>License.txt</PackageLicenseFile>
 	  <Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
-	  <Company>DIGITAL DOOR Pty Ltd</Company>
+	  <Company>DrUalcman Programacion</Company>
 	  <Description>Entities for can create a report using DigitalDoor.Reporting. Also can create HTML directly.</Description>
 	  <Copyright>DrUalcman Programacion-2025</Copyright>
 	  <PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>

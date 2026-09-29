@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageLicenseFile>License.txt</PackageLicenseFile>
 		<Authors>Sergi Ortiz Gomez, Angel Guiao</Authors>
-		<Company>DIGITAL DOOR Pty Ltd</Company>
+		<Company>DrUalcman Programacion</Company>
 		<Description>Generate reports from code using clean architecture. Can be used in .NET Core application like backend API, in Blazor Server, Blazor Web Assembly, MVC...</Description>
 		<Copyright>DrUalcman Programacion</Copyright>
 		<PackageProjectUrl>https://digitaldoor.com.au/</PackageProjectUrl>
