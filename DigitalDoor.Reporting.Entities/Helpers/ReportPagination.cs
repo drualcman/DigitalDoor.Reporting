@@ -14,8 +14,8 @@ public static class ReportPagination
 
     public static int GetRowsPerColumn(Section body, int totalBodyRows)
     {
-        double bodyHeight = body.Format.Dimension.Height;
-        double rowHeight = body.Row?.Dimension.Height ?? bodyHeight;
+        double bodyHeight = body?.Format?.Dimension?.Height ?? 0;
+        double rowHeight = body?.Row?.Dimension?.Height ?? bodyHeight;
         int rowsPerColumn;
         if (rowHeight > 0)
         {
@@ -30,7 +30,7 @@ public static class ReportPagination
 
     public static int GetColumnsPerPage(Section body)
     {
-        return Math.Max(1, body.ColumnsNumber);
+        return Math.Max(1, body?.ColumnsNumber ?? 1);
     }
 
     public static int GetTotalPages(Section body, int totalBodyRows)
@@ -41,7 +41,7 @@ public static class ReportPagination
 
     public static int CountBodyRows(IEnumerable<ColumnData> data)
     {
-        return data.Where(columnData => columnData.Section == SectionType.Body)
+        return (data ?? Enumerable.Empty<ColumnData>()).Where(columnData => columnData is not null && columnData.Section == SectionType.Body)
             .Select(columnData => columnData.Row)
             .Distinct()
             .Count();

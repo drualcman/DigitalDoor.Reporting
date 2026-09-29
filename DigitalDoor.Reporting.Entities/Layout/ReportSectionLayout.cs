@@ -17,10 +17,10 @@ public sealed class ReportSectionLayout
 
     public static ReportSectionLayout Create(Format sectionFormat, double left, double top)
     {
-        Kernel margin = sectionFormat.Margin ?? new Kernel();
-        Kernel position = sectionFormat.Position ?? new Kernel();
-        Kernel padding = sectionFormat.Padding ?? new Kernel();
-        Dimension dimension = sectionFormat.Dimension ?? new Dimension();
+        Kernel margin = sectionFormat?.Margin ?? new Kernel();
+        Kernel position = sectionFormat?.Position ?? new Kernel();
+        Kernel padding = sectionFormat?.Padding ?? new Kernel();
+        Dimension dimension = sectionFormat?.Dimension ?? new Dimension();
         double boxLeft = left + (double)(margin.Left + position.Left);
         double boxTop = top + (double)(margin.Top + position.Top);
         LayoutBox bounds = new LayoutBox(boxLeft, boxTop, dimension.Width, dimension.Height);

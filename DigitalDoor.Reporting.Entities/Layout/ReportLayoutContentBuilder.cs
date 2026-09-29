@@ -7,19 +7,19 @@ public static class ReportLayoutContentBuilder
         List<ColumnData> data = (report.Data ?? Enumerable.Empty<ColumnData>())
             .Where(columnData => columnData is not null && columnData.Column is not null)
             .ToList();
-        List<ReportLayoutRow> headerRows = BuildRows(report.Header.Items, data, SectionType.Header);
-        List<ReportLayoutRow> bodyRows = BuildRows(report.Body.Items, data, SectionType.Body);
-        List<ReportLayoutRow> footerRows = BuildRows(report.Footer.Items, data, SectionType.Footer);
+        List<ReportLayoutRow> headerRows = BuildRows(report.Header?.Items, data, SectionType.Header);
+        List<ReportLayoutRow> bodyRows = BuildRows(report.Body?.Items, data, SectionType.Body);
+        List<ReportLayoutRow> footerRows = BuildRows(report.Footer?.Items, data, SectionType.Footer);
         return new ReportLayoutContent(
-            FlattenSection(headerRows, BuildPaginationCells(report.Header.Items)), headerRows.Count > 0,
-            bodyRows, BuildPaginationCells(report.Body.Items),
-            FlattenSection(footerRows, BuildPaginationCells(report.Footer.Items)), footerRows.Count > 0);
+            FlattenSection(headerRows, BuildPaginationCells(report.Header?.Items)), headerRows.Count > 0,
+            bodyRows, BuildPaginationCells(report.Body?.Items),
+            FlattenSection(footerRows, BuildPaginationCells(report.Footer?.Items)), footerRows.Count > 0);
     }
 
     private static List<ReportLayoutRow> BuildRows(List<ColumnSetup> setups, List<ColumnData> data, SectionType section)
     {
         List<ColumnSetup> dataSetups = (setups ?? new List<ColumnSetup>())
-            .Where(setup => setup.DataColumn is not null && !ReportPagination.IsPaginationItem(setup.DataColumn))
+            .Where(setup => setup is not null && setup.DataColumn is not null && !ReportPagination.IsPaginationItem(setup.DataColumn))
             .ToList();
         return data.Where(columnData => columnData.Section == section)
             .GroupBy(columnData => columnData.Row)
@@ -35,9 +35,9 @@ public static class ReportLayoutContentBuilder
         foreach (ColumnSetup setup in dataSetups)
         {
             ColumnData cellData = rowData.FirstOrDefault(columnData => setup.DataColumn.Equals(columnData.Column));
-            if (cellData is not null)
+            Format cellFormat = cellData?.Format ?? setup.Format;
+            if (cellData is not null && cellFormat is not null)
             {
-                Format cellFormat = cellData.Format ?? setup.Format;
                 string columnDescription = $"{cellFormat.Section}.{setup.DataColumn.ObjectName}.{setup.DataColumn.PropertyName} (row {cellData.Row})";
                 cells.Add(new ReportLayoutCell(cellFormat, ReportCellValueReader.Read(cellData.Value), ReportCellPagination.None, columnDescription));
             }
@@ -48,7 +48,7 @@ public static class ReportLayoutContentBuilder
     private static List<ReportLayoutCell> BuildPaginationCells(List<ColumnSetup> setups)
     {
         return (setups ?? new List<ColumnSetup>())
-            .Where(setup => ReportPagination.IsPaginationItem(setup.DataColumn))
+            .Where(setup => setup is not null && setup.Format is not null && ReportPagination.IsPaginationItem(setup.DataColumn))
             .Select(setup => new ReportLayoutCell(setup.Format, ReportCellValue.Empty(null), GetPagination(setup.DataColumn), setup.DataColumn.PropertyName))
             .ToList();
     }

@@ -22,12 +22,12 @@ internal sealed class HtmlPageWriter
     {
         string pageStyle = $"position:relative;box-sizing:border-box;overflow:hidden;padding:0;" +
             $"width:{CssValue.Millimeters(Layout.PageWidth)};height:{CssValue.Millimeters(Layout.PageHeight)};" +
-            $"background-color:{(CssValue.IsTransparent(Report.Page.Background) ? "white" : CssValue.Colour(Report.Page.Background))};" +
+            $"background-color:{(CssValue.IsTransparent(Report.Page?.Background) ? "white" : CssValue.Colour(Report.Page.Background))};" +
             (isLastPage ? string.Empty : "break-after:page;page-break-after:always;");
         html.Append($"<div class=\"{PageCssClass}\" style=\"{WebUtility.HtmlEncode(pageStyle)}\">");
-        HtmlCellWriter.WriteBox(html, Layout.Header.Bounds, Report.Header.Format.Background, Report.Header.Format.Borders);
-        HtmlCellWriter.WriteBox(html, Layout.Body.Bounds, Report.Body.Format.Background, Report.Body.Format.Borders);
-        HtmlCellWriter.WriteBox(html, Layout.Footer.Bounds, Report.Footer.Format.Background, Report.Footer.Format.Borders);
+        HtmlCellWriter.WriteBox(html, Layout.Header.Bounds, Report.Header?.Format?.Background, Report.Header?.Format?.Borders);
+        HtmlCellWriter.WriteBox(html, Layout.Body.Bounds, Report.Body?.Format?.Background, Report.Body?.Format?.Borders);
+        HtmlCellWriter.WriteBox(html, Layout.Footer.Bounds, Report.Footer?.Format?.Background, Report.Footer?.Format?.Borders);
         WriteSectionRowBorder(html, Report.Header, Layout.Header, Content.HeaderHasRows);
         HtmlCellWriter.WriteCells(html, Content.HeaderCells, Layout.Header.ContentLeft, Layout.Header.ContentTop, page);
         WriteBodyColumns(html, page);
@@ -48,7 +48,7 @@ internal sealed class HtmlPageWriter
             {
                 double rowLeft = Layout.Body.ContentLeft + columnIndex * columnStep;
                 double rowTop = Layout.Body.ContentTop + rowIndex * rowDimension.Height;
-                HtmlCellWriter.WriteBox(html, new LayoutBox(rowLeft, rowTop, rowDimension.Width, rowDimension.Height), null, Report.Body.Row?.Borders);
+                HtmlCellWriter.WriteBox(html, new LayoutBox(rowLeft, rowTop, rowDimension.Width, rowDimension.Height), null, Report.Body?.Row?.Borders);
                 HtmlCellWriter.WriteCells(html, columnRows[rowIndex].Cells, rowLeft, rowTop, page);
             }
         }
@@ -56,7 +56,7 @@ internal sealed class HtmlPageWriter
 
     private static void WriteSectionRowBorder(StringBuilder html, Section section, ReportSectionLayout sectionLayout, bool sectionHasRows)
     {
-        if (sectionHasRows && section.Row?.Dimension is not null)
+        if (sectionHasRows && section?.Row?.Dimension is not null)
         {
             LayoutBox rowBox = new LayoutBox(sectionLayout.ContentLeft, sectionLayout.ContentTop, section.Row.Dimension.Width, section.Row.Dimension.Height);
             HtmlCellWriter.WriteBox(html, rowBox, null, section.Row.Borders);

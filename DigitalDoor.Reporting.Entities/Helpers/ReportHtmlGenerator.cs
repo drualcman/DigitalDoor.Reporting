@@ -14,14 +14,17 @@ public class ReportHtmlGenerator
 
     public string GenerateHtml()
     {
-        ReportLayoutContent content = ReportLayoutContentBuilder.Build(ReportModel);
-        ReportPageLayout layout = ReportPageLayout.Create(ReportModel);
-        List<ReportBodyPage> pages = ReportBodyPaginator.Paginate(ReportModel.Body, content.BodyRows);
-        HtmlPageWriter pageWriter = new HtmlPageWriter(ReportModel, layout, content);
         StringBuilder html = new StringBuilder();
-        for (int pageIndex = 0; pageIndex < pages.Count; pageIndex++)
+        if (ReportModel is not null)
         {
-            pageWriter.WritePage(html, pages[pageIndex], pageIndex == pages.Count - 1);
+            ReportLayoutContent content = ReportLayoutContentBuilder.Build(ReportModel);
+            ReportPageLayout layout = ReportPageLayout.Create(ReportModel);
+            List<ReportBodyPage> pages = ReportBodyPaginator.Paginate(ReportModel.Body, content.BodyRows);
+            HtmlPageWriter pageWriter = new HtmlPageWriter(ReportModel, layout, content);
+            for (int pageIndex = 0; pageIndex < pages.Count; pageIndex++)
+            {
+                pageWriter.WritePage(html, pages[pageIndex], pageIndex == pages.Count - 1);
+            }
         }
         return html.ToString();
     }

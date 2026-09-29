@@ -16,6 +16,7 @@
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
 		  2026-09-29: BREAKING VISUAL CHANGES in the HTML. ReportHtmlGenerator rewritten to render exactly like the PDF presenter: shared layout (DigitalDoor.Reporting.Entities.Layout), rows in order, columns with Row.Width and ColumnsSpace, border-box sizing, page margins and paddings, rotation around the centre, opacity, text decoration, invariant CSS numbers and HTML encoded text. Add SvgValidator and ReportPagination helpers. ImageValidator detects raw image bytes. HTML generator renders SVG values as vector images.
+		  2026-04-05: Avoid possible null reference.
 		  2025-12-15: Add support Net 10.
 		  2025-09-13: Improved method params names to clarify functionality.
 		  2025-06-01: Update licence. Add support Net 9.

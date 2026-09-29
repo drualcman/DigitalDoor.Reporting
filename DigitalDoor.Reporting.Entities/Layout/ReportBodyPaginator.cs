@@ -27,12 +27,12 @@ public static class ReportBodyPaginator
 
     public static double GetColumnStep(Section body)
     {
-        Dimension rowDimension = body.Row?.Dimension ?? body.Format.Dimension;
-        return rowDimension.Width + body.ColumnsSpace;
+        Dimension rowDimension = GetRowDimension(body);
+        return rowDimension.Width + (body?.ColumnsSpace ?? 0);
     }
 
     public static Dimension GetRowDimension(Section body)
     {
-        return body.Row?.Dimension ?? body.Format.Dimension;
+        return body?.Row?.Dimension ?? body?.Format?.Dimension ?? new Dimension();
     }
 }
