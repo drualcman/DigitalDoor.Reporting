@@ -16,6 +16,7 @@
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <PackageTags>reporting;</PackageTags>
 	  <PackageReleaseNotes>
+		  2026-09-30: Update SkiaSharp to 4.153.0 and Svg.Skia to 5.2.3, the same versions used by DigitalDoor.Reporting.Presenters.PDF. Update DigitalDoor.Reporting.Entities to 1.18.1.
 		  2026-09-29: SVG and SKPicture values are kept as vector SVG (Images.TryGetSvg). Byte arrays with base64 text are decoded. Images.TryGetImageBytes no longer hides errors: only malformed SVG returns false, other exceptions are thrown. Encoding to an unsupported format throws InvalidOperationException.
 		  2025-12-15: Add support to detect SVG images and convert in bytes[].
 		  2025-12-15: Add support Net 10. Update dependencies.
@@ -28,14 +29,14 @@
 		  2023-12-12: Change version to keep same version all nugets.
 		  2023-11-22: Update frameworks target to NET 6 and NET 8.
 	  </PackageReleaseNotes>
-	  <Version>1.18.0</Version>
+	  <Version>1.18.1</Version>
 	  <RepositoryUrl>https://github.com/drualcman/DigitalDoor.Reporting</RepositoryUrl>
   </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.18.0" />
-		<PackageReference Include="SkiaSharp" Version="3.119.1" />
-		<PackageReference Include="Svg.Skia" Version="3.2.1" />
+		<PackageReference Include="DigitalDoor.Reporting.Entities" Version="1.18.1" />
+		<PackageReference Include="SkiaSharp" Version="4.153.0" />
+		<PackageReference Include="Svg.Skia" Version="5.2.3" />
       </ItemGroup>
 
 	<ItemGroup>
